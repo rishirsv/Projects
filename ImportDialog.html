@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <base target="_top">
+  <style>
+    #dropzone {
+      border: 2px dashed #bbb;
+      padding: 20px;
+      text-align: center;
+      cursor: pointer;
+    }
+    #dropzone.hover { background: #eef; }
+  </style>
+</head>
+<body>
+  <label>
+    <input type="checkbox" id="auto" checked>
+    Auto-categorize after import
+  </label>
+  <br><br>
+
+  <div id="dropzone">
+    Drag & drop CSV files here<br>or<br>
+    <input type="file" id="fileInput" multiple accept=".csv">
+  </div>
+
+  <script>
+    const dz = document.getElementById('dropzone');
+
+    ['dragenter','dragover'].forEach(evt =>
+      dz.addEventListener(evt, e => { e.preventDefault(); dz.classList.add('hover'); })
+    );
+    ['dragleave','drop'].forEach(evt =>
+      dz.addEventListener(evt, e => { e.preventDefault(); dz.classList.remove('hover'); })
+    );
+
+    dz.addEventListener('drop', e => handle(e.dataTransfer.files));
+    document.getElementById('fileInput')
+      .addEventListener('change', e => handle(e.target.files));
+
+    function handle(fileList) {
+      const autoFlag = document.getElementById('auto').checked;
+      [...fileList].forEach(f => {
+        const reader = new FileReader();
+        reader.onload = ev =>
+          google.script.run.processLocalCSV(
+            { name: f.name, content: ev.target.result },
+            autoFlag
+          );
+        reader.readAsText(f);
+      });
+      google.script.host.close();
+    }
+  </script>
+</body>
+</html>
