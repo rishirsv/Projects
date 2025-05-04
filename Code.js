@@ -21,6 +21,12 @@ const SH_PARAMS = 'SYS_Parameters';
 function num(v){ return typeof v==='number' ? v : parseFloat(String(v||'').replace(/[^0-9.\-]/g,''))||0; }
 function cur(n){ return (n<0?'-$':'$')+Math.abs(n).toLocaleString('en-US'); }
 function pctStr(v){ return (v*100).toFixed(1)+'%'; }
+function logImportStats(bank, read, kept, skipped) {
+  const msg = `${bank}: read ${read}, kept ${kept}, skipped ${skipped}`;
+  Logger.log(msg);
+  console.log(msg);
+  SpreadsheetApp.getActive().toast(msg, 'CSV Import', 6);
+}
 function monthKey(d){ return Utilities.formatDate(d,'GMT','yyyy-MM'); }
 function deltaCell(v,isPct){
   if(!v) return '—';
@@ -91,6 +97,144 @@ function showError(m){ SpreadsheetApp.getUi().alert(m); }
 
 // ───────── (CSV IMPORT / RULE ENGINE / LEDGER IMPORT) ─────────
 // *identical to v3.4 — keep as-is; omitted here for brevity*
+
+function importAmexCSV(files){
+  // counters live in outer scope so they're always defined
+  let rowsRead = 0, rowsKept = 0, rowsSkipped = 0;
+  Logger.log('🔵 importAmexCSV triggered, got ' + (files?.length || 0) + ' file(s)');
+  SpreadsheetApp.getActive().toast('Starting AMEX import…', 'Import', 2);
+  try {
+    // --- initialise counters and handle empty selection ---
+    rowsRead = 0;
+    rowsKept = 0;
+    rowsSkipped = 0;
+
+    if (!files || files.length === 0) {
+      logImportStats('AMEX', 0, 0, 0);
+      return;
+    }
+
+    files.forEach(file => {
+      // Accept both Blob objects and {content:string} objects
+      const content = file.getBlob ? file.getBlob().getDataAsString() : file.content;
+      const lines = content.split('\n');
+      const parsed = [];
+
+      // skip header row
+      for (let i = 1; i < lines.length; i++) {
+        const line = lines[i].trim();
+        if (!line) continue;
+        parsed.push(line.split(','));
+      }
+
+      rowsRead += parsed.length;
+
+      // TODO: apply de‑dupe / filters here
+      const rowsToInsert = parsed;
+
+      rowsKept   += rowsToInsert.length;
+      rowsSkipped += parsed.length - rowsToInsert.length;
+
+      // TODO: write rowsToInsert to the sheet (e.g., SH_STG) with an "AMEX" source tag
+    });
+  logImportStats('AMEX', rowsRead, rowsKept, rowsSkipped);
+  } catch (e) {
+    SpreadsheetApp.getUi().alert('AMEX CSV import failed: ' + e);
+    throw e;
+  }
+}
+
+function importCIBCCSV(files){
+  // counters live in outer scope so they're always defined
+  let rowsRead = 0, rowsKept = 0, rowsSkipped = 0;
+  Logger.log('🔵 importCIBCCSV triggered, got ' + (files?.length || 0) + ' file(s)');
+  SpreadsheetApp.getActive().toast('Starting CIBC import…', 'Import', 2);
+  try {
+    // --- initialise counters and handle empty selection ---
+    rowsRead = 0;
+    rowsKept = 0;
+    rowsSkipped = 0;
+
+    if (!files || files.length === 0) {
+      logImportStats('CIBC', 0, 0, 0);
+      return;
+    }
+
+    files.forEach(file => {
+      // Accept both Blob objects and {content:string} objects
+      const content = file.getBlob ? file.getBlob().getDataAsString() : file.content;
+      const lines = content.split('\n');
+      const parsed = [];
+
+      // skip header row
+      for (let i = 1; i < lines.length; i++) {
+        const line = lines[i].trim();
+        if (!line) continue;
+        parsed.push(line.split(','));
+      }
+
+      rowsRead += parsed.length;
+
+      // TODO: apply de‑dupe / filters here
+      const rowsToInsert = parsed;
+
+      rowsKept   += rowsToInsert.length;
+      rowsSkipped += parsed.length - rowsToInsert.length;
+
+      // TODO: write rowsToInsert to the sheet (e.g., SH_STG) with an "CIBC" source tag
+    });
+  logImportStats('CIBC', rowsRead, rowsKept, rowsSkipped);
+  } catch (e) {
+    SpreadsheetApp.getUi().alert('CIBC CSV import failed: ' + e);
+    throw e;
+  }
+}
+
+function importSimpliiCSV(files){
+  // counters live in outer scope so they're always defined
+  let rowsRead = 0, rowsKept = 0, rowsSkipped = 0;
+  Logger.log('🔵 importSimpliiCSV triggered, got ' + (files?.length || 0) + ' file(s)');
+  SpreadsheetApp.getActive().toast('Starting SIMPLII import…', 'Import', 2);
+  try {
+    // --- initialise counters and handle empty selection ---
+    rowsRead = 0;
+    rowsKept = 0;
+    rowsSkipped = 0;
+
+    if (!files || files.length === 0) {
+      logImportStats('SIMPLII', 0, 0, 0);
+      return;
+    }
+
+    files.forEach(file => {
+      // Accept both Blob objects and {content:string} objects
+      const content = file.getBlob ? file.getBlob().getDataAsString() : file.content;
+      const lines = content.split('\n');
+      const parsed = [];
+
+      // skip header row
+      for (let i = 1; i < lines.length; i++) {
+        const line = lines[i].trim();
+        if (!line) continue;
+        parsed.push(line.split(','));
+      }
+
+      rowsRead += parsed.length;
+
+      // TODO: apply dse‑dupe / filters here
+      const rowsToInsert = parsed;
+
+      rowsKept   += rowsToInsert.length;
+      rowsSkipped += parsed.length - rowsToInsert.length;
+
+      // TODO: write rowsToInsert to the sheet (e.g., SH_STG) with an "SIMPLII" source tag
+    });
+  logImportStats('SIMPLII', rowsRead, rowsKept, rowsSkipped);
+  } catch (e) {
+    SpreadsheetApp.getUi().alert('SIMPLII CSV import failed: ' + e);
+    throw e;
+  }
+}
 
 // ───────── INSIGHTS ENGINE ─────────
 function generateSpendingInsights({period}){
