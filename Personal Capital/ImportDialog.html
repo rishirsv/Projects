@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <base target="_top">
+  <style>
+    /* --- Layout --- */
+    html,body{
+      margin:0;
+      padding:0;
+      height:100%;
+      font-family:-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background:#f5f5f7;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+    }
+    .card{
+      background:#fff;
+      border-radius:18px;
+      box-shadow:0 8px 20px rgba(0,0,0,0.1);
+      padding:32px 36px;
+      width:320px;
+    }
+
+    /* --- Checkbox --- */
+    .checkbox{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      margin-bottom:24px;
+      font-size:16px;
+    }
+    input[type="checkbox"]{
+      width:20px;
+      height:20px;
+      accent-color:#007aff; /* iOS blue */
+    }
+
+    /* --- Dropzone --- */
+    #dropzone{
+      border:2px dashed #d2d2d7;
+      border-radius:14px;
+      text-align:center;
+      padding:40px 20px;
+      transition:background 0.15s, border-color 0.15s;
+      color:#8e8e93;
+      font-size:18px;
+      position:relative;
+    }
+    #dropzone svg{
+      width:36px;
+      height:36px;
+      margin-bottom:12px;
+      stroke:#8e8e93;
+    }
+    #dropzone.hover{
+      background:#e5e5ea;
+      border-color:#8e8e93;
+    }
+    /* Hide default file input */
+    #fileInput { display:none; }
+
+    /* --- CTA button --- */
+    .import-btn{
+      margin-top:28px;
+      width:100%;
+      padding:12px 0;
+      font-size:17px;
+      font-weight:600;
+      color:#fff;
+      background:linear-gradient(180deg,#3c8dff 0%,#007aff 100%);
+      border:none;
+      border-radius:12px;
+      cursor:pointer;
+    }
+    .import-btn:active{
+      filter:brightness(0.95);
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <label class="checkbox">
+      <input type="checkbox" id="auto" checked>
+      Auto‑categorize after import
+    </label>
+
+    <div id="dropzone">
+      <!-- upward arrow icon -->
+      <svg fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+        <path d="M12 19V5"></path>
+        <path d="M5 12l7-7 7 7"></path>
+      </svg>
+      Drag &amp; drop CSV files here<br>
+      or <span style="color:#007aff; cursor:pointer;" onclick="fileInput.click()">browse</span>
+      <input type="file" id="fileInput" multiple accept=".csv">
+    </div>
+
+    <button class="import-btn" onclick="finishIfNoSelection()">Import</button>
+  </div>
+
+  <script>
+    // Elements
+    const dz        = document.getElementById('dropzone');
+    const fileInput = document.getElementById('fileInput');
+
+    /* --- Drag & Drop interactions --- */
+    ['dragenter','dragover'].forEach(evt =>
+      dz.addEventListener(evt, e=>{
+        e.preventDefault();
+        dz.classList.add('hover');
+      })
+    );
+    ['dragleave','drop'].forEach(evt =>
+      dz.addEventListener(evt, e=>{
+        e.preventDefault();
+        dz.classList.remove('hover');
+      })
+    );
+
+    dz.addEventListener('drop', e => processFiles(e.dataTransfer.files));
+    fileInput.addEventListener('change', e => processFiles(e.target.files));
+
+    // Process & send files to server
+    function processFiles(fileList){
+      const autoFlag = document.getElementById('auto').checked;
+      [...fileList].forEach(f=>{
+        const reader = new FileReader();
+        reader.onload = ev =>{
+          google.script.run.processLocalCSV(
+            { name:f.name, content:ev.target.result },
+            autoFlag
+          );
+        };
+        reader.readAsText(f);
+      });
+    }
+
+    // If user only checked auto‑categorize and hit Import without selecting files,
+    // fallback to opening file picker.
+    function finishIfNoSelection(){
+      if(!fileInput.files.length){
+        fileInput.click();
+      }else{
+        // ensure already selected files are processed
+        processFiles(fileInput.files);
+        google.script.host.close();
+      }
+    }
+  </script>
+</body>
+</html>
