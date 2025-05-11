@@ -1,0 +1,100 @@
+function importAmexCSV(file, autoFlag) {
+  try {
+    // --- initialise counters so logImportStats never errors ---
+    let rowsRead = 0;
+    let rowsKept = 0;
+    let rowsSkipped = 0;
+
+    const content = file.content;
+    const lines = content.split('\n');
+    const parsed = [];
+    for (let i = 1; i < lines.length; i++) {
+      const line = lines[i].trim();
+      if (!line) continue;
+      const parts = line.split(',');
+      parsed.push(parts);
+    }
+    // Assume rowsToInsert is determined after deduplication/filtering
+    const rowsToInsert = parsed.filter(row => /* some condition */ true);
+
+    rowsRead  += parsed.length;        // raw rows after header‑skip
+    rowsKept  += rowsToInsert.length;  // rows that survive dedupe / filters
+    rowsSkipped += parsed.length - rowsToInsert.length;
+
+    // Insert rowsToInsert into database or sheet here
+
+    logImportStats('AMEX', rowsRead, rowsKept, rowsSkipped);
+    if (autoFlag) {
+      autoCategorize();
+    }
+  } catch (err) {
+    throw err;
+  }
+}
+
+function importCIBCCSV(file, autoFlag) {
+  try {
+    // --- initialise counters so logImportStats never errors ---
+    let rowsRead = 0;
+    let rowsKept = 0;
+    let rowsSkipped = 0;
+
+    const content = file.content;
+    const rows = content.split('\n').slice(1);
+    const parsed = [];
+    rows.forEach(row => {
+      if (!row.trim()) return;
+      const cols = row.split(',');
+      parsed.push(cols);
+    });
+    // Assume rowsToInsert is determined after deduplication/filtering
+    const rowsToInsert = parsed.filter(row => /* some condition */ true);
+
+    rowsRead  += parsed.length;        // raw rows after header‑skip
+    rowsKept  += rowsToInsert.length;  // rows that survive dedupe / filters
+    rowsSkipped += parsed.length - rowsToInsert.length;
+
+    // Insert rowsToInsert into database or sheet here
+
+    logImportStats('CIBC', rowsRead, rowsKept, rowsSkipped);
+    if (autoFlag) {
+      autoCategorize();
+    }
+  } catch (err) {
+    throw err;
+  }
+}
+
+function importSimpliiCSV(file, autoFlag) {
+  try {
+    // --- initialise counters so logImportStats never errors ---
+    let rowsRead = 0;
+    let rowsKept = 0;
+    let rowsSkipped = 0;
+
+    const content = file.content;
+    const lines = content.split('\n');
+    const parsed = [];
+    for (let i = 1; i < lines.length; i++) {
+      const line = lines[i].trim();
+      if (!line) continue;
+      const parts = line.split(',');
+      parsed.push(parts);
+    }
+    // Assume rowsToInsert is determined after deduplication/filtering
+    const rowsToInsert = parsed.filter(row => /* some condition */ true);
+
+    rowsRead  += parsed.length;        // raw rows after header‑skip
+    rowsKept  += rowsToInsert.length;  // rows that survive dedupe / filters
+    rowsSkipped += parsed.length - rowsToInsert.length;
+
+    // Insert rowsToInsert into database or sheet here
+
+    logImportStats('SIMPLII', rowsRead, rowsKept, rowsSkipped);
+    if (autoFlag) {
+      autoCategorize();
+    }
+  } catch (err) {
+    throw err;
+  }
+}
