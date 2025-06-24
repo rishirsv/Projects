@@ -1,0 +1,21 @@
+CONTEXT HANDOFF: This conversation hit the token limit. I need to transfer essential context to continue in a new conversation.
+
+Use sequential thinking to analyze what context from this conversation is relevant to executing the new task below, then generate a handoff prompt.
+
+NEW TASK TO EXECUTE:
+{INSERT_YOUR_INTENDED_PROMPT_HERE}
+
+ANALYSIS STEPS:
+1. What background from our conversation directly impacts this new task?
+2. What decisions, preferences, or constraints have been established that apply?
+3. What specific data, files, or previous outputs are needed?
+4. What working style or approach should be maintained?
+
+HANDOFF REQUIREMENTS:
+- Include only context that affects task execution
+- Provide specific examples/data rather than vague references  
+- Preserve the conversational tone and any established preferences
+- Ensure the new Claude can start immediately without clarification requests
+- Keep it concise but complete
+
+Generate the handoff prompt that will allow seamless continuation of our work.
