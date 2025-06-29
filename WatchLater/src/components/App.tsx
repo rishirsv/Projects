@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import ReactMarkdown from 'react-markdown';
-import { summarize } from '../services/summarizer';
+import { summarize } from '../lib/gemini';
 
 function App() {
   const [transcript, setTranscript] = useState('');
