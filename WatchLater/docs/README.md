@@ -10,5 +10,7 @@ This contains everything you need to run your app locally.
 1. Install dependencies:
    `npm install`
 2. Set the `GEMINI_API_KEY` in [.env.local](.env.local) to your Gemini API key
-3. Run the app:
+3. In one terminal, start the Vite dev server:
    `npm run dev`
+4. In another terminal, run the Express server:
+   `npx ts-node server/index.ts`

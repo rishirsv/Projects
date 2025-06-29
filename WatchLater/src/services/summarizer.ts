@@ -1,11 +1,21 @@
 import { GoogleGenerativeAI } from '@google/generative-ai';
-import { YoutubeTranscript } from 'youtube-transcript-plus';
 
 const genAI = new GoogleGenerativeAI(import.meta.env.VITE_GEMINI_API_KEY);
 
+function extractVideoId(url: string) {
+  const regex = /(?:v=|\/)([0-9A-Za-z_-]{11})/;
+  const match = url.match(regex);
+  return match ? match[1] : url;
+}
+
 export async function getTranscript(url: string) {
   try {
-    const transcript = await YoutubeTranscript.fetchTranscript(url);
+    const videoId = extractVideoId(url);
+    const response = await fetch(`http://localhost:3001/api/transcript/${videoId}`);
+    if (!response.ok) {
+      throw new Error('Request failed');
+    }
+    const transcript = await response.json();
     return transcript.map((item: { text: string }) => item.text).join(' ');
   } catch (error) {
     console.error('Error fetching transcript:', error);
