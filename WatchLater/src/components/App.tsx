@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import ReactMarkdown from 'react-markdown';
-import { getTranscript, summarizeTranscript } from '../services/summarizer';
+import { summarize } from '../services/summarizer';
+import { extractVideoId } from '../services/youtube';
 
 function App() {
   const [url, setUrl] = useState('');
@@ -8,11 +9,6 @@ function App() {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
-  const getYouTubeVideoId = (url: string) => {
-    const regex = /(?:v=)([^&]+)/;
-    const match = url.match(regex);
-    return match ? match[1] : 'summary';
-  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -21,8 +17,7 @@ function App() {
     setLoading(true);
 
     try {
-      const transcript = await getTranscript(url);
-      const summaryResult = await summarizeTranscript(transcript);
+      const summaryResult = await summarize(url);
       setSummary(summaryResult);
     } catch (err) {
       if (err instanceof Error) {
@@ -38,7 +33,7 @@ function App() {
   const handleDownload = () => {
     if (!summary) return;
 
-    const videoId = getYouTubeVideoId(url);
+    const videoId = extractVideoId(url) || 'summary';
     const blob = new Blob([summary], { type: 'text/markdown' });
     const a = document.createElement('a');
     a.href = URL.createObjectURL(blob);
