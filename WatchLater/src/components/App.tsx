@@ -1,14 +1,12 @@
 import { useState } from 'react';
 import ReactMarkdown from 'react-markdown';
 import { summarize } from '../services/summarizer';
-import { extractVideoId } from '../services/youtube';
 
 function App() {
-  const [url, setUrl] = useState('');
+  const [transcript, setTranscript] = useState('');
   const [summary, setSummary] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
-
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -17,7 +15,7 @@ function App() {
     setLoading(true);
 
     try {
-      const summaryResult = await summarize(url);
+      const summaryResult = await summarize(transcript);
       setSummary(summaryResult);
     } catch (err) {
       if (err instanceof Error) {
@@ -33,11 +31,10 @@ function App() {
   const handleDownload = () => {
     if (!summary) return;
 
-    const videoId = extractVideoId(url) || 'summary';
     const blob = new Blob([summary], { type: 'text/markdown' });
     const a = document.createElement('a');
     a.href = URL.createObjectURL(blob);
-    a.download = `${videoId}.md`;
+    a.download = `summary.md`;
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
@@ -46,13 +43,13 @@ function App() {
 
   return (
     <main>
-      <h1>One-Click YouTube Summarizer</h1>
+      <h1>YouTube Transcript Summarizer</h1>
       <form onSubmit={handleSubmit}>
-        <input
-          type="text"
-          value={url}
-          onChange={(e) => setUrl(e.target.value)}
-          placeholder="Enter YouTube URL"
+        <textarea
+          value={transcript}
+          onChange={(e) => setTranscript(e.target.value)}
+          placeholder="Enter YouTube transcript here..."
+          rows={10}
           required
         />
         <button type="submit" disabled={loading}>
