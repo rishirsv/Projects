@@ -1,5 +1,10 @@
-import { useState } from 'react';
-import ReactMarkdown from 'react-markdown';
+import { useState, lazy, Suspense } from 'react';
+
+// React-Markdown (~125 kB) is only needed when we have a summary.
+// By code-splitting it with React.lazy we keep it out of the main chunk
+// and download it on-demand, which improves initial load time.
+const ReactMarkdown = lazy(() => import('react-markdown'));
+
 import { summarize } from '../services/summarizer';
 
 function App() {
@@ -62,7 +67,10 @@ function App() {
       {summary && (
         <section>
           <h2>Summary</h2>
-          <ReactMarkdown>{summary}</ReactMarkdown>
+          {/* Suspense shows a tiny fallback while the markdown renderer chunk downloads */}
+          <Suspense fallback={<p>Loading renderer...</p>}>
+            <ReactMarkdown>{summary}</ReactMarkdown>
+          </Suspense>
           <button onClick={handleDownload}>Download Summary</button>
         </section>
       )}

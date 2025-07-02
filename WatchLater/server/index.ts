@@ -1,7 +1,5 @@
 import express from 'express';
 import cors from 'cors';
-import express from 'express';
-import cors from 'cors';
 import { GoogleGenerativeAI } from '@google/generative-ai';
 
 const app = express();
