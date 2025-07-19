@@ -1,3 +1,19 @@
+/**
+ * Builds the custom “Personal Capital” menu each time the file is opened.
+ */
+function onOpen(e) {
+  const ui = SpreadsheetApp.getUi();
+  ui.createMenu('Personal Capital')
+    .addItem('Import AMEX CSV…',      'showImportAmexDialog')
+    .addItem('Import CIBC CSV…',      'showImportCIBCD​ialog')
+    .addItem('Import Simplii CSV…',   'showImportSimpliiDialog')
+    .addSeparator()
+    .addItem('Import Staging → Transactions…', 'showImportStgToTxnDialog')
+    .addSeparator()
+    .addItem('Generate Spending Insights…',    'showSpendingInsightsDialog')
+    .addToUi();
+}
+
 function importAmexCSV(files){
   // counters live in outer scope so they're always defined
   let rowsRead = 0, rowsKept = 0, rowsSkipped = 0;
