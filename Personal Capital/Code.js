@@ -126,3 +126,8 @@ function importSimpliiCSV(files){
     throw e;
   }
 }
+
+function importToTransactions({from, to}) {
+  // TODO: move rows from staging sheet to Transactions sheet
+  // validate `from` / `to`, perform dedupe, write rows, etc.
+}
