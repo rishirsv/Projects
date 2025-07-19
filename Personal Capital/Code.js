@@ -8,7 +8,7 @@ function onOpen(e) {
     .addItem('Import CIBC CSV…',      'showImportCIBCD​ialog')
     .addItem('Import Simplii CSV…',   'showImportSimpliiDialog')
     .addSeparator()
-    .addItem('Import Staging → Transactions…', 'showImportStgToTxnDialog')
+    .addItem('Import Staging → Transactions…', 'showImportToLedgerDialog')
     .addSeparator()
     .addItem('Generate Spending Insights…',    'showSpendingInsightsDialog')
     .addToUi();
@@ -146,4 +146,16 @@ function importSimpliiCSV(files){
 function importToTransactions({from, to}) {
   // TODO: move rows from staging sheet to Transactions sheet
   // validate `from` / `to`, perform dedupe, write rows, etc.
+}
+
+/**
+ * Opens the “Import Staging → Transactions” dialog.
+ */
+function showImportStgToTxnDialog() {
+  const html = HtmlService
+      .createHtmlOutputFromFile('ImportToLedgerDialog')
+      .setWidth(400)
+      .setHeight(220);
+  SpreadsheetApp.getUi()
+      .showModalDialog(html, 'Import Staging → Transactions');
 }
