@@ -1,6 +1,13 @@
 /**
  * Builds the custom “Personal Capital” menu each time the file is opened.
  */
+// ───────── SHEET CONSTANTS ─────────
+const SH_STG = 'STG_Transactions';         // sheet holding imported but uncategorised rows
+const SH_TX  = 'Transactions';    // ledger / final destination
+
+/** Simple toast wrapper */
+function pcToast(msg, title, secs){ SpreadsheetApp.getActive().toast(msg, title||'Import', secs||3); }
+
 function onOpen(e) {
   const ui = SpreadsheetApp.getUi();
   ui.createMenu('Personal Capital')
@@ -144,14 +151,67 @@ function importSimpliiCSV(files){
 }
 
 function importToTransactions({from, to}) {
-  // TODO: move rows from staging sheet to Transactions sheet
-  // validate `from` / `to`, perform dedupe, write rows, etc.
+  const ss  = SpreadsheetApp.getActive();
+  const stg = ss.getSheetByName(SH_STG);
+  const tx  = ss.getSheetByName(SH_TX);
+
+  if (!stg || !tx) {
+    SpreadsheetApp.getUi().alert(`Sheets “${SH_STG}” or “${SH_TX}” not found.`);
+    return;
+  }
+
+  // Parse optional date range (HTML passes empty strings when blank)
+  const fromDate = from ? new Date(from) : new Date('1900-01-01');
+  const toDate   = to   ? new Date(to)   : new Date('9999-12-31');
+
+  const data = stg.getDataRange().getValues();
+  if (data.length <= 1) { SpreadsheetApp.getUi().alert('Staging sheet is empty.'); return; }
+
+  const rows   = data.slice(1); // exclude header
+  const header = data[0];
+
+  const rowsToMove = [];
+  const rowIdxs = [];
+
+  rows.forEach((row, idx) => {
+    const d = row[0] instanceof Date ? row[0] : new Date(row[0]);
+    if (d >= fromDate && d <= toDate) {
+      rowsToMove.push(row);
+      rowIdxs.push(idx + 2); // account for header and 1-based API
+    }
+  });
+
+  if (rowsToMove.length === 0) {
+    SpreadsheetApp.getUi().alert('No rows matched the selected date range.');
+    return;
+  }
+
+  // Append to Transactions
+  const start = tx.getLastRow() + 1;
+  tx.getRange(start, 1, rowsToMove.length, header.length).setValues(rowsToMove);
+
+  // Delete from Staging bottom-up
+  rowIdxs.reverse().forEach(r => stg.deleteRow(r));
+
+  pcToast(`Moved ${rowsToMove.length} transaction(s).`, 'Import', 4);
 }
 
 /**
- * Opens the “Import Staging → Transactions” dialog.
+ * Opens the "Import Staging → Transactions" dialog.
  */
 function showImportStgToTxnDialog() {
+  const html = HtmlService
+      .createHtmlOutputFromFile('ImportToLedgerDialog')
+      .setWidth(400)
+      .setHeight(220);
+  SpreadsheetApp.getUi()
+      .showModalDialog(html, 'Import Staging → Transactions');
+}
+
+/**
+ * Opens the "Import Staging → Transactions" dialog.
+ */
+function showImportToLedgerDialog() {
   const html = HtmlService
       .createHtmlOutputFromFile('ImportToLedgerDialog')
       .setWidth(400)
