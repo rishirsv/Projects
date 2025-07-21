@@ -79,3 +79,26 @@ Manual tagging of every new bank‐statement CSV costs users 15-30 minutes each 
 4. Should editing a category *without* "Save as rule" influence any ML fallback in v2?
 
 ---
+
+## Tasks
+
+- [x] 1.0 Create Rule Storage and Management System
+  - [x] 1.1 Implement `loadCategoryRules()` function to read rules from CategoryRules sheet and cache in PropertiesService.getDocumentProperties().
+  - [x] 1.2 Create `saveCategoryRule(pattern, category, priority, minAmt, maxAmt, type)` function.
+
+- [x] 2.0 Implement Rule Engine and Matching Logic
+  - [x] 2.1 Create `matchTransactionToRules(vendor, amount, transactionType, rules)` function.
+  - [x] 2.2 Implement regex pattern matching with case-insensitive vendor name matching (pre-compile regex for performance).
+  - [x] 2.3 Add amount range filtering (MinAmt/MaxAmt) and transaction type filtering (Debit/Credit/Any).
+  - [x] 2.4 Implement priority-based rule selection (lowest priority wins when multiple rules match).
+  - [x] 2.5 Add performance optimization for rule evaluation across large datasets.
+  - [x] 2.6 Return empty string '' for category when no rules match (Uncategorized fallback).
+  - [x] 2.7 Add performance benchmark using Utilities.getCpuTime() to verify ≤2s for 2000 rows requirement.
+
+- [x] 3.0 Integrate Auto-Categorization as Manual Menu Option
+  - [x] 3.1 Add "Auto-Categorize Staging Transactions" menu item to Personal Capital menu.
+  - [x] 3.2 Implement `runAutoCategorization()` function to process all transactions in staging sheet.
+  - [x] 3.3 Update staging sheet schema to include `RuleID` and `Confidence` columns (completed in ensureSheets).
+  - [x] 3.4 Create batch processing function to handle large numbers of staging transactions efficiently.
+  - [x] 3.5 Add progress feedback and error handling for bulk categorization operations.
+  - [x] 3.6 Implement `showAutoCategorizeDialog()` to launch categorization with progress indicator. 
