@@ -1,100 +1,213 @@
-function importAmexCSV(file, autoFlag) {
-  try {
-    // --- initialise counters so logImportStats never errors ---
-    let rowsRead = 0;
-    let rowsKept = 0;
-    let rowsSkipped = 0;
-
-    const content = file.content;
-    const lines = content.split('\n');
-    const parsed = [];
-    for (let i = 1; i < lines.length; i++) {
-      const line = lines[i].trim();
-      if (!line) continue;
-      const parts = line.split(',');
-      parsed.push(parts);
+<!DOCTYPE html>
+<html>
+<head>
+  <base target="_top">
+  <style>
+    body { font-family: Arial, sans-serif; margin: 20px; }
+    .upload-area { 
+      border: 2px dashed #ccc; 
+      padding: 40px; 
+      text-align: center; 
+      margin: 20px 0;
+      border-radius: 8px;
     }
-    // Assume rowsToInsert is determined after deduplication/filtering
-    const rowsToInsert = parsed.filter(row => /* some condition */ true);
-
-    rowsRead  += parsed.length;        // raw rows after header‑skip
-    rowsKept  += rowsToInsert.length;  // rows that survive dedupe / filters
-    rowsSkipped += parsed.length - rowsToInsert.length;
-
-    // Insert rowsToInsert into database or sheet here
-
-    logImportStats('AMEX', rowsRead, rowsKept, rowsSkipped);
-    if (autoFlag) {
-      autoCategorize();
+    .upload-area.dragover { 
+      border-color: #4285f4; 
+      background-color: #f8f9ff; 
     }
-  } catch (err) {
-    throw err;
-  }
-}
+    input[type="file"] { 
+      margin: 10px 0; 
+      padding: 8px;
+    }
+    .btn { 
+      padding: 10px 20px; 
+      margin: 5px; 
+      border: none; 
+      border-radius: 4px; 
+      cursor: pointer; 
+    }
+    .btn-primary { 
+      background: #4285f4; 
+      color: white; 
+    }
+    .btn-secondary { 
+      background: #f1f3f4; 
+      color: #333; 
+    }
+    .status { 
+      margin: 10px 0; 
+      padding: 10px; 
+      border-radius: 4px; 
+      display: none; 
+    }
+    .status.success { 
+      background: #d4edda; 
+      color: #155724; 
+      border: 1px solid #c3e6cb; 
+    }
+    .status.error { 
+      background: #f8d7da; 
+      color: #721c24; 
+      border: 1px solid #f5c6cb; 
+    }
+    .file-list { 
+      margin: 10px 0; 
+      max-height: 200px; 
+      overflow-y: auto; 
+    }
+    .file-item { 
+      padding: 8px; 
+      border: 1px solid #e0e0e0; 
+      margin: 4px 0; 
+      border-radius: 4px; 
+      background: #f9f9f9; 
+    }
+  </style>
+</head>
+<body>
+  <h3>Import CSV Files</h3>
+  <p>Select CSV files from AMEX, CIBC, or Simplii. The system will automatically detect the bank format.</p>
+  
+  <div class="upload-area" id="uploadArea">
+    <p>Drag and drop CSV files here, or click to select</p>
+    <input type="file" id="fileInput" multiple accept=".csv" style="display: none;">
+    <button class="btn btn-secondary" onclick="document.getElementById('fileInput').click()">
+      Choose Files
+    </button>
+  </div>
+  
+  <div id="fileList" class="file-list"></div>
+  
+  <div id="status" class="status"></div>
+  
+  <div style="text-align: right; margin-top: 20px;">
+    <button class="btn btn-secondary" onclick="google.script.host.close()">Cancel</button>
+    <button class="btn btn-primary" id="importBtn" onclick="doImport()" disabled>
+      Import Selected Files
+    </button>
+  </div>
 
-function importCIBCCSV(file, autoFlag) {
-  try {
-    // --- initialise counters so logImportStats never errors ---
-    let rowsRead = 0;
-    let rowsKept = 0;
-    let rowsSkipped = 0;
-
-    const content = file.content;
-    const rows = content.split('\n').slice(1);
-    const parsed = [];
-    rows.forEach(row => {
-      if (!row.trim()) return;
-      const cols = row.split(',');
-      parsed.push(cols);
+  <script>
+    let selectedFiles = [];
+    
+    const uploadArea = document.getElementById('uploadArea');
+    const fileInput = document.getElementById('fileInput');
+    const fileList = document.getElementById('fileList');
+    const importBtn = document.getElementById('importBtn');
+    const status = document.getElementById('status');
+    
+    // Drag and drop handlers
+    uploadArea.addEventListener('dragover', (e) => {
+      e.preventDefault();
+      uploadArea.classList.add('dragover');
     });
-    // Assume rowsToInsert is determined after deduplication/filtering
-    const rowsToInsert = parsed.filter(row => /* some condition */ true);
-
-    rowsRead  += parsed.length;        // raw rows after header‑skip
-    rowsKept  += rowsToInsert.length;  // rows that survive dedupe / filters
-    rowsSkipped += parsed.length - rowsToInsert.length;
-
-    // Insert rowsToInsert into database or sheet here
-
-    logImportStats('CIBC', rowsRead, rowsKept, rowsSkipped);
-    if (autoFlag) {
-      autoCategorize();
+    
+    uploadArea.addEventListener('dragleave', () => {
+      uploadArea.classList.remove('dragover');
+    });
+    
+    uploadArea.addEventListener('drop', (e) => {
+      e.preventDefault();
+      uploadArea.classList.remove('dragover');
+      handleFiles(e.dataTransfer.files);
+    });
+    
+    uploadArea.addEventListener('click', () => {
+      fileInput.click();
+    });
+    
+    fileInput.addEventListener('change', (e) => {
+      handleFiles(e.target.files);
+    });
+    
+    function handleFiles(files) {
+      for (let file of files) {
+        if (file.type === 'text/csv' || file.name.endsWith('.csv')) {
+          selectedFiles.push(file);
+        }
+      }
+      updateFileList();
+      updateImportButton();
     }
-  } catch (err) {
-    throw err;
-  }
-}
-
-function importSimpliiCSV(file, autoFlag) {
-  try {
-    // --- initialise counters so logImportStats never errors ---
-    let rowsRead = 0;
-    let rowsKept = 0;
-    let rowsSkipped = 0;
-
-    const content = file.content;
-    const lines = content.split('\n');
-    const parsed = [];
-    for (let i = 1; i < lines.length; i++) {
-      const line = lines[i].trim();
-      if (!line) continue;
-      const parts = line.split(',');
-      parsed.push(parts);
+    
+    function updateFileList() {
+      fileList.innerHTML = '';
+      selectedFiles.forEach((file, index) => {
+        const div = document.createElement('div');
+        div.className = 'file-item';
+        div.innerHTML = `
+          <strong>${file.name}</strong> (${(file.size/1024).toFixed(1)} KB)
+          <button style="float: right; background: #dc3545; color: white; border: none; padding: 2px 8px; border-radius: 2px; cursor: pointer;" 
+                  onclick="removeFile(${index})">×</button>
+        `;
+        fileList.appendChild(div);
+      });
     }
-    // Assume rowsToInsert is determined after deduplication/filtering
-    const rowsToInsert = parsed.filter(row => /* some condition */ true);
-
-    rowsRead  += parsed.length;        // raw rows after header‑skip
-    rowsKept  += rowsToInsert.length;  // rows that survive dedupe / filters
-    rowsSkipped += parsed.length - rowsToInsert.length;
-
-    // Insert rowsToInsert into database or sheet here
-
-    logImportStats('SIMPLII', rowsRead, rowsKept, rowsSkipped);
-    if (autoFlag) {
-      autoCategorize();
+    
+    function removeFile(index) {
+      selectedFiles.splice(index, 1);
+      updateFileList();
+      updateImportButton();
     }
-  } catch (err) {
-    throw err;
-  }
-}
+    
+    function updateImportButton() {
+      importBtn.disabled = selectedFiles.length === 0;
+    }
+    
+    function showStatus(message, isError = false) {
+      status.textContent = message;
+      status.className = isError ? 'status error' : 'status success';
+      status.style.display = 'block';
+    }
+    
+    function doImport() {
+      if (selectedFiles.length === 0) {
+        showStatus('Please select at least one CSV file.', true);
+        return;
+      }
+      
+      importBtn.disabled = true;
+      showStatus('Processing files...');
+      
+      // Read files and convert to format expected by server
+      const filePromises = selectedFiles.map(file => {
+        return new Promise((resolve, reject) => {
+          const reader = new FileReader();
+          reader.onload = (e) => {
+            resolve({
+              name: file.name,
+              content: e.target.result
+            });
+          };
+          reader.onerror = reject;
+          reader.readAsText(file);
+        });
+      });
+      
+      Promise.all(filePromises)
+        .then(fileContents => {
+          google.script.run
+            .withSuccessHandler(onImportSuccess)
+            .withFailureHandler(onImportFailure)
+            .importCsvFiles(fileContents);
+        })
+        .catch(error => {
+          showStatus('Error reading files: ' + error.message, true);
+          importBtn.disabled = false;
+        });
+    }
+    
+    function onImportSuccess() {
+      showStatus('Import completed successfully!');
+      setTimeout(() => {
+        google.script.host.close();
+      }, 2000);
+    }
+    
+    function onImportFailure(error) {
+      showStatus('Import failed: ' + error.message, true);
+      importBtn.disabled = false;
+    }
+  </script>
+</body>
+</html>
