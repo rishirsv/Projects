@@ -15,8 +15,8 @@ dist-ssr
 # Environment variables
 .env
 
-# Generated summaries
-summaries/
+# Generated exports (summaries & transcripts)
+exports/
 
 # Editor directories and files
 .vscode/*

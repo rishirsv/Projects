@@ -13,8 +13,8 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 // Ensure required directories exist
-const summariesDir = path.join(__dirname, 'summaries');
-const transcriptsDir = path.join(__dirname, 'summaries', 'transcripts');
+const summariesDir = path.join(__dirname, 'exports', 'summaries');
+const transcriptsDir = path.join(__dirname, 'exports', 'transcripts');
 const promptsDir = path.join(__dirname, 'prompts');
 
 if (!fs.existsSync(summariesDir)) {
@@ -39,6 +39,112 @@ app.use(express.json());
 // Health check endpoint
 app.get('/health', (req, res) => {
   res.json({ status: 'ok', message: 'Transcript server running with Supadata API' });
+});
+
+// Utility function to sanitize video titles for filesystem
+function sanitizeTitle(title) {
+  if (!title) return null;
+  
+  return title
+    // Remove/replace invalid filesystem characters
+    .replace(/[<>:"/\\|?*]/g, '-')
+    // Replace multiple spaces with single space
+    .replace(/\s+/g, ' ')
+    // Remove leading/trailing spaces and dots
+    .trim()
+    .replace(/^\.+|\.+$/g, '')
+    // Limit length to prevent filesystem issues
+    .substring(0, 100)
+    .trim();
+}
+
+// Video metadata endpoint using YouTube oEmbed API
+app.get('/api/video-metadata/:videoId', async (req, res) => {
+  const { videoId } = req.params;
+  
+  if (!videoId) {
+    return res.status(400).json({ error: 'Video ID is required' });
+  }
+
+  console.log(`Fetching video metadata for: ${videoId} using YouTube oEmbed API`);
+  
+  try {
+    // Construct YouTube URL from video ID
+    const youtubeUrl = `https://www.youtube.com/watch?v=${videoId}`;
+    
+    // Build YouTube oEmbed API request URL
+    const oembedUrl = `https://www.youtube.com/oembed?url=${encodeURIComponent(youtubeUrl)}&format=json`;
+    
+    console.log(`Calling YouTube oEmbed API: ${oembedUrl}`);
+    
+    // Make request to YouTube oEmbed API
+    const response = await fetch(oembedUrl, {
+      method: 'GET',
+      headers: {
+        'Accept': 'application/json',
+        'User-Agent': 'WatchLater-App/1.0'
+      }
+    });
+
+    if (!response.ok) {
+      console.error(`YouTube oEmbed API error: ${response.status}`);
+      
+      if (response.status === 404) {
+        return res.status(404).json({ error: 'Video not found or not available' });
+      } else if (response.status === 429) {
+        return res.status(429).json({ error: 'Rate limit exceeded' });
+      } else {
+        return res.status(500).json({ error: `oEmbed API error: ${response.status}` });
+      }
+    }
+
+    const data = await response.json();
+    console.log(`YouTube oEmbed response received: ${data.title}`);
+
+    if (!data.title) {
+      return res.status(404).json({ error: 'No title found for this video' });
+    }
+
+    // Sanitize title for filesystem use
+    const sanitizedTitle = sanitizeTitle(data.title);
+
+    // Format response
+    res.json({
+      success: true,
+      videoId,
+      title: data.title,
+      sanitizedTitle,
+      author: data.author_name,
+      authorUrl: data.author_url,
+      thumbnailUrl: data.thumbnail_url,
+      thumbnailWidth: data.thumbnail_width,
+      thumbnailHeight: data.thumbnail_height,
+      provider: data.provider_name
+    });
+
+  } catch (error) {
+    console.error('Video metadata fetch error:', error);
+    
+    if (error.name === 'AbortError') {
+      res.status(408).json({ 
+        error: 'Request timeout',
+        message: 'The metadata request took too long',
+        videoId 
+      });
+    } else if (error.message.includes('fetch')) {
+      res.status(503).json({ 
+        error: 'Service unavailable',
+        message: 'Unable to connect to YouTube oEmbed API',
+        videoId 
+      });
+    } else {
+      res.status(500).json({ 
+        error: 'Failed to fetch video metadata',
+        message: error.message,
+        videoId 
+      });
+    }
+  }
 });
 
 // Transcript endpoint
@@ -155,7 +261,7 @@ app.get('/api/prompt', (req, res) => {
 
 // Save transcript to file system
 app.post('/api/save-transcript', (req, res) => {
-  const { videoId, transcript } = req.body;
+  const { videoId, transcript, title } = req.body;
   
   if (!videoId || !transcript) {
     return res.status(400).json({ error: 'Video ID and transcript are required' });
@@ -163,12 +269,23 @@ app.post('/api/save-transcript', (req, res) => {
 
   try {
     const timestamp = new Date().toISOString().replace(/[:.]/g, '-').slice(0, 19);
-    const filename = `${videoId}-transcript-${timestamp}.txt`;
+    
+    // Use title-based filename if available, fallback to videoId
+    let baseFilename;
+    if (title) {
+      const sanitizedTitle = sanitizeTitle(title);
+      baseFilename = sanitizedTitle || videoId;
+    } else {
+      baseFilename = videoId;
+    }
+    
+    const filename = `${baseFilename}-transcript-${timestamp}.txt`;
     const filePath = path.join(transcriptsDir, filename);
     
     // Create transcript content with metadata
     const content = `# YouTube Transcript
-Video ID: ${videoId}
+Video ID: ${videoId}${title ? `
+Title: ${title}` : ''}
 Extracted: ${new Date().toISOString()}
 Length: ${transcript.length} characters
 
@@ -318,7 +435,7 @@ app.post('/api/summarize/:videoId', (req, res) => {
 
 // Save summary to file system
 app.post('/api/save-summary', (req, res) => {
-  const { videoId, summary } = req.body;
+  const { videoId, summary, title } = req.body;
   
   if (!videoId || !summary) {
     return res.status(400).json({ error: 'Video ID and summary are required' });
@@ -326,13 +443,24 @@ app.post('/api/save-summary', (req, res) => {
 
   try {
     const timestamp = new Date().toISOString().replace(/[:.]/g, '-').slice(0, 19);
-    const filename = `${videoId}-summary-${timestamp}.md`;
+    
+    // Use title-based filename if available, fallback to videoId
+    let baseFilename;
+    if (title) {
+      const sanitizedTitle = sanitizeTitle(title);
+      baseFilename = sanitizedTitle || videoId;
+    } else {
+      baseFilename = videoId;
+    }
+    
+    const filename = `${baseFilename}-summary-${timestamp}.md`;
     const filePath = path.join(summariesDir, filename);
     
     // Create summary content with metadata
     const content = `# YouTube Video Summary
 
-**Video ID:** ${videoId}  
+**Video ID:** ${videoId}  ${title ? `
+**Title:** ${title}  ` : ''}
 **Generated:** ${new Date().toISOString()}  
 **Length:** ${summary.length} characters
 

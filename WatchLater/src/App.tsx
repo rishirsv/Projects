@@ -1,496 +1,491 @@
-import { useState, useEffect } from 'react'
-import { fetchTranscript, saveTranscript, generateSummaryFromFile, getSavedTranscripts, getSavedSummaries, downloadSummary, downloadSavedSummary, readSavedSummary } from './api'
-import { extractVideoId } from './utils'
-import './App.css'
+import React, { useState, useEffect, useRef, useCallback } from 'react';
+import { Download, Copy, RefreshCw, ChevronRight, Circle, CheckCircle, ChevronLeft, History } from 'lucide-react';
+import { fetchTranscript, saveTranscript, generateSummaryFromFile, getSavedSummaries, readSavedSummary, fetchVideoMetadata } from './api';
+import { extractVideoId } from './utils';
+import './App.css';
 
-function App() {
-  const [url, setUrl] = useState('')
-  const [loading, setLoading] = useState(false)
-  const [transcript, setTranscript] = useState('')
-  const [error, setError] = useState('')
-  const [videoId, setVideoId] = useState('')
-  const [summary, setSummary] = useState('')
-  const [summarizing, setSummarizing] = useState(false)
-  const [savedTranscripts, setSavedTranscripts] = useState<Array<{ filename: string; videoId: string; created: string; modified: string; size: number }>>([])
-  const [loadingTranscripts, setLoadingTranscripts] = useState(false)
-  const [savedSummaries, setSavedSummaries] = useState<Array<{ filename: string; videoId: string; created: string; modified: string; size: number }>>([])
-  const [loadingSummaries, setLoadingSummaries] = useState(false)
-  const [savedSummaryFile, setSavedSummaryFile] = useState('')
+const WatchLater = () => {
+  const [url, setUrl] = useState('');
+  const [status, setStatus] = useState('idle'); // idle, processing, complete, error
+  const [summary, setSummary] = useState(null);
+  const [showTranscript, setShowTranscript] = useState(false);
+  const [summaryCount, setSummaryCount] = useState(0);
+  const [showHistory, setShowHistory] = useState(false);
+  const [currentStage, setCurrentStage] = useState(0); // 0: idle, 1: metadata, 2: transcript, 3: ai-processing, 4: file-saving
+  const [showPulse, setShowPulse] = useState(false);
+  const [error, setError] = useState('');
+  const [savedSummaries, setSavedSummaries] = useState([]);
+  const [loadingSummaries, setLoadingSummaries] = useState(false);
+  const inputRef = useRef(null);
 
-  const handleTest = async () => {
-    if (!url) {
-      setError('Please enter a YouTube URL')
-      return
-    }
+  useEffect(() => {
+    // Load saved summaries count
+    loadSavedSummaries();
+    inputRef.current?.focus();
+  }, []);
 
-    setLoading(true)
-    setError('')
-    setTranscript('')
-    setVideoId('')
-
-    try {
-      // Extract video ID
-      const extractedVideoId = extractVideoId(url)
-      if (!extractedVideoId) {
-        throw new Error('Invalid YouTube URL')
-      }
-
-      console.log('Extracted video ID:', extractedVideoId)
-      setVideoId(extractedVideoId)
-      
-      // Fetch transcript
-      const transcriptText = await fetchTranscript(extractedVideoId)
-      setTranscript(transcriptText)
-      
-      // Save transcript (without auto-download)
-      await saveTranscript(extractedVideoId, transcriptText, false)
-      
-      console.log('Transcript length:', transcriptText.length)
-      console.log('First 500 chars:', transcriptText.substring(0, 500))
-
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Unknown error')
-      console.error('Error:', err)
-    } finally {
-      setLoading(false)
-    }
-  }
-
-  const handleDownload = async () => {
-    if (videoId && transcript) {
-      await saveTranscript(videoId, transcript, true)
-    }
-  }
-
-  const handleSummarize = async () => {
-    if (!videoId || !transcript) {
-      setError('No transcript available to summarize')
-      return
-    }
-
-    setSummarizing(true)
-    setError('')
-    setSummary('')
-    setSavedSummaryFile('')
-
-    try {
-      const result = await generateSummaryFromFile(videoId)
-      setSummary(result.summary)
-      setSavedSummaryFile(result.savedFile.filename)
-      console.log('Summary generated and saved successfully:', result.savedFile.filename)
-      
-      // Refresh the saved summaries list
-      await loadSavedSummaries()
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to generate summary')
-      console.error('Summary generation error:', err)
-    } finally {
-      setSummarizing(false)
-    }
-  }
-
-  const handleDownloadSummary = async () => {
-    if (videoId && summary) {
-      try {
-        await downloadSummary(videoId, summary)
-      } catch (err) {
-        setError(err instanceof Error ? err.message : 'Failed to download summary')
-      }
-    }
-  }
-
-  const loadSavedTranscripts = async () => {
-    setLoadingTranscripts(true)
-    try {
-      const transcripts = await getSavedTranscripts()
-      setSavedTranscripts(transcripts)
-    } catch (err) {
-      console.error('Error loading saved transcripts:', err)
-    } finally {
-      setLoadingTranscripts(false)
-    }
-  }
+  useEffect(() => {
+    // Auto-detect paste and trigger summarize
+    const handlePaste = (e) => {
+      setTimeout(() => {
+        const pastedText = e.target.value;
+        if (isYouTubeUrl(pastedText) && status === 'idle') {
+          // Create a small delay to ensure state is updated
+          setTimeout(() => handleSummarize(pastedText), 50);
+        }
+      }, 10);
+    };
+    
+    const input = inputRef.current;
+    input?.addEventListener('paste', handlePaste);
+    return () => input?.removeEventListener('paste', handlePaste);
+  }, [status, handleSummarize]);
 
   const loadSavedSummaries = async () => {
-    setLoadingSummaries(true)
+    setLoadingSummaries(true);
     try {
-      const summaries = await getSavedSummaries()
-      setSavedSummaries(summaries)
+      const summaries = await getSavedSummaries();
+      setSavedSummaries(summaries);
+      setSummaryCount(summaries.length);
     } catch (err) {
-      console.error('Error loading saved summaries:', err)
+      console.error('Error loading saved summaries:', err);
     } finally {
-      setLoadingSummaries(false)
+      setLoadingSummaries(false);
     }
-  }
+  };
 
-  const handleSummarizeFromFile = async (savedVideoId: string) => {
-    setSummarizing(true)
-    setError('')
-    setSummary('')
-    setSavedSummaryFile('')
-    setVideoId(savedVideoId)
+  const isYouTubeUrl = (text) => {
+    return /(?:youtube\.com\/watch\?v=|youtu\.be\/)([^&\n?]+)/.test(text);
+  };
 
+  const handleSummarize = useCallback(async (urlToProcess = url) => {
+    if (!isYouTubeUrl(urlToProcess) || status === 'processing') return;
+    
+    setStatus('processing');
+    setCurrentStage(1);
+    setError('');
+    setSummary(null);
+    
     try {
-      const result = await generateSummaryFromFile(savedVideoId)
-      setSummary(result.summary)
-      setSavedSummaryFile(result.savedFile.filename)
-      console.log('Summary generated and saved from file:', savedVideoId, '→', result.savedFile.filename)
+      // Stage 1: Extract video ID and fetch metadata
+      const extractedVideoId = extractVideoId(urlToProcess);
+      if (!extractedVideoId) {
+        throw new Error('Invalid YouTube URL');
+      }
       
-      // Refresh the saved summaries list
-      await loadSavedSummaries()
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to generate summary from saved file')
-      console.error('File-based summary error:', err)
-    } finally {
-      setSummarizing(false)
-    }
-  }
-
-  const handleViewSavedSummary = async (savedVideoId: string) => {
-    setError('')
-    setSummary('')
-    setSavedSummaryFile('')
-    setVideoId(savedVideoId)
-
-    try {
-      const summaryData = await readSavedSummary(savedVideoId)
-      setSummary(summaryData.summary)
-      setSavedSummaryFile(summaryData.filename)
-      console.log('Loaded saved summary:', summaryData.filename)
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to load saved summary')
-      console.error('Error loading saved summary:', err)
-    }
-  }
-
-  const handleDownloadSavedSummary = async (savedVideoId: string) => {
-    try {
-      await downloadSavedSummary(savedVideoId)
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to download saved summary')
-    }
-  }
-
-  // Load saved transcripts and summaries on component mount
-  useEffect(() => {
-    loadSavedTranscripts()
-    loadSavedSummaries()
-  }, [])
-
-  return (
-    <div style={{ padding: '20px', maxWidth: '800px', margin: '0 auto' }}>
-      <h1>YouTube Transcript Tester</h1>
+      // Try to get metadata (non-blocking)
+      let metadata = null;
+      try {
+        metadata = await fetchVideoMetadata(extractedVideoId);
+        console.log('Video metadata fetched:', metadata.title);
+      } catch (metadataError) {
+        console.warn('Failed to fetch video metadata, continuing without title:', metadataError);
+      }
       
-      <div style={{ marginBottom: '20px' }}>
-        <input
-          type="text"
-          value={url}
-          onChange={(e) => setUrl(e.target.value)}
-          placeholder="Enter YouTube URL (e.g., https://www.youtube.com/watch?v=...)"
-          style={{ 
-            width: '100%', 
-            padding: '10px', 
-            marginBottom: '10px',
-            fontSize: '16px'
-          }}
-        />
-        <button 
-          onClick={handleTest}
-          disabled={loading}
-          style={{
-            padding: '10px 20px',
-            fontSize: '16px',
-            backgroundColor: loading ? '#ccc' : '#007bff',
-            color: 'white',
-            border: 'none',
-            borderRadius: '4px',
-            cursor: loading ? 'not-allowed' : 'pointer',
-            marginRight: '10px'
-          }}
-        >
-          {loading ? 'Fetching...' : 'Test Transcript Fetch'}
-        </button>
-        
-        {transcript && (
-          <button 
-            onClick={handleSummarize}
-            disabled={summarizing}
-            style={{
-              padding: '10px 20px',
-              fontSize: '16px',
-              backgroundColor: summarizing ? '#ccc' : '#28a745',
-              color: 'white',
-              border: 'none',
-              borderRadius: '4px',
-              cursor: summarizing ? 'not-allowed' : 'pointer'
-            }}
-          >
-            {summarizing ? 'Summarizing...' : 'Generate Summary'}
-          </button>
-        )}
+      setCurrentStage(2);
+      
+      // Stage 2: Fetch transcript
+      const transcriptText = await fetchTranscript(extractedVideoId);
+      
+      // Save transcript with title if available
+      await saveTranscript(extractedVideoId, transcriptText, false, metadata?.title);
+      
+      setCurrentStage(3);
+      
+      // Stage 3: AI Processing - Generate summary from file
+      const result = await generateSummaryFromFile(extractedVideoId);
+      
+      setCurrentStage(4);
+      
+      // Stage 4: File saving is already done in generateSummaryFromFile
+      // Parse the summary for display
+      const summaryData = {
+        videoId: extractedVideoId,
+        title: metadata?.title || `Video ${extractedVideoId}`,
+        author: metadata?.author || 'Unknown',
+        content: result.summary,
+        transcript: transcriptText,
+        savedFile: result.savedFile.filename,
+        // Extract key takeaways from summary (simple parsing)
+        keyTakeaways: extractKeyTakeaways(result.summary),
+        tags: extractHashtags(result.summary)
+      };
+      
+      setSummary(summaryData);
+      setStatus('complete');
+      setShowPulse(true);
+      setTimeout(() => setShowPulse(false), 500);
+      
+      // Refresh summaries list
+      await loadSavedSummaries();
+      
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Unknown error');
+      setStatus('error');
+      console.error('Summarization error:', err);
+    }
+  }, [url, status]);
+
+  const extractKeyTakeaways = (summaryText) => {
+    // Simple extraction of bullet points or numbered lists
+    const lines = summaryText.split('\n');
+    const takeaways = [];
+    let inTakeawaysSection = false;
+    
+    for (const line of lines) {
+      if (line.toLowerCase().includes('key') || line.toLowerCase().includes('takeaway') || line.toLowerCase().includes('important')) {
+        inTakeawaysSection = true;
+        continue;
+      }
+      if (inTakeawaysSection && (line.trim().startsWith('-') || line.trim().startsWith('•') || line.trim().match(/^\d+[.]/))) {
+        takeaways.push(line.trim().replace(/^[-•\d.]\s*/, ''));
+      }
+      if (inTakeawaysSection && line.trim() === '') {
+        if (takeaways.length > 0) break;
+      }
+    }
+    
+    return takeaways.slice(0, 4); // Max 4 takeaways
+  };
+
+  const extractHashtags = (summaryText) => {
+    const hashtagMatches = summaryText.match(/#[\w-]+/g);
+    return hashtagMatches ? hashtagMatches.slice(0, 3) : [];
+  };
+
+  const handleCancel = () => {
+    setStatus('idle');
+    setCurrentStage(0);
+    setError('');
+  };
+
+  const handleDownload = () => {
+    if (!summary) return;
+    
+    const blob = new Blob([summary.content], { type: 'text/markdown' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `${summary.title.replace(/[^a-z0-9]/gi, '-').toLowerCase()}.md`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  };
+
+  const handleCopy = () => {
+    if (!summary) return;
+    navigator.clipboard.writeText(summary.content);
+  };
+
+  const handleOpenFolder = () => {
+    // Show user where files are saved
+    alert(`Files are saved in: exports/summaries/\n\nLatest file: ${summary?.savedFile || 'No file saved yet'}`);
+  };
+
+  const handleHistoryItemClick = async (savedSummary) => {
+    try {
+      const summaryData = await readSavedSummary(savedSummary.videoId);
+      const displayData = {
+        videoId: savedSummary.videoId,
+        title: summaryData.filename.replace(/-summary-.*\.md$/, '').replace(/-/g, ' '),
+        content: summaryData.summary,
+        savedFile: summaryData.filename,
+        keyTakeaways: extractKeyTakeaways(summaryData.summary),
+        tags: extractHashtags(summaryData.summary)
+      };
+      setSummary(displayData);
+      setStatus('complete');
+      setShowHistory(false);
+    } catch (err) {
+      setError(`Failed to load summary: ${err.message}`);
+    }
+  };
+
+  const SignalGlyph = () => (
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" className={showPulse ? 'animate-pulse-custom' : ''}>
+      <rect x="4" y="8" width="3" height="8" rx="1.5" fill="currentColor" opacity="0.4"/>
+      <rect x="10.5" y="6" width="3" height="12" rx="1.5" fill="currentColor" opacity="0.6"/>
+      <rect x="17" y="4" width="3" height="16" rx="1.5" fill="currentColor" opacity="0.8"/>
+      <circle cx="12" cy="20" r="2" fill="#03D5A3" className={showPulse ? 'animate-pulse-dot' : ''}/>
+    </svg>
+  );
+
+  const ProgressIndicator = ({ stage }) => (
+    <div className="flex items-center gap-2 text-sm">
+      <div className="flex items-center gap-1">
+        {stage >= 1 ? <CheckCircle className="w-4 h-4 text-[#03D5A3]" /> : <Circle className="w-4 h-4 text-[#666]" />}
+        <span className={stage >= 1 ? "text-[#03D5A3]" : "text-[#666]"}>Metadata</span>
       </div>
-
-      {error && (
-        <div style={{ 
-          backgroundColor: '#f8d7da', 
-          color: '#721c24', 
-          padding: '10px', 
-          borderRadius: '4px',
-          marginBottom: '20px'
-        }}>
-          Error: {error}
-        </div>
-      )}
-
-      {transcript && (
-        <div>
-          <h3>Transcript Preview (first 1000 characters):</h3>
-          <div style={{
-            backgroundColor: '#f8f9fa',
-            padding: '15px',
-            borderRadius: '4px',
-            maxHeight: '400px',
-            overflow: 'auto',
-            whiteSpace: 'pre-wrap',
-            fontSize: '14px',
-            lineHeight: '1.4'
-          }}>
-            {transcript.substring(0, 1000)}
-            {transcript.length > 1000 && '...'}
-          </div>
-          <div style={{ 
-            display: 'flex', 
-            justifyContent: 'space-between', 
-            alignItems: 'center',
-            marginTop: '10px' 
-          }}>
-            <p><strong>Full transcript length:</strong> {transcript.length} characters</p>
-            <button 
-              onClick={handleDownload}
-              style={{
-                padding: '8px 16px',
-                fontSize: '14px',
-                backgroundColor: '#28a745',
-                color: 'white',
-                border: 'none',
-                borderRadius: '4px',
-                cursor: 'pointer'
-              }}
-            >
-              Download Transcript
-            </button>
-          </div>
-          <p style={{ fontSize: '12px', color: '#666', marginTop: '10px' }}>
-            ✅ Transcript saved to file system and localStorage (key: transcript-{videoId})
-          </p>
-        </div>
-      )}
-
-      {summary && (
-        <div>
-          <h3>AI Generated Summary:</h3>
-          <div style={{
-            backgroundColor: '#f8f9fa',
-            padding: '15px',
-            borderRadius: '4px',
-            maxHeight: '600px',
-            overflow: 'auto',
-            whiteSpace: 'pre-wrap',
-            fontSize: '14px',
-            lineHeight: '1.6',
-            border: '1px solid #dee2e6'
-          }}>
-            {summary}
-          </div>
-          <div style={{ 
-            display: 'flex', 
-            justifyContent: 'space-between', 
-            alignItems: 'center',
-            marginTop: '10px' 
-          }}>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '5px' }}>
-              <p><strong>Summary length:</strong> {summary.length} characters</p>
-              {savedSummaryFile && (
-                <p style={{ fontSize: '12px', color: '#28a745' }}>
-                  ✅ Auto-saved to server: {savedSummaryFile}
-                </p>
-              )}
-            </div>
-            <button 
-              onClick={handleDownloadSummary}
-              style={{
-                padding: '8px 16px',
-                fontSize: '14px',
-                backgroundColor: '#dc3545',
-                color: 'white',
-                border: 'none',
-                borderRadius: '4px',
-                cursor: 'pointer'
-              }}
-            >
-              Download Summary (.md)
-            </button>
-          </div>
-        </div>
-      )}
-
-      <div style={{ marginTop: '40px', borderTop: '2px solid #dee2e6', paddingTop: '20px' }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
-          <h2>Saved Transcripts</h2>
-          <button 
-            onClick={loadSavedTranscripts}
-            disabled={loadingTranscripts}
-            style={{
-              padding: '8px 16px',
-              fontSize: '14px',
-              backgroundColor: '#6c757d',
-              color: 'white',
-              border: 'none',
-              borderRadius: '4px',
-              cursor: loadingTranscripts ? 'not-allowed' : 'pointer'
-            }}
-          >
-            {loadingTranscripts ? 'Loading...' : 'Refresh List'}
-          </button>
-        </div>
-        
-        {savedTranscripts.length === 0 ? (
-          <p style={{ color: '#666', fontStyle: 'italic' }}>No saved transcripts found. Fetch a transcript first!</p>
-        ) : (
-          <div style={{ display: 'grid', gap: '10px' }}>
-            {savedTranscripts.map((saved, index) => (
-              <div key={index} style={{
-                border: '1px solid #dee2e6',
-                borderRadius: '4px',
-                padding: '15px',
-                backgroundColor: '#f8f9fa'
-              }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                  <div>
-                    <strong>Video ID:</strong> {saved.videoId}<br/>
-                    <small style={{ color: '#666' }}>
-                      File: {saved.filename} | Size: {Math.round(saved.size / 1024)}KB | 
-                      Modified: {new Date(saved.modified).toLocaleString()}
-                    </small>
-                  </div>
-                  <button 
-                    onClick={() => handleSummarizeFromFile(saved.videoId)}
-                    disabled={summarizing}
-                    style={{
-                      padding: '8px 16px',
-                      fontSize: '14px',
-                      backgroundColor: summarizing ? '#ccc' : '#ffc107',
-                      color: summarizing ? '#666' : '#212529',
-                      border: 'none',
-                      borderRadius: '4px',
-                      cursor: summarizing ? 'not-allowed' : 'pointer'
-                    }}
-                  >
-                    {summarizing ? 'Processing...' : 'Summarize'}
-                  </button>
-                </div>
-              </div>
-            ))}
-          </div>
-        )}
+      <span className="text-[#666]">•</span>
+      <div className="flex items-center gap-1">
+        {stage >= 2 ? <CheckCircle className="w-4 h-4 text-[#03D5A3]" /> : <Circle className="w-4 h-4 text-[#666]" />}
+        <span className={stage >= 2 ? "text-[#03D5A3]" : "text-[#666]"}>Transcript</span>
       </div>
-
-      <div style={{ marginTop: '40px', borderTop: '2px solid #dee2e6', paddingTop: '20px' }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
-          <h2>Saved Summaries</h2>
-          <button 
-            onClick={loadSavedSummaries}
-            disabled={loadingSummaries}
-            style={{
-              padding: '8px 16px',
-              fontSize: '14px',
-              backgroundColor: '#6c757d',
-              color: 'white',
-              border: 'none',
-              borderRadius: '4px',
-              cursor: loadingSummaries ? 'not-allowed' : 'pointer'
-            }}
-          >
-            {loadingSummaries ? 'Loading...' : 'Refresh List'}
-          </button>
-        </div>
-        
-        {savedSummaries.length === 0 ? (
-          <p style={{ color: '#666', fontStyle: 'italic' }}>No saved summaries found. Generate a summary first!</p>
-        ) : (
-          <div style={{ display: 'grid', gap: '10px' }}>
-            {savedSummaries.map((saved, index) => (
-              <div key={index} style={{
-                border: '1px solid #dee2e6',
-                borderRadius: '4px',
-                padding: '15px',
-                backgroundColor: '#f8f9fa'
-              }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                  <div>
-                    <strong>Video ID:</strong> {saved.videoId}<br/>
-                    <small style={{ color: '#666' }}>
-                      File: {saved.filename} | Size: {Math.round(saved.size / 1024)}KB | 
-                      Modified: {new Date(saved.modified).toLocaleString()}
-                    </small>
-                  </div>
-                  <div style={{ display: 'flex', gap: '10px' }}>
-                    <button 
-                      onClick={() => handleViewSavedSummary(saved.videoId)}
-                      style={{
-                        padding: '8px 16px',
-                        fontSize: '14px',
-                        backgroundColor: '#007bff',
-                        color: 'white',
-                        border: 'none',
-                        borderRadius: '4px',
-                        cursor: 'pointer'
-                      }}
-                    >
-                      View
-                    </button>
-                    <button 
-                      onClick={() => handleDownloadSavedSummary(saved.videoId)}
-                      style={{
-                        padding: '8px 16px',
-                        fontSize: '14px',
-                        backgroundColor: '#28a745',
-                        color: 'white',
-                        border: 'none',
-                        borderRadius: '4px',
-                        cursor: 'pointer'
-                      }}
-                    >
-                      Download
-                    </button>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        )}
+      <span className="text-[#666]">•</span>
+      <div className="flex items-center gap-1">
+        {stage >= 3 ? <CheckCircle className="w-4 h-4 text-[#03D5A3]" /> : <Circle className="w-4 h-4 text-[#666]" />}
+        <span className={stage >= 3 ? "text-[#03D5A3]" : "text-[#666]"}>AI Processing</span>
       </div>
-
-      <div style={{ marginTop: '30px', fontSize: '14px', color: '#666' }}>
-        <p><strong>🚀 Architecture:</strong> Frontend (port 5173) → Backend API (port 3001) → YouTube</p>
-        
-        <p><strong>Test URLs to try:</strong></p>
-        <ul>
-          <li>https://www.youtube.com/watch?v=dQw4w9WgXcQ (Rick Roll)</li>
-          <li>https://youtu.be/dQw4w9WgXcQ (Short URL format)</li>
-          <li>https://www.youtube.com/watch?v=9bZkp7q19f0 (Gangnam Style)</li>
-          <li>https://www.youtube.com/watch?v=kJQP7kiw5Fk (Despacito)</li>
-        </ul>
-        
-        <p><strong>💡 Troubleshooting:</strong></p>
-        <ul style={{ fontSize: '12px' }}>
-          <li>If you get "Cannot connect" error, run: <code>npm run server</code></li>
-          <li>Check browser console (F12) for detailed error messages</li>
-          <li>Backend health check: <a href="http://localhost:3001/health" target="_blank">http://localhost:3001/health</a></li>
-        </ul>
+      <span className="text-[#666]">•</span>
+      <div className="flex items-center gap-1">
+        {stage >= 4 ? <CheckCircle className="w-4 h-4 text-[#03D5A3]" /> : <Circle className="w-4 h-4 text-[#666]" />}
+        <span className={stage >= 4 ? "text-[#03D5A3]" : "text-[#666]"}>Save</span>
       </div>
     </div>
-  )
-}
+  );
 
-export default App
+  const isReturningUser = summaryCount > 0;
+
+  return (
+    <div className="min-h-screen bg-[#0A0A0A] text-[#EDEDED] flex flex-col">
+      {/* Header */}
+      <header className="sticky top-0 z-10 bg-[#0A0A0A]/90 backdrop-blur-md border-b border-[#1a1a1a]">
+        <div className="max-w-4xl mx-auto px-4 py-3 flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            {isReturningUser && (
+              <button 
+                onClick={() => setShowHistory(!showHistory)}
+                className="p-1 hover:bg-[#1a1a1a] rounded transition-colors"
+              >
+                <ChevronLeft className="w-5 h-5" />
+              </button>
+            )}
+            <div className="flex items-center gap-2">
+              <SignalGlyph />
+              <span className="font-medium text-lg">Watch Later</span>
+              <span className="text-xs text-[#666] bg-[#1a1a1a] px-1.5 py-0.5 rounded">β</span>
+            </div>
+          </div>
+          {isReturningUser && (
+            <div className="flex items-center gap-4">
+              <div className="flex gap-1">
+                {[...Array(Math.min(summaryCount, 5))].map((_, i) => (
+                  <div key={i} className={`w-2 h-2 rounded-full bg-[#03D5A3] ${i === summaryCount - 1 && showPulse ? 'animate-pulse-dot' : ''}`} />
+                ))}
+              </div>
+              <button 
+                onClick={loadSavedSummaries}
+                className="p-2 hover:bg-[#1a1a1a] rounded transition-colors"
+                title="Refresh"
+              >
+                <RefreshCw className="w-4 h-4" />
+              </button>
+            </div>
+          )}
+        </div>
+      </header>
+
+      <div className="flex flex-1">
+        {/* History Drawer */}
+        {isReturningUser && showHistory && (
+          <aside className="w-64 bg-[#0A0A0A] border-r border-[#1a1a1a] p-4">
+            <div className="flex items-center gap-2 mb-4">
+              <History className="w-4 h-4" />
+              <h2 className="font-medium">History</h2>
+              {loadingSummaries && <RefreshCw className="w-3 h-3 animate-spin" />}
+            </div>
+            <div className="space-y-2">
+              {savedSummaries.slice(0, 10).map((saved, index) => {
+                const displayTitle = saved.filename
+                  .replace(/-summary-.*\.md$/, '')
+                  .replace(/-/g, ' ')
+                  .replace(/^\w/, c => c.toUpperCase());
+                const timeAgo = new Date(saved.modified).toLocaleDateString();
+                
+                return (
+                  <div 
+                    key={index} 
+                    className="p-3 bg-[#1a1a1a] rounded-lg cursor-pointer hover:bg-[#252525] transition-colors"
+                    onClick={() => handleHistoryItemClick(saved)}
+                  >
+                    <div className="text-sm font-medium truncate">{displayTitle}</div>
+                    <div className="text-xs text-[#666]">{timeAgo} • {Math.round(saved.size / 1024)}KB</div>
+                  </div>
+                );
+              })}
+            </div>
+            {savedSummaries.length > 10 && (
+              <button className="mt-4 text-sm text-[#03D5A3] hover:underline">
+                View all {summaryCount} summaries →
+              </button>
+            )}
+          </aside>
+        )}
+
+        {/* Main Content */}
+        <main className="flex-1 max-w-3xl mx-auto w-full p-6">
+          <div className="space-y-4">
+            {/* Input Section */}
+            <div className="relative">
+              <input
+                ref={inputRef}
+                type="text"
+                value={url}
+                onChange={(e) => setUrl(e.target.value)}
+                placeholder="Paste YouTube link here"
+                disabled={status === 'processing'}
+                className="w-full px-4 py-3 bg-[#1a1a1a] border border-[#333] rounded-lg text-base placeholder-[#666] focus:outline-none focus:border-[#03D5A3] transition-colors font-mono"
+              />
+              {status === 'processing' && (
+                <button
+                  onClick={handleCancel}
+                  className="absolute right-2 top-1/2 -translate-y-1/2 px-3 py-1 text-sm bg-[#333] hover:bg-[#444] rounded transition-colors"
+                >
+                  Cancel
+                </button>
+              )}
+            </div>
+
+            {/* Progress Indicator */}
+            {status === 'processing' && (
+              <div className="flex justify-center py-2">
+                <ProgressIndicator stage={currentStage} />
+              </div>
+            )}
+
+            {/* Error State */}
+            {status === 'error' && (
+              <div className="bg-red-900/20 border border-red-500/30 rounded-lg p-4 text-red-300">
+                <div className="font-medium">Error</div>
+                <div className="text-sm mt-1">{error}</div>
+                <button 
+                  onClick={() => setStatus('idle')}
+                  className="text-sm text-red-400 hover:underline mt-2"
+                >
+                  Try again
+                </button>
+              </div>
+            )}
+
+            {/* Success State */}
+            {status === 'complete' && summary && (
+              <>
+                <div className="flex items-center justify-center gap-3 text-sm animate-fadeIn">
+                  <span className="text-[#03D5A3]">✓</span>
+                  <span>Saved to: {summary.savedFile}</span>
+                  <button
+                    onClick={handleOpenFolder}
+                    className="flex items-center gap-1 text-[#03D5A3] hover:underline"
+                  >
+                    Open folder
+                    <ChevronRight className="w-3 h-3" />
+                  </button>
+                  <div className="flex items-center gap-2 ml-auto">
+                    <button
+                      onClick={handleDownload}
+                      className="p-2 hover:bg-[#1a1a1a] rounded transition-colors"
+                      title="Download"
+                    >
+                      <Download className="w-4 h-4" />
+                    </button>
+                    <button
+                      onClick={handleCopy}
+                      className="p-2 hover:bg-[#1a1a1a] rounded transition-colors"
+                      title="Copy"
+                    >
+                      <Copy className="w-4 h-4" />
+                    </button>
+                    <button
+                      onClick={() => handleSummarize(url)}
+                      className="p-2 hover:bg-[#1a1a1a] rounded transition-colors"
+                      title="Regenerate"
+                    >
+                      <RefreshCw className="w-4 h-4" />
+                    </button>
+                  </div>
+                </div>
+
+                {/* Key Takeaways Card */}
+                {summary.keyTakeaways && summary.keyTakeaways.length > 0 && (
+                  <div className="border-l-4 border-[#03D5A3] bg-[#1a1a1a] rounded-r-lg p-4 animate-fadeIn">
+                    <h3 className="font-medium mb-2 text-[#03D5A3]">Key Takeaways</h3>
+                    <ul className="space-y-1 text-sm">
+                      {summary.keyTakeaways.map((takeaway, idx) => (
+                        <li key={idx}>• {takeaway}</li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+
+                {/* Summary Content */}
+                <div className="prose prose-invert max-w-none animate-fadeIn">
+                  <h1 className="text-2xl font-bold mb-4">{summary.title}</h1>
+                  {summary.author && (
+                    <p className="text-[#666] text-sm mb-4">by {summary.author}</p>
+                  )}
+                  
+                  <div className="text-[#CCCCCC] leading-relaxed whitespace-pre-wrap">
+                    {summary.content}
+                  </div>
+                </div>
+
+                {/* Tags */}
+                {isReturningUser && summary.tags && summary.tags.length > 0 && (
+                  <div className="flex gap-2 mt-6">
+                    {summary.tags.map((tag, idx) => (
+                      <span key={idx} className="px-3 py-1 bg-[#1a1a1a] text-[#03D5A3] text-sm rounded-full cursor-pointer hover:bg-[#252525] transition-colors">
+                        {tag}
+                      </span>
+                    ))}
+                  </div>
+                )}
+
+                {/* Transcript Accordion */}
+                {summary.transcript && (
+                  <details className="mt-6 border border-[#333] rounded-lg">
+                    <summary 
+                      className="px-4 py-3 cursor-pointer hover:bg-[#1a1a1a] transition-colors flex items-center justify-between"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        setShowTranscript(!showTranscript);
+                      }}
+                    >
+                      <span className="text-sm">Show transcript</span>
+                      <ChevronRight className={`w-4 h-4 transition-transform ${showTranscript ? 'rotate-90' : ''}`} />
+                    </summary>
+                    {showTranscript && (
+                      <div className="px-4 py-3 border-t border-[#333] text-sm text-[#999] font-mono whitespace-pre-wrap max-h-96 overflow-y-auto">
+                        {summary.transcript}
+                      </div>
+                    )}
+                  </details>
+                )}
+              </>
+            )}
+          </div>
+        </main>
+      </div>
+
+      <style jsx>{`
+        @keyframes fadeIn {
+          from { opacity: 0; transform: translateY(4px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-fadeIn {
+          animation: fadeIn 0.3s ease-out;
+        }
+        
+        @keyframes pulse-custom {
+          0% { transform: scale(1); }
+          50% { transform: scale(1.1); }
+          100% { transform: scale(1); }
+        }
+        .animate-pulse-custom {
+          animation: pulse-custom 0.5s ease-out;
+        }
+        
+        @keyframes pulse-dot {
+          0% { transform: scale(1); opacity: 1; }
+          50% { transform: scale(1.5); opacity: 0.8; }
+          100% { transform: scale(1); opacity: 1; }
+        }
+        .animate-pulse-dot {
+          animation: pulse-dot 0.5s ease-out;
+        }
+      `}</style>
+    </div>
+  );
+};
+
+export default WatchLater;

@@ -10,7 +10,9 @@ Turn any YouTube URL into a concise, well-structured Markdown summary — all on
 repo-root/
 ├── docs/                # PRD, task list, design notes
 ├── prompts/             # .md prompt templates
-├── summaries/           # saved Markdown outputs (git-ignored)
+├── exports/
+│   ├── summaries/       # saved Markdown outputs (git-ignored)
+│   └── transcripts/     # saved transcript text files (git-ignored)
 ├── src/
 │   ├── App.tsx         # tiny React UI (URL input + preview)
 │   └── api.ts          # youtube-transcript + Gemini API calls

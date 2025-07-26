@@ -16,3 +16,38 @@ export function extractVideoId(url: string): string | null {
 
   return null;
 }
+
+/**
+ * Sanitize video title for filesystem use
+ */
+export function sanitizeTitle(title: string): string {
+  if (!title) return '';
+  
+  return title
+    // Remove/replace invalid filesystem characters
+    .replace(/[<>:"/\\|?*]/g, '-')
+    // Replace multiple spaces with single space
+    .replace(/\s+/g, ' ')
+    // Remove leading/trailing spaces and dots
+    .trim()
+    .replace(/^\.+|\.+$/g, '')
+    // Limit length to prevent filesystem issues
+    .substring(0, 100)
+    .trim();
+}
+
+/**
+ * Generate transcript filename with title-based naming
+ */
+export function generateTranscriptFilename(title: string, timestamp: string): string {
+  const sanitizedTitle = sanitizeTitle(title);
+  return `${sanitizedTitle}-transcript-${timestamp}.txt`;
+}
+
+/**
+ * Generate summary filename with title-based naming
+ */
+export function generateSummaryFilename(title: string, timestamp: string): string {
+  const sanitizedTitle = sanitizeTitle(title);
+  return `${sanitizedTitle}-summary-${timestamp}.md`;
+}

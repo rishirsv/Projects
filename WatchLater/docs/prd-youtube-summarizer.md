@@ -22,7 +22,7 @@ Build a minimal React app that directly processes YouTube URLs using youtube-tra
 - **Input**: URL field + "Summarize" button
 - **API Layer**: `src/api.ts` handles youtube-transcript + Gemini calls
 - **Display**: `react-markdown` renders returned summary
-- **Storage**: Save response to `/summaries/{videoId}.md` via File System Access API
+- **Storage**: Save response to `/exports/summaries/{videoId}.md` via File System Access API
 
 ### Processing Pipeline
 - **URL Parsing**: Extract video ID from YouTube URL
@@ -40,7 +40,7 @@ Build a minimal React app that directly processes YouTube URLs using youtube-tra
 5. Inject transcript into prompt template from `/prompts/youtube-transcripts.md`
 6. Send to Gemini 2.5 Flash API
 7. Render returned markdown summary
-8. Save summary to `/summaries/{videoId}.md`
+8. Save summary to `/exports/summaries/{videoId}.md`
 9. Handle errors (no transcript, API failures, etc.)
 
 ### Error Handling
@@ -74,7 +74,9 @@ repo-root/
 │   └── prd-youtube-summarizer.md
 ├── prompts/
 │   └── youtube-transcripts.md     # AI prompt template
-├── summaries/                     # Auto-generated (git-ignored)
+├── exports/
+│   ├── summaries/                 # Auto-generated summaries (git-ignored)
+│   └── transcripts/               # Auto-generated transcripts (git-ignored)
 ├── src/
 │   ├── App.tsx                    # Main React component
 │   ├── api.ts                     # YouTube + Gemini integration
@@ -99,3 +101,34 @@ repo-root/
 5. **File Handling**: Implement local markdown file saving
 6. **Error Handling**: Add comprehensive error states and user feedback
 7. **Testing**: Verify with various YouTube URLs and edge cases
+
+## 10. Video Title Integration & File Naming ✅ **COMPLETED**
+
+### 10.1 YouTube oEmbed API Integration for Video Metadata ✅ **IMPLEMENTED**
+- **Goal**: Extract video titles to improve file naming convention ✅ **ACHIEVED**
+- **Previous**: Files named with video IDs (`dQw4w9WgXcQ-transcript.txt`)
+- **Current**: Files named with video titles (`Rick Astley - Never Gonna Give You Up-transcript.txt`)
+- **Solution**: YouTube oEmbed API (FREE - no API key required)
+
+### 10.2 Requirements ✅ **ALL COMPLETED**
+- ✅ Fetch video metadata (title, author, thumbnail) from YouTube oEmbed API
+- ✅ Sanitize video titles for filesystem compatibility (`sanitizeTitle()` function)
+- ✅ Update file naming conventions for both transcripts and summaries
+- ✅ Ensure consistent naming between transcript and summary files (verified by tests)
+- ✅ Add fallback to video ID if title extraction fails (graceful degradation)
+
+### 10.3 Implementation Results ✅ **ALL TASKS COMPLETE**
+- ✅ **T-10.1**: YouTube oEmbed API integration (server.js endpoint `/api/video-metadata/:videoId`)
+- ✅ **T-10.2**: `fetchVideoMetadata()` function created in api.ts with full TypeScript typing
+- ✅ **T-10.3**: `sanitizeTitle()` function implemented (removes invalid chars, limits length)
+- ✅ **T-10.4**: `generateTranscriptFilename()` and `generateSummaryFilename()` functions in utils.ts
+- ✅ **T-10.5**: Updated `saveTranscript()` and `saveSummaryToServer()` to use titles
+- ✅ **T-10.6**: Tests implemented and passing (2/2 tests ✅)
+- ✅ **T-10.7**: Comprehensive error handling for private videos, unavailable titles, network failures
+
+### 10.4 Production Verification ✅ **CONFIRMED WORKING**
+- **Live Environment**: Server logs confirm title-based naming active
+- **Example Output**: `What 10 Years of Running A Business Taught Me - Hard Truth-transcript-2025-07-23T03-51-41.txt`
+- **UI Integration**: Video metadata display with title, author, and thumbnail
+- **Zero Downtime**: Backward compatible with existing videoId-based files
+- **Zero Cost**: No API keys required, uses YouTube's free oEmbed service

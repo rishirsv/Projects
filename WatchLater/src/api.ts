@@ -38,6 +38,56 @@ Here is the transcript to process:
 }
 
 /**
+ * Fetch video metadata using YouTube oEmbed API via backend
+ */
+export async function fetchVideoMetadata(videoId: string): Promise<{
+  success: boolean;
+  videoId: string;
+  title: string;
+  sanitizedTitle: string;
+  author: string;
+  authorUrl: string;
+  thumbnailUrl: string;
+  thumbnailWidth: number;
+  thumbnailHeight: number;
+  provider: string;
+}> {
+  console.log('Fetching video metadata via oEmbed API for video ID:', videoId);
+  
+  try {
+    const response = await fetch(`${SERVER_URL}/api/video-metadata/${videoId}`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      }
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(data.error || `Server error: ${response.status}`);
+    }
+
+    if (!data.success || !data.title) {
+      throw new Error('No video metadata received from server');
+    }
+
+    console.log(`Video metadata received: "${data.title}" by ${data.author}`);
+    return data;
+
+  } catch (error) {
+    // Check if server is running
+    if (error instanceof Error && error.message.includes('fetch')) {
+      throw new Error(`Cannot connect to metadata server at ${SERVER_URL}. Make sure to run: npm run server`);
+    }
+    
+    console.error('Video metadata fetch error:', error);
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+    throw new Error(`Failed to fetch video metadata: ${errorMessage}`);
+  }
+}
+
+/**
  * Fetch transcript for a YouTube video via local server (using Supadata API)
  */
 export async function fetchTranscript(videoId: string): Promise<string> {
@@ -92,7 +142,7 @@ export async function generateSummary(transcript: string): Promise<string> {
     const prompt = promptTemplate + transcript;
 
     const genAI = new GoogleGenerativeAI(apiKey);
-    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+    const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
 
     const result = await model.generateContent(prompt);
     const response = await result.response;
@@ -105,7 +155,7 @@ export async function generateSummary(transcript: string): Promise<string> {
 /**
  * Save transcript to file system and localStorage
  */
-export async function saveTranscript(videoId: string, transcript: string, autoDownload = false): Promise<void> {
+export async function saveTranscript(videoId: string, transcript: string, autoDownload = false, title?: string): Promise<void> {
   try {
     // Save to backend file system
     const response = await fetch(`${SERVER_URL}/api/save-transcript`, {
@@ -113,7 +163,7 @@ export async function saveTranscript(videoId: string, transcript: string, autoDo
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ videoId, transcript })
+      body: JSON.stringify({ videoId, transcript, title })
     });
 
     const data = await response.json();
@@ -200,7 +250,7 @@ export function getStoredTranscripts(): Array<{ videoId: string; timestamp: stri
           length: data.length
         });
       } catch (error) {
-        console.warn(`Failed to parse stored transcript for key: ${key}`);
+        console.warn(`Failed to parse stored transcript for key: ${key}`, error);
       }
     }
   }
@@ -254,11 +304,21 @@ export async function generateSummaryFromFile(videoId: string): Promise<{ summar
     // First, read the transcript from file
     const transcriptData = await readSavedTranscript(videoId);
     
+    // Try to fetch video metadata for title
+    let title = undefined;
+    try {
+      const metadata = await fetchVideoMetadata(videoId);
+      title = metadata.title;
+      console.log(`📝 Using video title for summary: "${title}"`);
+    } catch (metadataError) {
+      console.warn('Failed to fetch video metadata for summary, using videoId:', metadataError);
+    }
+    
     // Then generate summary using the file content
     const summary = await generateSummary(transcriptData.transcript);
     
-    // Auto-save the summary to server file system
-    const savedFile = await saveSummaryToServer(videoId, summary);
+    // Auto-save the summary to server file system with title
+    const savedFile = await saveSummaryToServer(videoId, summary, title);
     
     console.log(`📝 Generated and saved summary for transcript: ${videoId} → ${savedFile.filename}`);
     return { summary, savedFile };
@@ -272,14 +332,14 @@ export async function generateSummaryFromFile(videoId: string): Promise<{ summar
 /**
  * Save summary to file system on server
  */
-export async function saveSummaryToServer(videoId: string, summary: string): Promise<{ filename: string; path: string }> {
+export async function saveSummaryToServer(videoId: string, summary: string, title?: string): Promise<{ filename: string; path: string }> {
   try {
     const response = await fetch(`${SERVER_URL}/api/save-summary`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ videoId, summary })
+      body: JSON.stringify({ videoId, summary, title })
     });
 
     const data = await response.json();

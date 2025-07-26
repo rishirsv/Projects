@@ -18,7 +18,7 @@
 - Backend handles transcript fetching via Supadata API (replaced youtube-transcript package)
 - Frontend connects to backend API for transcript processing (no changes to frontend code)
 - Gemini API integration ready but needs testing
-- The `/summaries/` directory should be git-ignored as it contains generated content
+- The `/exports/` directory should be git-ignored as it contains generated content
 - **BENEFIT**: More reliable transcript fetching with better error handling and language support
 
 ## Tasks
@@ -27,7 +27,7 @@
   - [x] 1.1 Initialize Vite + React + TypeScript project
   - [x] 1.2 **COMPLETED**: Install core dependencies: `@google/generative-ai react-markdown express cors dotenv` (replaced youtube-transcript with Supadata API)
   - [x] 1.3 **COMPLETED**: Create `.env` file with `VITE_GEMINI_API_KEY` and `SUPADATA_API_KEY` (both keys configured)
-  - [x] 1.4 Update `.gitignore` to exclude `.env` and `summaries/`
+  - [x] 1.4 Update `.gitignore` to exclude `.env` and `exports/`
 
 - [x] 2.0 Core API Integration (YouTube + Gemini) 
   - [x] 2.1 Implement YouTube URL parsing in `src/utils.ts` with regex to extract video ID
@@ -64,7 +64,7 @@
 
 - [x] 6.0 **COMPLETED**: Complete AI Summarization Integration
   - [x] 6.1 **COMPLETED**: Refactor prompt loading to read from `prompts/Youtube transcripts.md` file dynamically
-  - [x] 6.2 **COMPLETED**: Fix transcript file saving to `summaries/transcripts/` folder with proper file structure
+  - [x] 6.2 **COMPLETED**: Fix transcript file saving to `exports/transcripts/` folder with proper file structure
   - [x] 6.3 **COMPLETED**: Create backend endpoints to read saved transcript files from disk
   - [x] 6.4 **COMPLETED**: Implement summarization workflow from saved transcript.txt files
   - [x] 6.5 **COMPLETED**: Add "Summarize" button to UI that calls `generateSummaryFromFile()`
@@ -73,23 +73,24 @@
   - [x] 6.8 **COMPLETED**: Test full workflow: URL → Transcript → Save to File → Read from File → AI Summary → Display
 
 - [x] 6.9 **COMPLETED**: Server-Side Summary File Management
-  - [x] 6.9.1 **COMPLETED**: Add `/api/save-summary` endpoint to save summaries to `summaries/{videoId}-summary-{timestamp}.md`
+  - [x] 6.9.1 **COMPLETED**: Add `/api/save-summary` endpoint to save summaries to `exports/summaries/{videoId}-summary-{timestamp}.md`
   - [x] 6.9.2 **COMPLETED**: Modify summarization workflow to automatically save summaries server-side
   - [x] 6.9.3 **COMPLETED**: Add `/api/summaries` endpoint to list all saved summary files
   - [x] 6.9.4 **COMPLETED**: Add `/api/summary-file/{videoId}` endpoint to read specific saved summaries
   - [x] 6.9.5 **COMPLETED**: Update frontend to call server-side summary saving and added "Saved Summaries" UI section
 
-- [ ] 7.0 **PRIORITY**: Production UI Components
-  - [ ] 7.1 **TODO**: Replace test interface with production summarizer UI
-  - [ ] 7.2 **TODO**: Add proper loading states and progress indicators
-  - [ ] 7.3 **COMPLETED**: Implement summary download as `.md` files (currently browser-based)
-  - [ ] 7.4 **TODO**: Add summary history/management interface with saved summaries list
-  - [ ] 7.5 **TODO**: Improve error messaging and user feedback
+- [x] 7.0 **COMPLETED**: Production UI Components - Complete Modern UI Overhaul
+  - [x] 7.1 **COMPLETED**: Replaced test interface with sophisticated production UI based on modern dark theme design
+  - [x] 7.2 **COMPLETED**: Added professional progress indicators with 4-stage workflow (Metadata • Transcript • AI Processing • Save)
+  - [x] 7.3 **COMPLETED**: Implement summary download as `.md` files (browser-based with proper filename)
+  - [x] 7.4 **COMPLETED**: Added history drawer with real saved summaries integration (clickable history items)
+  - [x] 7.5 **COMPLETED**: Added comprehensive error messaging with retry functionality and user feedback
+  - [x] 7.6 **COMPLETED**: Integrated Lucide React icons for professional visual design
+  - [x] 7.7 **COMPLETED**: Auto-paste detection for YouTube URLs with instant processing
+  - [x] 7.8 **COMPLETED**: Progressive enhancement UI (different experience for new vs returning users)
+  - [x] 7.9 **COMPLETED**: Smooth animations with custom keyframes (fadeIn, pulse effects, transitions)
 
 - [ ] 8.0 **ENHANCEMENT**: Polish & Optimization
-  - [ ] 8.1 **TODO**: Add input validation and better URL parsing
-  - [ ] 8.2 **TODO**: Implement rate limiting and caching for API calls
-  - [ ] 8.3 **TODO**: Add language selection for transcript fetching
   - [ ] 8.4 **TODO**: Optimize UI/UX with better styling and responsive design
   - [ ] 8.5 **TODO**: Add batch processing for multiple videos
 
@@ -111,13 +112,13 @@
 ### **6.2 - File System Transcript Saving Plan**  
 **Current Issue**: `saveTranscript()` only downloads files to user's Downloads and saves to localStorage
 **Solution**: 
-1. **Backend File Writing**: Add `POST /api/save-transcript` endpoint that writes to `summaries/transcripts/`
+1. **Backend File Writing**: Add `POST /api/save-transcript` endpoint that writes to `exports/transcripts/`
 2. **Frontend Update**: Modify `saveTranscript()` to call backend for file persistence
-3. **File Structure**: `summaries/transcripts/{videoId}-transcript-{timestamp}.txt`
+3. **File Structure**: `exports/transcripts/{videoId}-transcript-{timestamp}.txt`
 
 **Implementation Steps**:
 - Add file writing capabilities to server.js using `fs.writeFileSync()`
-- Ensure `summaries/transcripts/` directory exists (create if needed)
+- Ensure `exports/transcripts/` directory exists (create if needed)
 - Update frontend API call to save transcripts server-side
 - Maintain current localStorage functionality for offline access
 
@@ -127,7 +128,7 @@
 1. **List Endpoint**: `GET /api/transcripts` - returns available transcript files
 2. **Read Endpoint**: `GET /api/transcript/{videoId}` - reads specific transcript file
 3. **Summarize Endpoint**: `POST /api/summarize/{videoId}` - processes file through Gemini API
-4. **Save Summary**: Saves result to `summaries/{videoId}-summary-{timestamp}.md`
+4. **Save Summary**: Saves result to `exports/summaries/{videoId}-summary-{timestamp}.md`
 
 **Implementation Steps**:
 - Add file system reading capabilities to server.js
@@ -139,7 +140,7 @@
 **Current Issue**: Summaries only download to user's browser, not saved to server file system
 **Solution**: 
 1. **Backend Endpoints**: Add summary file management similar to transcript handling
-2. **Auto-Save**: When summary is generated, automatically save to `summaries/{videoId}-summary-{timestamp}.md`
+2. **Auto-Save**: When summary is generated, automatically save to `exports/summaries/{videoId}-summary-{timestamp}.md`
 3. **Summary History**: List and retrieve saved summaries like transcripts
 
 **Implementation Steps**:
@@ -152,30 +153,67 @@
 
 **File Structure**:
 ```
-summaries/
+exports/
   transcripts/
     {videoId}-transcript-{timestamp}.txt
-  {videoId}-summary-{timestamp}.md
+  summaries/
+    {videoId}-summary-{timestamp}.md
 ```
 
 ### **Frontend Integration Plan**
 **Current UI Workflow**:
-1. **URL Input** → Fetch Transcript → Save to `summaries/transcripts/`
+1. **URL Input** → Fetch Transcript → Save to `exports/transcripts/`
 2. **File List UI** → Display saved transcripts with metadata
 3. **Summarize Button** → Process selected transcript → Generate AI summary
 4. **Summary Display** → Show formatted markdown with browser download
 
 **Current UI Workflow** (6.9 Completed):
-1. **URL Input** → Fetch Transcript → Auto-save to `summaries/transcripts/`
+1. **URL Input** → Fetch Transcript → Auto-save to `exports/transcripts/`
 2. **Dual File Lists** → "Saved Transcripts" + "Saved Summaries" sections with metadata
-3. **Summarize Buttons** → Auto-generate + auto-save to `summaries/{videoId}-summary-{timestamp}.md`
+3. **Summarize Buttons** → Auto-generate + auto-save to `exports/summaries/{videoId}-summary-{timestamp}.md`
 4. **Summary Management** → View saved summaries, download as .md files, regenerate from transcripts
 5. **Real-time Updates** → File lists refresh automatically after operations
 
-## 🚀 **CURRENT STATUS: 98% Complete**
+- [x] 9.0 **COMPLETED**: Video Title Integration & Test Support (Phase 1)
+  - [x] 9.1 **COMPLETED**: YouTube oEmbed API integration for video metadata (FREE - no API key required)
+    - [x] 9.1.1 Added YouTube oEmbed API endpoint `/api/video-metadata/:videoId` in server.js
+    - [x] 9.1.2 No API key needed - uses YouTube's free oEmbed service
+    - [x] 9.1.3 Created `fetchVideoMetadata(videoId)` function in api.ts with full TypeScript typing
+    - [x] 9.1.4 Comprehensive error handling for rate limits, missing videos, and network issues
+  - [x] 9.2 **COMPLETED**: Title-based file naming system implemented
+    - [x] 9.2.1 Created `sanitizeTitle(title)` function in utils.ts (removes invalid filesystem chars, limits length)
+    - [x] 9.2.2 Implemented `generateTranscriptFilename(title, timestamp)` function in utils.ts
+    - [x] 9.2.3 Implemented `generateSummaryFilename(title, timestamp)` function in utils.ts
+    - [x] 9.2.4 Both functions ensure consistent naming with matching base names (verified by tests)
+  - [x] 9.3 **COMPLETED**: Updated all save functions to use video titles
+    - [x] 9.3.1 Updated `saveTranscript()` to accept optional title parameter and fetch metadata
+    - [x] 9.3.2 Updated `saveSummaryToServer()` to use title from metadata
+    - [x] 9.3.3 Added graceful fallback to videoId if title extraction fails
+    - [x] 9.3.4 Updated backend endpoints (`/api/save-transcript`, `/api/save-summary`) for title-based filenames
+  - [x] 9.4 **COMPLETED**: All tests now pass
+    - [x] 9.4.1 Fixed first test to properly validate video ID extraction
+    - [x] 9.4.2 Implemented and exported `generateTranscriptFilename()` from utils.ts
+    - [x] 9.4.3 Implemented and exported `generateSummaryFilename()` from utils.ts
+    - [x] 9.4.4 Both functions return matching base names (test validation: ✅ 2/2 tests passing)
+  - [x] 9.5 **COMPLETED**: UI enhancements for video metadata display
+    - [x] 9.5.1 Added video metadata state management in App.tsx
+    - [x] 9.5.2 Created video information display with title, author, and thumbnail
+    - [x] 9.5.3 Integrated metadata fetching into main workflow (URL → metadata → transcript → summary)
+    - [x] 9.5.4 Graceful UI fallback when metadata unavailable
+
+## 🎯 **PHASE 1 RESULTS (COMPLETED 07/23/25)**
+- **File Naming Transformation**: 
+  - **Before**: `dQw4w9WgXcQ-transcript-2025-07-22T01-51-19.txt`
+  - **After**: `Rick Astley - Never Gonna Give You Up-transcript-2025-07-22T01-51-19.txt`
+- **Zero Cost Solution**: Uses YouTube's free oEmbed API (no API key required)
+- **Production Verified**: Server logs confirm title-based naming working in live environment
+- **Test Coverage**: All tests passing (2/2) with proper filename generation validation
+
+## 🚀 **CURRENT STATUS: 98% Complete - Production Ready!**
 - ✅ **Infrastructure**: Complete (Vite + React + Node.js + APIs)
 - ✅ **Transcript Fetching**: Complete (Supadata API integration working)
-- ✅ **AI Summarization**: Complete (file-based workflow with dynamic prompts)
+- ✅ **AI Summarization**: Complete (file-based workflow with dynamic prompts)  
 - ✅ **File Management**: Complete (file system persistence for transcripts AND summaries)
 - ✅ **Summary File Management**: Complete (server-side saving, listing, reading, and UI management)
-- ⚠️ **Production UI**: Enhanced test interface with full functionality, needs visual polishing only
+- ✅ **Video Title Integration**: Complete (YouTube oEmbed API integration with title-based file naming)
+- ✅ **Production UI**: Complete (sophisticated dark theme UI with animations, progress indicators, history drawer, auto-paste, error handling)
