@@ -1,0 +1,20 @@
+# IBKR Allocation Digest - Generated: 2025-07-26 19:49:26
+ticker,securityName,sector,accountType,marketValue_CAD,weight_pct,unrealized_gain_pct,dividendYield,country,assetClass
+NVDA,NVIDIA CORP,Technology,All,106027.4462,29.8795,112.81628934739551,,United States,Equity
+VTI,VANGUARD TOTAL STOCK MKT ETF,Broad,All,61463.9794,17.3211,32.77801143951953,,United States,Equity
+TSM,TAIWAN SEMICONDUCTOR-SP ADR,Technology,All,33315.5909,9.3886,71.41576884581598,,United States,Equity
+MSFT,MICROSOFT CORP,Technology,All,29563.1886,8.3312,35.358795481867524,,United States,Equity
+AAPL,APPLE INC,Technology,All,21686.3198,6.1114,46.081030192496556,,United States,Equity
+AMZN,AMAZON.COM INC,Consumer Cyclicals,All,20295.6216,5.7195,20.431490748458174,,United States,Equity
+GOOGL,ALPHABET INC-CL A,Telecomm,All,19587.4475,5.5199,7.896714047784914,,United States,Equity
+META,META PLATFORMS INC-CLASS A,Telecomm,All,18553.7686,5.2286,18.2550025697018,,United States,Equity
+MSTY,YIELDMAX MSTR OPTION IS ETF,Broad,All,13128.9824,3.6999,-11.1074487003114,,United States,Equity
+AMD,ADVANCED MICRO DEVICES,Technology,All,9808.1793,2.764,-18.912958633199484,,United States,Equity
+CSU,CONSTELLATION SOFTWARE INC,Technology,All,9780.58,2.7563,6.672992501704159,,Canada,Equity
+SOFI,SOFI TECHNOLOGIES INC,Financials,All,8859.7132,2.4968,102.22535232901224,,United States,Equity
+USD,United States Dollar,Cash,All,1564.1203,0.4408,0.0,,United States,Cash
+CCJ,CAMECO CORP,Energy,All,654.4075,0.1844,5.017780328187248,,United States,Equity
+TSLA,TESLA INC,Consumer Cyclicals,All,433.0654,0.122,-3.0371890206830336,,United States,Equity
+CAD,Canadian Dollar,Cash,All,127.2977,0.0359,0.0,,Canada,Cash
+TOTAL_EQUITY,Total Equity,Aggregate,All,353158.2904,99.5233,,,Multiple,Total_Equity
+TOTAL_CASH,Total Cash,Aggregate,All,1691.418,0.4767,,,Multiple,Total_Cash

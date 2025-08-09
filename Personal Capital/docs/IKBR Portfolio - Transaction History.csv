@@ -1,0 +1,1860 @@
+Date,Account,Description,Transaction Type,Symbol,Quantity,Price,Gross Amount,Commission,Net Amount
+2025-07-25,TFSA,FX Translations P&L,Adjustment,-,-,-,"-3,362.99",-,"-3,362.99"
+2025-07-22,TFSA,Electronic Fund Transfer (Regular Contribution),Deposit,-,-,-,"2,000.00",-,"2,000.00"
+2025-07-22,TFSA,Net Amount in Base from Forex Trade: 417.79 USD.CAD,Forex Trade Component,USD.CAD,417.79,1.3672  CAD,-2.74,-,-2.74
+2025-07-22,TFSA,"Net Amount in Base from Forex Trade: 1,024.25 USD.CAD",Forex Trade Component,USD.CAD,"1,024.25",1.3668  CAD,-9.14,-2.74,-9.14
+2025-07-22,TFSA,CAMECO CORP,Buy,CCJ,6,75.6300  USD,-617.41,-1.36,-618.77
+2025-07-22,TFSA,ADVANCED MICRO DEVICES,Buy,AMD,1,150.0700  USD,-204.19,-1.36,-205.55
+2025-07-22,TFSA,ADVANCED MICRO DEVICES,Buy,AMD,2,150.0700  USD,-408.37,0,-408.37
+2025-07-22,TFSA,TESLA INC,Buy,TSLA,1,324.9600  USD,-442.14,-1.36,-443.5
+2025-07-11,TFSA,CSU(CA21037X1006) Cash Dividend CAD 1.3728 per Share (Ordinary Dividend),Dividend,CSU,-,-,2.75,-,2.75
+2025-07-10,TFSA,SOFI TECHNOLOGIES INC,Buy,SOFI,8,20.9850  USD,-229.24,-1.37,-230.61
+2025-07-10,TFSA,Net Amount in Base from Forex Trade: 167.88 USD.CAD,Forex Trade Component,USD.CAD,167.88,1.3687  CAD,-0.54,-,-0.54
+2025-07-10,TFSA,Net Amount in Base from Forex Trade: 1 USD.CAD,Forex Trade Component,USD.CAD,1,1.3688  CAD,0,-,0
+2025-07-10,TFSA,Net Amount in Base from Forex Trade: 0.000216 USD.CAD,Forex Trade Component,USD.CAD,0,1.3660  CAD,0,-,0
+2025-07-10,TFSA,TSM(US8740391003) Cash Dividend USD 0.780305 per Share (Ordinary Div - NRA Withholding Exempt),Dividend,TSM,-,-,64.1,-,64.1
+2025-07-10,TFSA,TSM(US8740391003) Cash Dividend USD 0.780305 per Share - TW Tax,Foreign Tax Withholding,TSM,-,-,-13.46,-,-13.46
+2025-07-10,RRSP,TSM(US8740391003) Cash Dividend USD 0.780305 per Share (Ordinary Div - NRA Withholding Exempt),Dividend,TSM,-,-,41.66,-,41.66
+2025-07-10,RRSP,TSM(US8740391003) Cash Dividend USD 0.780305 per Share - TW Tax,Foreign Tax Withholding,TSM,-,-,-8.75,-,-8.75
+2025-07-07,RRSP,MSTY(US88634T4931) Cash Dividend USD 1.2382 per Share (Ordinary Dividend),Dividend,MSTY,-,-,750.54,-,750.54
+2025-07-03,TFSA,Electronic Fund Transfer (Regular Contribution),Deposit,-,-,-,"1,000.00",-,"1,000.00"
+2025-07-03,TFSA,NVDA(US67066G1040) Cash Dividend USD 0.01 per Share (Ordinary Dividend),Dividend,NVDA,-,-,3.26,-,3.26
+2025-07-03,TFSA,NVDA(US67066G1040) Cash Dividend USD 0.01 per Share - US Tax,Foreign Tax Withholding,NVDA,-,-,-0.49,-,-0.49
+2025-07-03,RRSP,NVDA(US67066G1040) Cash Dividend USD 0.01 per Share (Ordinary Dividend),Dividend,NVDA,-,-,2.8,-,2.8
+2025-07-03,RRSP,YIELDMAX MSTR OPTION IS ETF,Buy,MSTY,17,20.9700  USD,-484.22,-1.36,-485.58
+2025-07-03,TFSA,Net Amount in Base from Forex Trade: 569.51 USD.CAD,Forex Trade Component,USD.CAD,569.51,1.3570  CAD,0.73,-,0.73
+2025-07-03,TFSA,META PLATFORMS INC-CLASS A,Buy,META,1,717.8300  USD,-975.03,-1.36,-976.39
+2025-07-03,TFSA,Net Amount in Base from Forex Trade: 0.002446 USD.CAD,Forex Trade Component,USD.CAD,0,1.3587  CAD,0,-,0
+2025-07-03,RRSP,Net Amount in Base from Forex Trade: -0.31319147 USD.CAD,Forex Trade Component,USD.CAD,-0.31,1.3579  CAD,0,-,0
+2025-07-02,TFSA,APPLE INC,Sell,AAPL,-12,211.7300  USD,"3,453.40",-1.36,"3,452.04"
+2025-07-02,TFSA,META PLATFORMS INC-CLASS A,Buy,META,4,719.2050  USD,"-3,910.17",-1.36,"-3,911.53"
+2025-07-02,TFSA,Net Amount in Base from Forex Trade: 439.78 USD.CAD,Forex Trade Component,USD.CAD,439.78,1.3643  CAD,-4.97,-2.73,-4.97
+2025-07-02,RRSP,VTI(US9229087690) Cash Dividend USD 0.9132 per Share (Ordinary Dividend),Dividend,VTI,-,-,177.5,-,177.5
+2025-06-26,TFSA,META(US30303M1027) Cash Dividend USD 0.525 per Share (Ordinary Dividend),Dividend,META,-,-,10.03,-,10.03
+2025-06-26,TFSA,META(US30303M1027) Cash Dividend USD 0.525 per Share - US Tax,Foreign Tax Withholding,META,-,-,-1.5,-,-1.5
+2025-06-16,RRSP,YIELDMAX MSTR OPTION IS ETF,Buy,MSTY,20,21.3600  USD,-579.75,-1.36,-581.11
+2025-06-16,TFSA,GOOGL(US02079K3059) Cash Dividend USD 0.21 per Share (Ordinary Dividend),Dividend,GOOGL,-,-,21.09,-,21.09
+2025-06-16,TFSA,GOOGL(US02079K3059) Cash Dividend USD 0.21 per Share - US Tax,Foreign Tax Withholding,GOOGL,-,-,-3.16,-,-3.16
+2025-06-12,TFSA,MSFT(US5949181045) Cash Dividend USD 0.83 per Share (Ordinary Dividend),Dividend,MSFT,-,-,41.72,-,41.72
+2025-06-12,TFSA,MSFT(US5949181045) Cash Dividend USD 0.83 per Share - US Tax,Foreign Tax Withholding,MSFT,-,-,-6.26,-,-6.26
+2025-06-12,RRSP,MSFT(US5949181045) Cash Dividend USD 0.83 per Share (Ordinary Dividend),Dividend,MSFT,-,-,5.64,-,5.64
+2025-06-06,TFSA,AMAZON.COM INC,Buy,AMZN,7,212.9350  USD,"-2,041.15",-1.37,"-2,042.52"
+2025-06-06,TFSA,Net Amount in Base from Forex Trade: 1 USD.CAD,Forex Trade Component,USD.CAD,1,1.3686  CAD,0,-,0
+2025-06-06,TFSA,"Net Amount in Base from Forex Trade: 1,490.54 USD.CAD",Forex Trade Component,USD.CAD,"1,490.54",1.3684  CAD,1.54,-,1.54
+2025-06-06,TFSA,Net Amount in Base from Forex Trade: 1 USD.CAD,Forex Trade Component,USD.CAD,1,1.3687  CAD,0,-,0
+2025-06-06,TFSA,Net Amount in Base from Forex Trade: 995.75 USD.CAD,Forex Trade Component,USD.CAD,995.75,1.3685  CAD,0.93,-,0.93
+2025-06-06,TFSA,SOFI TECHNOLOGIES INC,Buy,SOFI,70,14.2250  USD,"-1,363.58",-1.37,"-1,364.95"
+2025-06-06,TFSA,Net Amount in Base from Forex Trade: 0.005 USD.CAD,Forex Trade Component,USD.CAD,0.01,1.3698  CAD,0,-,0
+2025-06-06,TFSA,Net Amount in Base from Forex Trade: 0.003542 USD.CAD,Forex Trade Component,USD.CAD,0,1.3700  CAD,0,-,0
+2025-06-06,RRSP,MSTY(US88634T4931) Cash Dividend USD 1.4707 per Share (Ordinary Dividend),Dividend,MSTY,-,-,852.29,-,852.29
+2025-06-04,TFSA,USD Credit Interest for May-2025,Credit Interest,-,-,-,0.41,-,0.41
+2025-06-04,TFSA,Net Amount in Base from Forex Trade: -0.3 USD.CAD,Forex Trade Component,USD.CAD,-0.3,1.3675  CAD,0,-,0
+2025-05-28,TFSA,AMAZON.COM INC,Buy,AMZN,9,206.6500  USD,"-2,573.47",-1.38,"-2,574.86"
+2025-05-28,TFSA,"Net Amount in Base from Forex Trade: 1,415.49 USD.CAD",Forex Trade Component,USD.CAD,"1,415.49",1.3843  CAD,-0.88,-,-0.88
+2025-05-28,TFSA,Net Amount in Base from Forex Trade: -0.00402487 USD.CAD,Forex Trade Component,USD.CAD,0,1.3833  CAD,0,-,0
+2025-05-21,TFSA,Electronic Fund Transfer (Regular Contribution),Deposit,-,-,-,"2,000.00",-,"2,000.00"
+2025-05-20,Margin,Disbursement Initiated by Rishi Sharma,Withdrawal,-,-,-,-1.39,-,-1.39
+2025-05-20,Margin,Electronic Fund Transfer,Deposit,-,-,-,1.39,-,1.39
+2025-05-16,TFSA,Electronic Fund Transfer (Regular Contribution),Deposit,-,-,-,"4,000.00",-,"4,000.00"
+2025-05-15,TFSA,AAPL(US0378331005) Cash Dividend USD 0.26 per Share (Ordinary Dividend),Dividend,AAPL,-,-,4.36,-,4.36
+2025-05-15,TFSA,AAPL(US0378331005) Cash Dividend USD 0.26 per Share - US Tax,Foreign Tax Withholding,AAPL,-,-,-0.66,-,-0.66
+2025-05-15,Margin,AAPL(US0378331005) Cash Dividend USD 0.26 per Share (Ordinary Dividend),Dividend,AAPL,-,-,26.86,-,26.86
+2025-05-15,Margin,AAPL(US0378331005) Cash Dividend USD 0.26 per Share - US Tax,Foreign Tax Withholding,AAPL,-,-,-8.05,-,-8.05
+2025-05-12,TFSA,NVIDIA CORP,Buy,NVDA,40,121.3700  USD,"-6,784.58",-1.4,"-6,785.98"
+2025-05-12,TFSA,META PLATFORMS INC-CLASS A,Buy,META,5,623.7000  USD,"-4,358.10",-1.4,"-4,359.50"
+2025-05-12,TFSA,AMAZON.COM INC,Buy,AMZN,10,206.6500  USD,"-2,887.93",-1.4,"-2,889.33"
+2025-05-12,RRSP,YIELDMAX MSTR OPTION IS ETF,Buy,MSTY,423,23.6200  USD,"-13,962.79",-2.98,"-13,965.76"
+2025-05-06,TFSA,NVIDIA CORP,Sell,NVDA,-75,111.6900  USD,"11,540.65",-1.72,"11,538.93"
+2025-05-06,RRSP,GIGACLOUD TECHNOLOGY INC - A,Sell,GCT,-223,13.0250  USD,"4,001.63",-1.71,"3,999.92"
+2025-05-05,Margin,CAD Debit Interest for Apr-2025,Debit Interest,-,-,-,-0.28,-,-0.28
+2025-05-05,TFSA,USD Credit Interest for Apr-2025,Credit Interest,-,-,-,8.9,-,8.9
+2025-05-05,RRSP,USD Credit Interest for Apr-2025,Credit Interest,-,-,-,6.9,-,6.9
+2025-04-10,TFSA,TSM(US8740391003) Cash Dividend USD 0.677693 per Share (Ordinary Div - NRA Withholding Exempt),Dividend,TSM,-,-,56.38,-,56.38
+2025-04-10,TFSA,TSM(US8740391003) Cash Dividend USD 0.677693 per Share - TW Tax,Foreign Tax Withholding,TSM,-,-,-11.84,-,-11.84
+2025-04-10,RRSP,TSM(US8740391003) Cash Dividend USD 0.677693 per Share (Ordinary Div - NRA Withholding Exempt),Dividend,TSM,-,-,36.65,-,36.65
+2025-04-10,RRSP,TSM(US8740391003) Cash Dividend USD 0.677693 per Share - TW Tax,Foreign Tax Withholding,TSM,-,-,-7.7,-,-7.7
+2025-04-09,TFSA,Electronic Fund Transfer (Regular Contribution),Deposit,-,-,-,"2,000.00",-,"2,000.00"
+2025-04-09,Margin,Net Amount in Base from Forex Trade: -53.44 USD.CAD,Forex Trade Component,USD.CAD,-53.44,1.4175  CAD,-2.35,-2.85,-2.35
+2025-04-09,Margin,Net Amount in Base from Forex Trade: 0.00389165 USD.CAD,Forex Trade Component,USD.CAD,0,1.4175  CAD,0,-,0
+2025-04-09,TFSA,Net Amount in Base from Forex Trade: -55.51 USD.CAD,Forex Trade Component,USD.CAD,-55.51,1.4084  CAD,0.02,-,0.02
+2025-04-09,TFSA,CONSTELLATION SOFTWARE INC,Buy,CSU,1,4685.7500  CAD,"-4,685.75",-1,"-4,686.75"
+2025-04-09,RRSP,VANGUARD TOTAL STOCK MKT ETF,Buy,VTI,8,266.5171  USD,"-3,002.05",-1.41,"-3,003.46"
+2025-04-09,RRSP,VANGUARD TOTAL STOCK MKT ETF,Buy,VTI,12,266.5171  USD,"-4,503.07",0,"-4,503.07"
+2025-04-08,TFSA,SOFI TECHNOLOGIES INC,Buy,SOFI,100,10.3093  USD,"-1,470.62",-1.43,"-1,472.05"
+2025-04-07,TFSA,Net Amount in Base from Forex Trade: -574.27 USD.CAD,Forex Trade Component,USD.CAD,-574.27,1.4180  CAD,-6.86,-2.84,-6.86
+2025-04-07,TFSA,"Net Amount in Base from Forex Trade: -4,425.73 USD.CAD",Forex Trade Component,USD.CAD,"-4,425.73",1.4179  CAD,-31.42,-,-31.42
+2025-04-07,TFSA,Net Amount in Base from Forex Trade: -2.02 USD.CAD,Forex Trade Component,USD.CAD,-2.02,1.4175  CAD,-0.02,-,-0.02
+2025-04-07,TFSA,CONSTELLATION SOFTWARE INC,Buy,CSU,1,4481.0000  CAD,"-4,481.00",-1,"-4,482.00"
+2025-04-07,TFSA,Net Amount in Base from Forex Trade: -0.7 USD.CAD,Forex Trade Component,USD.CAD,-0.7,1.4179  CAD,0,-,0
+2025-04-07,TFSA,AMAZON.COM INC,Buy,AMZN,11,180.1550  USD,"-2,823.93",-1.43,"-2,825.36"
+2025-04-07,TFSA,NVIDIA CORP,Buy,NVDA,30,97.5100  USD,"-4,168.55",-1.43,"-4,169.98"
+2025-04-07,TFSA,META PLATFORMS INC-CLASS A,Buy,META,9,525.9400  USD,"-6,745.18",-1.43,"-6,746.61"
+2025-04-07,TFSA,ALPHABET INC-CL A,Buy,GOOGL,13,148.9400  USD,"-2,759.11",-1.43,"-2,760.54"
+2025-04-07,RRSP,VANGUARD TOTAL STOCK MKT ETF,Buy,VTI,15,250.4600  USD,"-5,353.58",-1.43,"-5,355.01"
+2025-04-07,RRSP,VANGUARD TOTAL STOCK MKT ETF,Sell,VTI,-15,243.9700  USD,"5,214.86",-1.57,"5,213.28"
+2025-04-07,RRSP,VANGUARD TOTAL STOCK MKT ETF,Buy,VTI,14,245.7700  USD,"-4,903.11",-1.43,"-4,904.54"
+2025-04-04,RRSP,VANGUARD TOTAL STOCK MKT ETF,Buy,VTI,10,254.4700  USD,"-3,619.58",-1.42,"-3,621.00"
+2025-04-03,RRSP,USD Credit Interest for Mar-2025,Credit Interest,-,-,-,33.41,-,33.41
+2025-04-03,TFSA,USD Credit Interest for Mar-2025,Credit Interest,-,-,-,9.71,-,9.71
+2025-04-03,Margin,CAD Debit Interest for Mar-2025,Debit Interest,-,-,-,-31.48,-,-31.48
+2025-04-02,TFSA,NVDA(US67066G1040) Cash Dividend USD 0.01 per Share (Ordinary Dividend),Dividend,NVDA,-,-,3.49,-,3.49
+2025-04-02,TFSA,NVDA(US67066G1040) Cash Dividend USD 0.01 per Share - US Tax,Foreign Tax Withholding,NVDA,-,-,-0.53,-,-0.53
+2025-04-02,RRSP,NVDA(US67066G1040) Cash Dividend USD 0.01 per Share (Ordinary Dividend),Dividend,NVDA,-,-,2.93,-,2.93
+2025-04-02,TFSA,R*****19:US Consolidated Snapshot for Mar 2025,Other Fee,-,-,-,-0.01,-,-0.01
+2025-04-02,TFSA,R*****19:US Consolidated Snapshot for Mar 2025,Other Fee,-,-,-,0.01,-,0.01
+2025-04-02,Margin,Electronic Fund Transfer,Deposit,-,-,-,"2,500.00",-,"2,500.00"
+2025-03-31,RRSP,VTI(US9229087690) Cash Dividend USD 0.9854 per Share (Ordinary Dividend),Dividend,VTI,-,-,140.36,-,140.36
+2025-03-26,TFSA,ALPHABET INC-CL A,Buy,GOOGL,20,168.6450  USD,"-4,812.45",-1.43,"-4,813.88"
+2025-03-26,TFSA,ALPHABET INC-CL A,Sell,GOOGL,-20,168.3300  USD,"4,803.46",-1.57,"4,801.90"
+2025-03-24,TFSA,MICROSOFT CORP,Sell,MSFT,-50,391.7700  USD,"28,048.77",-2.23,"28,046.55"
+2025-03-19,Margin,Electronic Fund Transfer,Deposit,-,-,-,"10,000.00",-,"10,000.00"
+2025-03-17,RRSP,TAIWAN SEMICONDUCTOR-SP ADR,Buy,TSM,20,175.2950  USD,"-5,009.58",-1.43,"-5,011.01"
+2025-03-17,TFSA,GOOGL(US02079K3059) Cash Dividend USD 0.20 per Share (Ordinary Dividend),Dividend,GOOGL,-,-,17.43,-,17.43
+2025-03-17,TFSA,GOOGL(US02079K3059) Cash Dividend USD 0.20 per Share - US Tax,Foreign Tax Withholding,GOOGL,-,-,-2.61,-,-2.61
+2025-03-13,TFSA,MSFT(US5949181045) Cash Dividend USD 0.83 per Share (Ordinary Dividend),Dividend,MSFT,-,-,104.29,-,104.29
+2025-03-13,TFSA,MSFT(US5949181045) Cash Dividend USD 0.83 per Share - US Tax,Foreign Tax Withholding,MSFT,-,-,-15.64,-,-15.64
+2025-03-13,RRSP,MSFT(US5949181045) Cash Dividend USD 0.83 per Share (Ordinary Dividend),Dividend,MSFT,-,-,5.99,-,5.99
+2025-03-06,Margin,Electronic Fund Transfer,Deposit,-,-,-,"1,500.00",-,"1,500.00"
+2025-03-05,Margin,CAD Debit Interest for Feb-2025,Debit Interest,-,-,-,-47.48,-,-47.48
+2025-03-04,RRSP,VANGUARD TOTAL STOCK MKT ETF,Sell,VTI,-75,282.9700  USD,"30,548.03",-2.31,"30,545.71"
+2025-02-13,TFSA,AAPL(US0378331005) Cash Dividend USD 0.25 per Share (Ordinary Dividend),Dividend,AAPL,-,-,4.26,-,4.26
+2025-02-13,TFSA,AAPL(US0378331005) Cash Dividend USD 0.25 per Share - US Tax,Foreign Tax Withholding,AAPL,-,-,-0.64,-,-0.64
+2025-02-13,Margin,AAPL(US0378331005) Payment in Lieu of Dividend (Ordinary Dividend),Payment in Lieu,AAPL,-,-,0.35,-,0.35
+2025-02-13,Margin,AAPL(US0378331005) Payment in Lieu of Dividend - US Tax,Foreign Tax Withholding,AAPL,-,-,-0.11,-,-0.11
+2025-02-13,Margin,AAPL(US0378331005) Cash Dividend USD 0.25 per Share (Ordinary Dividend),Dividend,AAPL,-,-,25.9,-,25.9
+2025-02-13,Margin,AAPL(US0378331005) Cash Dividend USD 0.25 per Share - US Tax,Foreign Tax Withholding,AAPL,-,-,-7.78,-,-7.78
+2025-02-05,Margin,CAD Debit Interest for Jan-2025,Debit Interest,-,-,-,-54.81,-,-54.81
+2025-01-29,Margin,WALT DISNEY CO/THE,Sell,DIS,-0.36,113.2200  USD,58.99,-0.59,58.4
+2025-01-27,TFSA,NVIDIA CORP,Buy,NVDA,5,119.4000  USD,-858.13,-1.44,-859.57
+2025-01-21,Margin,Net Amount in Base from Forex Trade: -0.13 USD.CAD,Forex Trade Component,USD.CAD,-0.13,1.4309  CAD,0,-,0
+2025-01-16,Margin,DIS(US2546871060) Cash Dividend USD 0.50 per Share (Ordinary Dividend),Dividend,DIS,-,-,0.26,-,0.26
+2025-01-16,Margin,DIS(US2546871060) Cash Dividend USD 0.50 per Share - US Tax,Foreign Tax Withholding,DIS,-,-,-0.07,-,-0.07
+2025-01-09,TFSA,TSM(US8740391003) Cash Dividend USD 0.608106 per Share (Ordinary Div - NRA Withholding Exempt),Dividend,TSM,-,-,52.61,-,52.61
+2025-01-09,TFSA,TSM(US8740391003) Cash Dividend USD 0.608106 per Share - TW Tax,Foreign Tax Withholding,TSM,-,-,-11.05,-,-11.05
+2025-01-09,RRSP,TSM(US8740391003) Cash Dividend USD 0.608106 per Share (Ordinary Div - NRA Withholding Exempt),Dividend,TSM,-,-,16.67,-,16.67
+2025-01-09,RRSP,TSM(US8740391003) Cash Dividend USD 0.608106 per Share - TW Tax,Foreign Tax Withholding,TSM,-,-,-3.5,-,-3.5
+2025-01-06,Margin,CAD Debit Interest for Dec-2024,Debit Interest,-,-,-,-34.88,-,-34.88
+2024-12-27,TFSA,NVDA(US67066G1040) Cash Dividend USD 0.01 per Share (Ordinary Dividend),Dividend,NVDA,-,-,3.46,-,3.46
+2024-12-27,TFSA,NVDA(US67066G1040) Cash Dividend USD 0.01 per Share - US Tax,Foreign Tax Withholding,NVDA,-,-,-0.52,-,-0.52
+2024-12-27,RRSP,NVDA(US67066G1040) Cash Dividend USD 0.01 per Share (Ordinary Dividend),Dividend,NVDA,-,-,2.97,-,2.97
+2024-12-26,RRSP,VTI(US9229087690) Cash Dividend USD 0.9412 per Share (Ordinary Dividend),Dividend,VTI,-,-,235.96,-,235.96
+2024-12-23,Margin,Withdrawal Fee,Other Fee,-,-,-,-2,-,-2
+2024-12-23,Margin,Disbursement Initiated by Rishi Sharma,Withdrawal,-,-,-,"-5,000.00",-,"-5,000.00"
+2024-12-18,Margin,Electronic Fund Transfer,Deposit,-,-,-,"3,000.00",-,"3,000.00"
+2024-12-18,RRSP,Commission Adjustment (Consolidated Audit Trail Fee Refund),Deposit,-,-,-,0.01,-,0.01
+2024-12-17,Margin,Electronic Fund Transfer,Deposit,-,-,-,"5,000.00",-,"5,000.00"
+2024-12-16,Margin,Disbursement Initiated by Rishi Sharma,Withdrawal,-,-,-,"-10,000.00",-,"-10,000.00"
+2024-12-12,TFSA,MSFT(US5949181045) Cash Dividend USD 0.83 per Share (Ordinary Dividend),Dividend,MSFT,-,-,102.68,-,102.68
+2024-12-12,TFSA,MSFT(US5949181045) Cash Dividend USD 0.83 per Share - US Tax,Foreign Tax Withholding,MSFT,-,-,-15.4,-,-15.4
+2024-12-12,RRSP,MSFT(US5949181045) Cash Dividend USD 0.83 per Share (Ordinary Dividend),Dividend,MSFT,-,-,5.9,-,5.9
+2024-12-11,TFSA,APPLE INC,Sell,AAPL,-50,247.4900  USD,"17,521.05",-1.92,"17,519.14"
+2024-12-11,TFSA,ALPHABET INC-CL A,Buy,GOOGL,31,193.6000  USD,"-8,497.67",-1.42,"-8,499.08"
+2024-12-11,TFSA,ALPHABET INC-CL A,Buy,GOOGL,11,193.6000  USD,"-3,015.30",0,"-3,015.30"
+2024-12-11,TFSA,ALPHABET INC-CL A,Buy,GOOGL,19,193.6000  USD,"-5,208.25",0,"-5,208.25"
+2024-12-10,TFSA,Disbursement Initiated by Rishi Sharma (Normal distribution),Withdrawal,-,-,-,"-3,460.23",-,"-3,460.23"
+2024-12-10,TFSA,"Net Amount in Base from Forex Trade: -2,442.55 USD.CAD",Forex Trade Component,USD.CAD,"-2,442.55",1.4165  CAD,-3.79,-,-3.79
+2024-12-10,TFSA,Net Amount in Base from Forex Trade: -0.17 USD.CAD,Forex Trade Component,USD.CAD,-0.17,1.4165  CAD,0,-,0
+2024-12-06,TFSA,BLOCK INC,Sell,SQ,-12,98.7003  USD,"1,677.00",-1.47,"1,675.53"
+2024-12-06,TFSA,BLOCK INC,Sell,SQ,-13,98.7000  USD,"1,816.74",-0.05,"1,816.69"
+2024-12-04,Margin,CAD Debit Interest for Nov-2024,Debit Interest,-,-,-,-2.81,-,-2.81
+2024-12-02,Margin,Withdrawal Fee,Other Fee,-,-,-,-2,-,-2
+2024-12-02,Margin,Disbursement Initiated by Rishi Sharma,Withdrawal,-,-,-,"-10,000.00",-,"-10,000.00"
+2024-11-29,TFSA,"Net Amount in Base from Forex Trade: -2,482.75 USD.CAD",Forex Trade Component,USD.CAD,"-2,482.75",1.3991  CAD,-5.53,-2.8,-5.53
+2024-11-29,TFSA,Disbursement Initiated by Rishi Sharma (Normal distribution),Withdrawal,-,-,-,"-3,522.42",-,"-3,522.42"
+2024-11-29,Margin,Electronic Fund Transfer,Deposit,-,-,-,"8,213.00",-,"8,213.00"
+2024-11-29,TFSA,Net Amount in Base from Forex Trade: 0.00434636 USD.CAD,Forex Trade Component,USD.CAD,0,1.4006  CAD,0,-,0
+2024-11-28,Margin,Net Amount in Base from Forex Trade: -0.3308467 USD.CAD,Forex Trade Component,USD.CAD,-0.33,1.4029  CAD,0,-,0
+2024-11-28,Margin,Electronic Fund Transfer,Deposit,-,-,-,"9,940.00",-,"9,940.00"
+2024-11-27,Margin,Withdrawal Fee,Other Fee,-,-,-,-12,-,-12
+2024-11-27,Margin,Disbursement Initiated by Rishi Sharma,Withdrawal,-,-,-,"-10,000.00",-,"-10,000.00"
+2024-11-27,TFSA,CHEWY INC - CLASS A,Sell,CHWY,-30,33.3805  USD,"1,404.99",-1.45,"1,403.53"
+2024-11-27,TFSA,CHEWY INC - CLASS A,Sell,CHWY,-30,33.3800  USD,"1,404.96",-0.05,"1,404.92"
+2024-11-26,Margin,Disbursement Initiated by Rishi Sharma,Withdrawal,-,-,-,"-3,213.00",-,"-3,213.00"
+2024-11-26,Margin,Withdrawal Fee,Other Fee,-,-,-,-2,-,-2
+2024-11-26,Margin,Disbursement Initiated by Rishi Sharma,Withdrawal,-,-,-,"-5,000.00",-,"-5,000.00"
+2024-11-25,Margin,BLOCK INC,Sell,SQ,-13,90.9400  USD,"1,653.45",-1.45,"1,652.00"
+2024-11-25,Margin,BLOCK INC,Sell,SQ,-12,90.9400  USD,"1,526.26",-0.05,"1,526.22"
+2024-11-25,Margin,"Net Amount in Base from Forex Trade: -2,298 USD.CAD",Forex Trade Component,USD.CAD,"-2,298.00",1.3995  CAD,-0.73,-2.8,-0.73
+2024-11-14,TFSA,AAPL(US0378331005) Cash Dividend USD 0.25 per Share (Ordinary Dividend),Dividend,AAPL,-,-,21.79,-,21.79
+2024-11-14,TFSA,AAPL(US0378331005) Cash Dividend USD 0.25 per Share - US Tax,Foreign Tax Withholding,AAPL,-,-,-3.28,-,-3.28
+2024-11-14,Margin,AAPL(US0378331005) Cash Dividend USD 0.25 per Share (Ordinary Dividend),Dividend,AAPL,-,-,26.01,-,26.01
+2024-11-14,Margin,AAPL(US0378331005) Cash Dividend USD 0.25 per Share - US Tax,Foreign Tax Withholding,AAPL,-,-,-7.8,-,-7.8
+2024-10-09,TFSA,TSM(US8740391003) Cash Dividend USD 0.624826 per Share (Ordinary Div - NRA Withholding Exempt),Dividend,TSM,-,-,51.52,-,51.52
+2024-10-09,TFSA,TSM(US8740391003) Cash Dividend USD 0.624826 per Share - TW Tax,Foreign Tax Withholding,TSM,-,-,-10.81,-,-10.81
+2024-10-09,RRSP,TSM(US8740391003) Cash Dividend USD 0.624826 per Share (Ordinary Div - NRA Withholding Exempt),Dividend,TSM,-,-,16.31,-,16.31
+2024-10-09,RRSP,TSM(US8740391003) Cash Dividend USD 0.624826 per Share - TW Tax,Foreign Tax Withholding,TSM,-,-,-3.42,-,-3.42
+2024-10-03,TFSA,NVDA(US67066G1040) Cash Dividend USD 0.01 per Share (Ordinary Dividend),Dividend,NVDA,-,-,3.25,-,3.25
+2024-10-03,TFSA,NVDA(US67066G1040) Cash Dividend USD 0.01 per Share - US Tax,Foreign Tax Withholding,NVDA,-,-,-0.49,-,-0.49
+2024-10-03,RRSP,NVDA(US67066G1040) Cash Dividend USD 0.01 per Share (Ordinary Dividend),Dividend,NVDA,-,-,2.58,-,2.58
+2024-10-01,RRSP,VTI(US9229087690) Cash Dividend USD 0.8707 per Share (Ordinary Dividend),Dividend,VTI,-,-,204.39,-,204.39
+2024-09-17,RRSP,NVIDIA CORP,Buy,NVDA,12,118.2400  USD,"-1,929.39",-1.36,"-1,930.75"
+2024-09-17,RRSP,NVIDIA CORP,Buy,NVDA,4,118.2400  USD,-643.13,0,-643.13
+2024-09-17,RRSP,MICROSOFT CORP,Buy,MSFT,5,439.2700  USD,"-2,986.60",-1.36,"-2,987.96"
+2024-09-17,RRSP,VANGUARD TOTAL STOCK MKT ETF,Buy,VTI,8,278.9900  USD,"-3,034.96",-1.36,"-3,036.33"
+2024-09-12,TFSA,MSFT(US5949181045) Cash Dividend USD 0.75 per Share (Ordinary Dividend),Dividend,MSFT,-,-,88.62,-,88.62
+2024-09-12,TFSA,MSFT(US5949181045) Cash Dividend USD 0.75 per Share - US Tax,Foreign Tax Withholding,MSFT,-,-,-13.3,-,-13.3
+2024-08-28,RRSP,SUPER MICRO COMPUTER INC,Sell,SMCI,-14,409.4550  USD,"7,727.81",-1.57,"7,726.24"
+2024-08-15,TFSA,AAPL(US0378331005) Cash Dividend USD 0.25 per Share (Ordinary Dividend),Dividend,AAPL,-,-,21.28,-,21.28
+2024-08-15,TFSA,AAPL(US0378331005) Cash Dividend USD 0.25 per Share - US Tax,Foreign Tax Withholding,AAPL,-,-,-3.2,-,-3.2
+2024-08-15,Margin,AAPL(US0378331005) Cash Dividend USD 0.25 per Share (Ordinary Dividend),Dividend,AAPL,-,-,25.4,-,25.4
+2024-08-15,Margin,AAPL(US0378331005) Cash Dividend USD 0.25 per Share - US Tax,Foreign Tax Withholding,AAPL,-,-,-7.62,-,-7.62
+2024-08-01,Margin,Disbursement Initiated by Rishi Sharma,Withdrawal,-,-,-,"-1,370.54",-,"-1,370.54"
+2024-07-30,Margin,Net Amount in Base from Forex Trade: -0.11 USD.CAD,Forex Trade Component,USD.CAD,-0.11,1.3853  CAD,0,-,0
+2024-07-25,Margin,DIS(US2546871060) Cash Dividend USD 0.45 per Share (Ordinary Dividend),Dividend,DIS,-,-,0.22,-,0.22
+2024-07-25,Margin,DIS(US2546871060) Cash Dividend USD 0.45 per Share - US Tax,Foreign Tax Withholding,DIS,-,-,-0.07,-,-0.07
+2024-07-11,TFSA,TSM(US8740391003) Cash Dividend USD 0.539924 per Share (Ordinary Div - NRA Withholding Exempt),Dividend,TSM,-,-,44.17,-,44.17
+2024-07-11,TFSA,TSM(US8740391003) Cash Dividend USD 0.539924 per Share - TW Tax,Foreign Tax Withholding,TSM,-,-,-9.27,-,-9.27
+2024-07-11,RRSP,TSM(US8740391003) Cash Dividend USD 0.539924 per Share (Ordinary Div - NRA Withholding Exempt),Dividend,TSM,-,-,13.98,-,13.98
+2024-07-11,RRSP,TSM(US8740391003) Cash Dividend USD 0.539924 per Share - TW Tax,Foreign Tax Withholding,TSM,-,-,-2.93,-,-2.93
+2024-07-02,RRSP,VTI(US9229087690) Cash Dividend USD 0.9519 per Share (Ordinary Dividend),Dividend,VTI,-,-,216.16,-,216.16
+2024-06-28,TFSA,NVDA(US67066G1040) Cash Dividend USD 0.01 per Share (Ordinary Dividend),Dividend,NVDA,-,-,3.28,-,3.28
+2024-06-28,TFSA,NVDA(US67066G1040) Cash Dividend USD 0.01 per Share - US Tax,Foreign Tax Withholding,NVDA,-,-,-0.49,-,-0.49
+2024-06-28,RRSP,NVDA(US67066G1040) Cash Dividend USD 0.01 per Share (Ordinary Dividend),Dividend,NVDA,-,-,2.6,-,2.6
+2024-06-13,TFSA,MSFT(US5949181045) Cash Dividend USD 0.75 per Share (Ordinary Dividend),Dividend,MSFT,-,-,89.66,-,89.66
+2024-06-13,TFSA,MSFT(US5949181045) Cash Dividend USD 0.75 per Share - US Tax,Foreign Tax Withholding,MSFT,-,-,-13.45,-,-13.45
+2024-06-05,Margin,CAD Debit Interest for May-2024,Debit Interest,-,-,-,-0.65,-,-0.65
+2024-05-28,Margin,WALT DISNEY CO/THE,Sell,DIS,-36,102.1500  USD,"5,018.18",-1.51,"5,016.67"
+2024-05-28,RRSP,Cash Transfer,Deposit,-,-,-,"3,700.00",-,"3,700.00"
+2024-05-28,Margin,Cash Transfer,Withdrawal,-,-,-,"-3,700.00",-,"-3,700.00"
+2024-05-28,Margin,Net Amount in Base from Forex Trade: -1 USD.CAD,Forex Trade Component,USD.CAD,-1,1.3639  CAD,-2.73,-2.73,-2.73
+2024-05-28,RRSP,"Net Amount in Base from Forex Trade: 2,859.13 USD.CAD",Forex Trade Component,USD.CAD,"2,859.13",1.3640  CAD,-1.15,-2.73,-1.15
+2024-05-28,RRSP,NVIDIA CORP,Buy,NVDA,3,1114.5300  USD,"-4,562.66",-1.36,"-4,564.03"
+2024-05-28,Margin,"Net Amount in Base from Forex Trade: -3,721 USD.CAD",Forex Trade Component,USD.CAD,"-3,721.00",1.3635  CAD,-6.82,-2.73,-6.82
+2024-05-28,Margin,Net Amount in Base from Forex Trade: 0.25820772 USD.CAD,Forex Trade Component,USD.CAD,0.26,1.3635  CAD,0,-,0
+2024-05-23,RRSP,"Net Amount in Base from Forex Trade: 2,900 USD.CAD",Forex Trade Component,USD.CAD,"2,900.00",1.3693  CAD,8.14,-2.73,8.14
+2024-05-23,RRSP,"Net Amount in Base from Forex Trade: -1,664.69827252 USD.CAD",Forex Trade Component,USD.CAD,"-1,664.70",1.3695  CAD,-5.83,-,-5.83
+2024-05-22,RRSP,NVIDIA CORP,Buy,NVDA,8,1014.6400  USD,"-11,116.40",-1.37,"-11,117.77"
+2024-05-22,RRSP,"Net Amount in Base from Forex Trade: 1,664.69827252 USD.CAD",Forex Trade Component,USD.CAD,"1,664.70",1.3695  CAD,0,-,0
+2024-05-16,TFSA,AAPL(US0378331005) Cash Dividend USD 0.25 per Share (Ordinary Dividend),Dividend,AAPL,-,-,21.11,-,21.11
+2024-05-16,TFSA,AAPL(US0378331005) Cash Dividend USD 0.25 per Share - US Tax,Foreign Tax Withholding,AAPL,-,-,-3.17,-,-3.17
+2024-05-16,Margin,AAPL(US0378331005) Cash Dividend USD 0.25 per Share (Ordinary Dividend),Dividend,AAPL,-,-,25.19,-,25.19
+2024-05-16,Margin,AAPL(US0378331005) Cash Dividend USD 0.25 per Share - US Tax,Foreign Tax Withholding,AAPL,-,-,-7.56,-,-7.56
+2024-05-03,TFSA,USD Credit Interest for Apr-2024,Credit Interest,-,-,-,5.56,-,5.56
+2024-05-03,RRSP,USD Credit Interest for Apr-2024,Credit Interest,-,-,-,7.42,-,7.42
+2024-05-02,TFSA,R*****19:US Consolidated Snapshot for Apr 2024,Other Fee,-,-,-,-0.01,-,-0.01
+2024-05-02,TFSA,R*****19:US Consolidated Snapshot for Apr 2024,Other Fee,-,-,-,0.01,-,0.01
+2024-04-30,TFSA,AMAZON.COM INC,Buy,AMZN,26,181.3200  USD,"-6,495.39",-1.38,"-6,496.77"
+2024-04-30,TFSA,AMAZON.COM INC,Buy,AMZN,1,181.3200  USD,-249.82,-,-249.82
+2024-04-26,TFSA,"Net Amount in Base from Forex Trade: 5,110.79 USD.CAD",Forex Trade Component,USD.CAD,"5,110.79",1.3697  CAD,-16.28,-2.73,-16.28
+2024-04-26,RRSP,SUPER MICRO COMPUTER INC,Buy,SMCI,7,832.0600  USD,"-7,961.98",-1.37,"-7,963.35"
+2024-04-24,TFSA,APPLE INC,Sell,AAPL,-55,168.0120  USD,"12,662.48",-1.48,"12,660.99"
+2024-04-24,TFSA,MICROSOFT CORP,Buy,MSFT,23,408.4100  USD,"-12,871.82",-1.37,"-12,873.19"
+2024-04-23,TFSA,MICROSOFT CORP,Buy,MSFT,4,406.6200  USD,"-2,222.42",-1.37,"-2,223.79"
+2024-04-23,TFSA,TAIWAN SEMICONDUCTOR-SP ADR,Buy,TSM,30,132.4900  USD,"-5,431.03",-1.37,"-5,432.40"
+2024-04-22,TFSA,NVIDIA CORP,Buy,NVDA,4,791.3800  USD,"-4,336.76",-1.37,"-4,338.13"
+2024-04-22,TFSA,APPLE INC,Buy,AAPL,15,165.5850  USD,"-3,402.77",-1.37,"-3,404.14"
+2024-04-11,TFSA,TSM(US8740391003) Cash Dividend USD 0.545597 per Share (Ordinary Div - NRA Withholding Exempt),Dividend,TSM,-,-,22.55,-,22.55
+2024-04-11,TFSA,TSM(US8740391003) Cash Dividend USD 0.545597 per Share - TW Tax,Foreign Tax Withholding,TSM,-,-,-4.74,-,-4.74
+2024-04-11,RRSP,TSM(US8740391003) Cash Dividend USD 0.545597 per Share (Ordinary Div - NRA Withholding Exempt),Dividend,TSM,-,-,14.28,-,14.28
+2024-04-11,RRSP,TSM(US8740391003) Cash Dividend USD 0.545597 per Share - TW Tax,Foreign Tax Withholding,TSM,-,-,-3,-,-3
+2024-04-04,RRSP,TESLA INC,Sell,TSLA,-35,169.9200  USD,"8,054.29",-1.43,"8,052.87"
+2024-04-04,RRSP,ULTA BEAUTY INC,Sell,ULTA,-7,440.0000  USD,"4,171.24",-1.39,"4,169.85"
+2024-04-04,RRSP,ULTA BEAUTY INC,Sell,ULTA,-1,440.0000  USD,595.89,0,595.89
+2024-04-04,RRSP,ULTA BEAUTY INC,Sell,ULTA,-3,439.2400  USD,"1,784.59",-1.37,"1,783.22"
+2024-04-03,TFSA,Electronic Fund Transfer (Regular Contribution),Deposit,-,-,-,"7,000.00",-,"7,000.00"
+2024-04-03,TFSA,USD Credit Interest for Mar-2024,Credit Interest,-,-,-,12.66,-,12.66
+2024-03-27,TFSA,NVDA(US67066G1040) Cash Dividend USD 0.04 per Share (Ordinary Dividend),Dividend,NVDA,-,-,1.09,-,1.09
+2024-03-27,TFSA,NVDA(US67066G1040) Cash Dividend USD 0.04 per Share - US Tax,Foreign Tax Withholding,NVDA,-,-,-0.16,-,-0.16
+2024-03-27,RRSP,NVDA(US67066G1040) Cash Dividend USD 0.04 per Share (Ordinary Dividend),Dividend,NVDA,-,-,0.43,-,0.43
+2024-03-27,RRSP,VTI(US9229087690) Cash Dividend USD 0.9105 per Share (Ordinary Dividend),Dividend,VTI,-,-,205.07,-,205.07
+2024-03-19,TFSA,SUPER MICRO COMPUTER INC,Sell,SMCI,-13,868.1600  USD,"15,311.82",-1.48,"15,310.34"
+2024-03-14,TFSA,MSFT(US5949181045) Cash Dividend USD 0.75 per Share (Ordinary Dividend),Dividend,MSFT,-,-,60.9,-,60.9
+2024-03-14,TFSA,MSFT(US5949181045) Cash Dividend USD 0.75 per Share - US Tax,Foreign Tax Withholding,MSFT,-,-,-9.13,-,-9.13
+2024-03-08,RRSP,US HIGH INTEREST SAVINGS ACC,Sell,HISU.U,-25,100.1500  USD,"3,376.06",-1.08,"3,374.98"
+2024-03-08,RRSP,US HIGH INTEREST SAVINGS ACC,Sell,HISU.U,-63,100.1400  USD,"8,506.81",-1.09,"8,505.73"
+2024-03-08,RRSP,GIGACLOUD TECHNOLOGY INC - A,Buy,GCT,223,35.7800  USD,"-10,758.80",-1.5,"-10,760.31"
+2024-03-07,RRSP,HISU.U(CA91737A1066) Cash Dividend USD 0.40721 per Share (Ordinary Dividend),Dividend,HISU.U,-,-,48.31,-,48.31
+2024-03-05,TFSA,USD Credit Interest for Feb-2024,Credit Interest,-,-,-,13.74,-,13.74
+2024-03-05,RRSP,CAD Credit Interest for Feb-2024,Credit Interest,-,-,-,0.09,-,0.09
+2024-03-05,RRSP,USD Credit Interest for Feb-2024,Credit Interest,-,-,-,0.08,-,0.08
+2024-03-05,TFSA,R*****19:US Consolidated Snapshot for Feb 2024,Other Fee,-,-,-,-0.01,-,-0.01
+2024-03-05,TFSA,R*****19:US Consolidated Snapshot for Feb 2024,Other Fee,-,-,-,0.01,-,0.01
+2024-03-04,TFSA,SUPER MICRO COMPUTER INC,Buy,SMCI,8,1066.1100  USD,"-11,577.10",-1.36,"-11,578.46"
+2024-03-04,TFSA,ADVANCED MICRO DEVICES,Buy,AMD,40,209.3900  USD,"-11,369.04",-1.36,"-11,370.40"
+2024-03-04,TFSA,TAIWAN SEMICONDUCTOR-SP ADR,Buy,TSM,30,140.6400  USD,"-5,727.14",-1.36,"-5,728.50"
+2024-03-04,TFSA,"Net Amount in Base from Forex Trade: 1,989.68 USD.CAD",Forex Trade Component,USD.CAD,"1,989.68",1.3570  CAD,-1.92,-2.71,-1.92
+2024-03-04,TFSA,APPLE INC,Buy,AAPL,16,175.2000  USD,"-3,805.06",-1.36,"-3,806.42"
+2024-02-23,TFSA,SUPER MICRO COMPUTER INC,Sell,SMCI,-15,895.5900  USD,"18,149.13",-1.5,"18,147.63"
+2024-02-22,TFSA,SUPER MICRO COMPUTER INC,Buy,SMCI,11,853.0000  USD,"-12,650.16",-1.35,"-12,651.51"
+2024-02-17,RRSP,Electronic Fund Transfer (Regular Contribution),Deposit,-,-,-,"4,000.00",-,"4,000.00"
+2024-02-16,TFSA,SUPER MICRO COMPUTER INC,Sell,SMCI,-20,866.9450  USD,"23,381.51",-1.54,"23,379.97"
+2024-02-15,TFSA,AAPL(US0378331005) Cash Dividend USD 0.24 per Share (Ordinary Dividend),Dividend,AAPL,-,-,27.79,-,27.79
+2024-02-15,TFSA,AAPL(US0378331005) Cash Dividend USD 0.24 per Share - US Tax,Foreign Tax Withholding,AAPL,-,-,-4.17,-,-4.17
+2024-02-15,Margin,AAPL(US0378331005) Cash Dividend USD 0.24 per Share (Ordinary Dividend),Dividend,AAPL,-,-,23.91,-,23.91
+2024-02-15,Margin,AAPL(US0378331005) Cash Dividend USD 0.24 per Share - US Tax,Foreign Tax Withholding,AAPL,-,-,-7.18,-,-7.18
+2024-02-09,TFSA,PURPOSE BITCOIN ETF,Sell,BTCC.B,-100,9.0950  CAD,909.5,-1,908.5
+2024-02-09,TFSA,PURPOSE BITCOIN ETF,Sell,BTCC.B,-200,9.0950  CAD,"1,819.00",-2,"1,817.00"
+2024-02-07,TFSA,HISU.U(CA91737A1066) Cash Dividend USD 0.45379 per Share (Ordinary Dividend),Dividend,HISU.U,-,-,86.1,-,86.1
+2024-02-07,RRSP,HISU.U(CA91737A1066) Cash Dividend USD 0.45379 per Share (Ordinary Dividend),Dividend,HISU.U,-,-,53.74,-,53.74
+2024-02-06,RRSP,"Net Amount in Base from Forex Trade: 10,200 USD.CAD",Forex Trade Component,USD.CAD,"10,200.00",1.3523  CAD,-34.33,-2.71,-34.33
+2024-02-06,RRSP,NVIDIA CORP,Buy,NVDA,8,679.4900  USD,"-7,334.14",-1.35,"-7,335.49"
+2024-02-06,RRSP,SUPER MICRO COMPUTER INC,Buy,SMCI,7,673.0000  USD,"-6,356.08",-1.35,"-6,357.43"
+2024-02-06,TFSA,US HIGH INTEREST SAVINGS ACC,Sell,HISU.U,-100,100.0950  USD,"13,504.82",-1.09,"13,503.73"
+2024-02-06,TFSA,US HIGH INTEREST SAVINGS ACC,Sell,HISU.U,-41,100.0900  USD,"5,536.70",-0.45,"5,536.25"
+2024-02-06,TFSA,SUPER MICRO COMPUTER INC,Buy,SMCI,11,670.9400  USD,"-9,957.55",-1.35,"-9,958.90"
+2024-02-06,TFSA,SUPER MICRO COMPUTER INC,Buy,SMCI,18,670.6400  USD,"-16,286.89",-,"-16,286.89"
+2024-02-04,RRSP,Electronic Fund Transfer (Regular Contribution),Deposit,-,-,-,"4,000.00",-,"4,000.00"
+2024-01-11,RRSP,TSM(US8740391003) Cash Dividend USD 0.483247 per Share (Ordinary Div - NRA Withholding Exempt),Dividend,TSM,-,-,12.31,-,12.31
+2024-01-11,RRSP,TSM(US8740391003) Cash Dividend USD 0.483247 per Share - TW Tax,Foreign Tax Withholding,TSM,-,-,-2.59,-,-2.59
+2024-01-10,Margin,DIS(US2546871060) Cash Dividend USD 0.30 per Share (Ordinary Dividend),Dividend,DIS,-,-,14.6,-,14.6
+2024-01-10,Margin,DIS(US2546871060) Cash Dividend USD 0.30 per Share - US Tax,Foreign Tax Withholding,DIS,-,-,-4.38,-,-4.38
+2024-01-08,TFSA,HISU.U(CA91737A1066) Cash Dividend USD 0.41451 per Share (Ordinary Dividend),Dividend,HISU.U,-,-,78.26,-,78.26
+2024-01-08,RRSP,HISU.U(CA91737A1066) Cash Dividend USD 0.41451 per Share (Ordinary Dividend),Dividend,HISU.U,-,-,48.85,-,48.85
+2024-01-08,TFSA,HISU.U(CA91737A1066) Cash Dividend USD 0.02982 per Share (Bonus Dividend),Dividend,HISU.U,-,-,5.62,-,5.62
+2024-01-08,RRSP,HISU.U(CA91737A1066) Cash Dividend USD 0.02982 per Share (Bonus Dividend),Dividend,HISU.U,-,-,3.51,-,3.51
+2024-01-04,TFSA,USD Credit Interest for Dec-2023,Credit Interest,-,-,-,0.73,-,0.73
+2024-01-04,Margin,CAD Credit Interest for Dec-2023,Credit Interest,-,-,-,0.1,-,0.1
+2023-12-27,RRSP,VTI(US9229087690) Cash Dividend USD 1.0017 per Share (Ordinary Dividend),Dividend,VTI,-,-,219.64,-,219.64
+2023-12-27,RRSP,Electronic Fund Transfer (Regular Contribution),Deposit,-,-,-,"10,000.00",-,"10,000.00"
+2023-12-22,Margin,Disbursement Initiated by Rishi Sharma,Withdrawal,-,-,-,"-14,000.00",-,"-14,000.00"
+2023-12-21,Margin,HORIZONS HIGH INT SAVINGS,Sell,CASH,-100,50.1400  CAD,"5,014.00",-1,"5,013.00"
+2023-12-21,Margin,HORIZONS HIGH INT SAVINGS,Sell,CASH,-98,50.1400  CAD,"4,913.72",-0.98,"4,912.74"
+2023-12-21,Margin,PURPOSE BITCOIN ETF,Sell,BTCC.B,-400,8.3800  CAD,"3,352.00",-4,"3,348.00"
+2023-12-21,Margin,PURPOSE BITCOIN ETF,Sell,BTCC.B,-75,8.3700  CAD,627.75,-0.75,627
+2023-12-14,TFSA,MSFT(US5949181045) Cash Dividend USD 0.75 per Share (Ordinary Dividend),Dividend,MSFT,-,-,60.33,-,60.33
+2023-12-14,TFSA,MSFT(US5949181045) Cash Dividend USD 0.75 per Share - US Tax,Foreign Tax Withholding,MSFT,-,-,-9.05,-,-9.05
+2023-12-13,TFSA,US HIGH INTEREST SAVINGS ACC,Sell,HISU.U,-50,100.2000  USD,"6,772.52",-1.09,"6,771.43"
+2023-12-13,TFSA,US HIGH INTEREST SAVINGS ACC,Sell,HISU.U,-100,100.2000  USD,"13,545.04",-0.55,"13,544.48"
+2023-12-13,TFSA,NVIDIA CORP,Buy,NVDA,20,481.6600  USD,"-13,022.16",-1.35,"-13,023.51"
+2023-12-07,TFSA,HISU.U(CA91737A1066) Cash Dividend USD 0.45049 per Share (Ordinary Dividend),Dividend,HISU.U,-,-,178.07,-,178.07
+2023-12-07,RRSP,HISU.U(CA91737A1066) Cash Dividend USD 0.45049 per Share (Ordinary Dividend),Dividend,HISU.U,-,-,53.85,-,53.85
+2023-12-07,Margin,CASH(CA4405671054) Cash Dividend CAD 0.215 per Share (Ordinary Dividend),Dividend,CASH,-,-,42.57,-,42.57
+2023-11-16,TFSA,AAPL(US0378331005) Cash Dividend USD 0.24 per Share (Ordinary Dividend),Dividend,AAPL,-,-,28.39,-,28.39
+2023-11-16,TFSA,AAPL(US0378331005) Cash Dividend USD 0.24 per Share - US Tax,Foreign Tax Withholding,AAPL,-,-,-4.26,-,-4.26
+2023-11-16,Margin,AAPL(US0378331005) Cash Dividend USD 0.24 per Share (Ordinary Dividend),Dividend,AAPL,-,-,24.43,-,24.43
+2023-11-16,Margin,AAPL(US0378331005) Cash Dividend USD 0.24 per Share - US Tax,Foreign Tax Withholding,AAPL,-,-,-7.33,-,-7.33
+2023-11-08,Margin,Net Amount in Base from Forex Trade: 0.48 USD.CAD,Forex Trade Component,USD.CAD,0.48,1.3767  CAD,0,-,0
+2023-11-07,TFSA,HISU.U(CA91737A1066) Cash Dividend USD 0.49615 per Share (Ordinary Dividend),Dividend,HISU.U,-,-,199.13,-,199.13
+2023-11-07,RRSP,HISU.U(CA91737A1066) Cash Dividend USD 0.49615 per Share (Ordinary Dividend),Dividend,HISU.U,-,-,60.22,-,60.22
+2023-11-07,Margin,CASH(CA4405671054) Cash Dividend CAD 0.224 per Share (Ordinary Dividend),Dividend,CASH,-,-,44.35,-,44.35
+2023-11-03,TFSA,USD Debit Interest for Oct-2023,Debit Interest,-,-,-,-7.46,-,-7.46
+2023-11-03,Margin,USD Debit Interest for Oct-2023,Debit Interest,-,-,-,-0.66,-,-0.66
+2023-11-03,RRSP,USD Debit Interest for Oct-2023,Debit Interest,-,-,-,-2.21,-,-2.21
+2023-10-31,TFSA,QQQ(US46090E1038) Cash Dividend USD 0.53555 per Share (Ordinary Dividend),Dividend,QQQ,-,-,37.16,-,37.16
+2023-10-31,TFSA,QQQ(US46090E1038) Cash Dividend USD 0.53555 per Share - US Tax,Foreign Tax Withholding,QQQ,-,-,-5.58,-,-5.58
+2023-10-27,RRSP,SUPER MICRO COMPUTER INC,Sell,SMCI,-15,242.7000  USD,"5,050.47",-1.43,"5,049.03"
+2023-10-27,RRSP,ADVANCED MICRO DEVICES,Sell,AMD,-52,95.5700  USD,"6,894.38",-1.45,"6,892.93"
+2023-10-27,TFSA,ADVANCED MICRO DEVICES,Sell,AMD,-51,95.2000  USD,"6,735.62",-1.45,"6,734.17"
+2023-10-27,TFSA,ADVANCED MICRO DEVICES,Sell,AMD,-20,95.2000  USD,"2,641.42",-0.03,"2,641.39"
+2023-10-27,TFSA,ALPHABET INC-CL A,Sell,GOOGL,-40,120.8000  USD,"6,703.43",-1.45,"6,701.98"
+2023-10-27,TFSA,INVESCO QQQ TRUST SERIES 1,Sell,QQQ,-50,346.4600  USD,"24,032.20",-1.59,"24,030.61"
+2023-10-27,Margin,ADVANCED MICRO DEVICES,Sell,AMD,-26,95.0700  USD,"3,429.16",-1.42,"3,427.74"
+2023-10-27,Margin,ADVANCED MICRO DEVICES,Sell,AMD,-0.45,95.0700  USD,58.9,0,58.9
+2023-10-27,TFSA,US HIGH INTEREST SAVINGS ACC,Buy,HISU.U,200,100.4600  USD,"-27,873.63",-2.24,"-27,875.87"
+2023-10-27,TFSA,US HIGH INTEREST SAVINGS ACC,Buy,HISU.U,91,100.4600  USD,"-12,682.50",-1.02,"-12,683.52"
+2023-10-27,RRSP,US HIGH INTEREST SAVINGS ACC,Buy,HISU.U,88,100.4600  USD,"-12,264.40",-1.12,"-12,265.52"
+2023-10-27,Margin,"Net Amount in Base from Forex Trade: -2,634 USD.CAD",Forex Trade Component,USD.CAD,"-2,634.00",1.3860  CAD,-6.32,-2.77,-6.32
+2023-10-27,Margin,Net Amount in Base from Forex Trade: -0.84431302 USD.CAD,Forex Trade Component,USD.CAD,-0.84,1.3860  CAD,0,-,0
+2023-10-27,Margin,HORIZONS HIGH INT SAVINGS,Buy,CASH,77,50.2200  CAD,"-3,866.94",-1,"-3,867.94"
+2023-10-12,RRSP,TSM(US8740391003) Cash Dividend USD 0.465116 per Share (Ordinary Div - NRA Withholding Exempt),Dividend,TSM,-,-,12.07,-,12.07
+2023-10-12,RRSP,TSM(US8740391003) Cash Dividend USD 0.465116 per Share - TW Tax,Foreign Tax Withholding,TSM,-,-,-2.54,-,-2.54
+2023-10-06,Margin,CASH(CA4405671054) Cash Dividend CAD 0.217 per Share (Ordinary Dividend),Dividend,CASH,-,-,26.26,-,26.26
+2023-09-26,RRSP,VTI(US9229087690) Cash Dividend USD 0.7984 per Share (Ordinary Dividend),Dividend,VTI,-,-,179.14,-,179.14
+2023-09-14,TFSA,MSFT(US5949181045) Cash Dividend USD 0.68 per Share (Ordinary Dividend),Dividend,MSFT,-,-,55.11,-,55.11
+2023-09-14,TFSA,MSFT(US5949181045) Cash Dividend USD 0.68 per Share - US Tax,Foreign Tax Withholding,MSFT,-,-,-8.27,-,-8.27
+2023-09-08,Margin,CASH(CA4405671054) Cash Dividend CAD 0.225 per Share (Ordinary Dividend),Dividend,CASH,-,-,27.23,-,27.23
+2023-09-06,Margin,CAD IBKR Managed Securities (SYEP) Interest for Aug-2023,Credit Interest,-,-,-,0.08,-,0.08
+2023-08-17,TFSA,AAPL(US0378331005) Cash Dividend USD 0.24 per Share (Ordinary Dividend),Dividend,AAPL,-,-,27.96,-,27.96
+2023-08-17,TFSA,AAPL(US0378331005) Cash Dividend USD 0.24 per Share - US Tax,Foreign Tax Withholding,AAPL,-,-,-4.2,-,-4.2
+2023-08-17,Margin,AAPL(US0378331005) Cash Dividend USD 0.24 per Share (Ordinary Dividend),Dividend,AAPL,-,-,24.06,-,24.06
+2023-08-17,Margin,AAPL(US0378331005) Cash Dividend USD 0.24 per Share - US Tax,Foreign Tax Withholding,AAPL,-,-,-7.22,-,-7.22
+2023-08-08,Margin,CASH(CA4405671054) Cash Dividend CAD 0.221 per Share (Ordinary Dividend),Dividend,CASH,-,-,26.74,-,26.74
+2023-07-31,TFSA,QQQ(US46090E1038) Cash Dividend USD 0.50395 per Share (Ordinary Dividend),Dividend,QQQ,-,-,33.24,-,33.24
+2023-07-31,TFSA,QQQ(US46090E1038) Cash Dividend USD 0.50395 per Share - US Tax,Foreign Tax Withholding,QQQ,-,-,-4.99,-,-4.99
+2023-07-19,Margin,HORIZONS HIGH INT SAVINGS,Sell,CASH,-100,50.1350  CAD,"5,013.50",-1,"5,012.50"
+2023-07-19,Margin,"Net Amount in Base from Forex Trade: 3,796.65 USD.CAD",Forex Trade Component,USD.CAD,"3,796.65",1.3170  CAD,-4.72,-2.63,-4.72
+2023-07-19,Margin,WALT DISNEY CO/THE,Buy,DIS,11,87.2100  USD,"-1,262.84",-1.32,"-1,264.15"
+2023-07-19,Margin,APPLE INC,Buy,AAPL,10,194.6100  USD,"-2,561.85",-1.32,"-2,563.16"
+2023-07-19,Margin,APPLE INC,Buy,AAPL,4,194.7700  USD,"-1,025.58",-1.32,"-1,026.90"
+2023-07-13,RRSP,TSM(US8740391003) Cash Dividend USD 0.438987 per Share (Ordinary Div - NRA Withholding Exempt),Dividend,TSM,-,-,11.02,-,11.02
+2023-07-13,RRSP,TSM(US8740391003) Cash Dividend USD 0.438987 per Share - TW Tax,Foreign Tax Withholding,TSM,-,-,-2.31,-,-2.31
+2023-07-11,Margin,Net Amount in Base from Forex Trade: 1.69 USD.CAD,Forex Trade Component,USD.CAD,1.69,1.3280  CAD,-0.01,-,-0.01
+2023-07-10,Margin,CASH(CA4405671054) Cash Dividend CAD 0.2057 per Share (Ordinary Dividend),Dividend,CASH,-,-,45.46,-,45.46
+2023-07-06,Margin,CAD IBKR Managed Securities (SYEP) Interest for Jun-2023,Credit Interest,-,-,-,0.1,-,0.1
+2023-07-06,Margin,USD Debit Interest for Jun-2023,Debit Interest,-,-,-,-2.26,-,-2.26
+2023-07-06,TFSA,USD Credit Interest for Jun-2023,Credit Interest,-,-,-,0.71,-,0.71
+2023-07-06,RRSP,USD Credit Interest for Jun-2023,Credit Interest,-,-,-,2.81,-,2.81
+2023-07-03,TFSA,R*****19:Global Snapshot for Jun 2023,Other Fee,-,-,-,-0.2,-,-0.2
+2023-07-03,TFSA,R*****19:Global Snapshot for Jun 2023,Other Fee,-,-,-,0.2,-,0.2
+2023-07-03,TFSA,GST-HST R*****19:Global Snapshot for Jun 2023,Sales Tax,-,-,-,-0.03,-,-0.03
+2023-07-03,TFSA,GST-HST CANCEL R*****19:Global Snapshot for Jun 2023,Sales Tax,-,-,-,0.03,-,0.03
+2023-06-28,RRSP,VTI(US9229087690) Cash Dividend USD 0.8265 per Share (Ordinary Dividend),Dividend,VTI,-,-,181.91,-,181.91
+2023-06-15,RRSP,Electronic Fund Transfer (Regular Contribution),Deposit,-,-,-,"1,500.00",-,"1,500.00"
+2023-06-15,RRSP,"Net Amount in Base from Forex Trade: 1,128.85 USD.CAD",Forex Trade Component,USD.CAD,"1,128.85",1.3243  CAD,-5.2,-2.66,-5.2
+2023-06-15,RRSP,ULTA BEAUTY INC,Buy,ULTA,3,446.5500  USD,"-1,771.15",-1.32,"-1,772.47"
+2023-06-14,RRSP,Net Amount in Base from Forex Trade: 706.6 USD.CAD,Forex Trade Component,USD.CAD,706.6,1.3303  CAD,-1.18,-2.66,-1.18
+2023-06-14,Margin,CI GALAXY ETHEREUM ETF,Sell,ETHX.B,-50,8.3500  CAD,417.5,-1,416.5
+2023-06-14,Margin,HORIZONS HIGH INT SAVINGS,Buy,CASH,7,50.1000  CAD,-350.7,-1,-351.7
+2023-06-14,RRSP,WALT DISNEY CO/THE,Sell,DIS,-20,94.1410  USD,"2,508.67",-1.36,"2,507.31"
+2023-06-14,RRSP,ULTA BEAUTY INC,Buy,ULTA,6,446.7800  USD,"-3,571.74",-1.33,"-3,573.07"
+2023-06-14,RRSP,Electronic Fund Transfer (Regular Contribution),Deposit,-,-,-,"1,300.00",-,"1,300.00"
+2023-06-14,RRSP,Net Amount in Base from Forex Trade: 978.95 USD.CAD,Forex Trade Component,USD.CAD,978.95,1.3279  CAD,1.69,-2.66,1.69
+2023-06-14,RRSP,ULTA BEAUTY INC,Buy,ULTA,2,444.6500  USD,"-1,184.90",-1.33,"-1,186.24"
+2023-06-13,Margin,"Net Amount in Base from Forex Trade: -7,987 USD.CAD",Forex Trade Component,USD.CAD,"-7,987.00",1.3364  CAD,35.67,-2.67,35.67
+2023-06-13,Margin,Net Amount in Base from Forex Trade: -0.11864186 USD.CAD,Forex Trade Component,USD.CAD,-0.12,1.3364  CAD,0,-,0
+2023-06-13,Margin,HORIZONS HIGH INT SAVINGS,Buy,CASH,14,50.0900  CAD,-701.26,-1,-702.26
+2023-06-13,Margin,HORIZONS HIGH INT SAVINGS,Buy,CASH,200,50.0900  CAD,"-10,018.00",-1.14,"-10,019.14"
+2023-06-13,RRSP,INVESCO QQQ TRUST SERIES 1,Sell,QQQ,-28,360.9132  USD,"13,456.58",-1.44,"13,455.13"
+2023-06-13,TFSA,INVESCO QQQ TRUST SERIES 1,Buy,QQQ,42,360.8273  USD,"-20,180.06",-1.33,"-20,181.39"
+2023-06-13,RRSP,VANGUARD TOTAL STOCK MKT ETF,Buy,VTI,66,216.7680  USD,"-19,050.79",-1.33,"-19,052.12"
+2023-06-13,RRSP,VANGUARD TOTAL STOCK MKT ETF,Buy,VTI,100,216.7673  USD,"-28,864.73",-,"-28,864.73"
+2023-06-12,TFSA,VANGUARD S&P 500 ETF,Sell,VOO,-39,395.0300  USD,"20,594.97",-1.51,"20,593.46"
+2023-06-12,Margin,VANGUARD S&P 500 ETF,Sell,VOO,-2,395.3300  USD,"1,056.95",-1.35,"1,055.61"
+2023-06-12,Margin,VANGUARD S&P 500 ETF,Sell,VOO,-20,395.0300  USD,"10,561.52",-0.09,"10,561.43"
+2023-06-12,RRSP,VANGUARD S&P 500 ETF,Sell,VOO,-13,395.0300  USD,"6,864.99",-1.39,"6,863.60"
+2023-06-12,RRSP,HORIZONS USD CASH MAXIMIZER,Sell,HSUV.U,-93,104.5500  USD,"12,997.91",-1.18,"12,996.72"
+2023-06-12,RRSP,HORIZONS USD CASH MAXIMIZER,Sell,HSUV.U,-100,104.5500  USD,"13,976.24",-1.12,"13,975.13"
+2023-06-08,TFSA,MSFT(US5949181045) Cash Dividend USD 0.68 per Share (Ordinary Dividend),Dividend,MSFT,-,-,54.5,-,54.5
+2023-06-08,TFSA,MSFT(US5949181045) Cash Dividend USD 0.68 per Share - US Tax,Foreign Tax Withholding,MSFT,-,-,-8.18,-,-8.18
+2023-06-05,Margin,USD Debit Interest for May-2023,Debit Interest,-,-,-,-5.38,-,-5.38
+2023-06-05,Margin,CAD IBKR Managed Securities (SYEP) Interest for May-2023,Credit Interest,-,-,-,0.03,-,0.03
+2023-05-31,RRSP,SUPER MICRO COMPUTER INC,Sell,SMCI,-15,220.9900  USD,"4,499.91",-1.4,"4,498.51"
+2023-05-31,RRSP,NVIDIA CORP,Sell,NVDA,-16,385.5800  USD,"8,374.80",-1.43,"8,373.37"
+2023-05-31,TFSA,INVESCO QQQ TRUST SERIES 1,Buy,QQQ,2,348.8100  USD,-947.02,-1.36,-948.38
+2023-05-31,RRSP,INVESCO QQQ TRUST SERIES 1,Buy,QQQ,28,348.9700  USD,"-13,264.35",-1.36,"-13,265.71"
+2023-05-18,TFSA,AAPL(US0378331005) Cash Dividend USD 0.24 per Share (Ordinary Dividend),Dividend,AAPL,-,-,27.87,-,27.87
+2023-05-18,TFSA,AAPL(US0378331005) Cash Dividend USD 0.24 per Share - US Tax,Foreign Tax Withholding,AAPL,-,-,-4.19,-,-4.19
+2023-05-18,Margin,AAPL(US0378331005) Cash Dividend USD 0.24 per Share (Ordinary Dividend),Dividend,AAPL,-,-,19.44,-,19.44
+2023-05-18,Margin,AAPL(US0378331005) Cash Dividend USD 0.24 per Share - US Tax,Foreign Tax Withholding,AAPL,-,-,-5.83,-,-5.83
+2023-05-03,Margin,USD Debit Interest for Apr-2023,Debit Interest,-,-,-,-4.9,-,-4.9
+2023-05-03,Margin,USD IBKR Managed Securities (SYEP) Interest for Apr-2023,Credit Interest,-,-,-,0.08,-,0.08
+2023-05-03,Margin,CAD IBKR Managed Securities (SYEP) Interest for Apr-2023,Credit Interest,-,-,-,0.7,-,0.7
+2023-05-02,Margin,Disbursement Initiated by Rishi Sharma,Withdrawal,-,-,-,"-1,000.00",-,"-1,000.00"
+2023-04-28,TFSA,QQQ(US46090E1038) Cash Dividend USD 0.47223 per Share (Ordinary Dividend),Dividend,QQQ,-,-,3.83,-,3.83
+2023-04-28,TFSA,QQQ(US46090E1038) Cash Dividend USD 0.47223 per Share - US Tax,Foreign Tax Withholding,QQQ,-,-,-0.57,-,-0.57
+2023-04-20,RRSP,Electronic Fund Transfer (Regular Contribution),Deposit,-,-,-,750,-,750
+2023-04-13,RRSP,TSM(US8740391003) Cash Dividend USD 0.451071 per Share (Ordinary Div - NRA Withholding Exempt),Dividend,TSM,-,-,11.45,-,11.45
+2023-04-13,RRSP,TSM(US8740391003) Cash Dividend USD 0.451071 per Share - TW Tax,Foreign Tax Withholding,TSM,-,-,-2.41,-,-2.41
+2023-04-05,RRSP,USD Credit Interest for Mar-2023,Credit Interest,-,-,-,0.12,-,0.12
+2023-04-05,Margin,USD Debit Interest for Mar-2023,Debit Interest,-,-,-,-5.09,-,-5.09
+2023-04-04,RRSP,SUPER MICRO COMPUTER INC,Buy,SMCI,30,114.8600  USD,"-4,632.53",-1.34,"-4,633.88"
+2023-04-04,TFSA,R*****19:Global Snapshot for Mar 2023,Other Fee,-,-,-,-0.04,-,-0.04
+2023-04-04,TFSA,R*****19:Global Snapshot for Mar 2023,Other Fee,-,-,-,0.04,-,0.04
+2023-04-04,TFSA,GST-HST R*****19:Global Snapshot for Mar 2023,Sales Tax,-,-,-,-0.01,-,-0.01
+2023-04-04,TFSA,GST-HST CANCEL R*****19:Global Snapshot for Mar 2023,Sales Tax,-,-,-,0.01,-,0.01
+2023-04-03,RRSP,NVIDIA CORP,Sell,NVDA,-16,276.0900  USD,"5,935.27",-1.39,"5,933.88"
+2023-03-29,RRSP,NVDA(US67066G1040) Cash Dividend USD 0.04 per Share (Ordinary Dividend),Dividend,NVDA,-,-,1.74,-,1.74
+2023-03-29,TFSA,VOO(US9229083632) Cash Dividend USD 1.4874 per Share (Ordinary Dividend),Dividend,VOO,-,-,78.65,-,78.65
+2023-03-29,TFSA,VOO(US9229083632) Cash Dividend USD 1.4874 per Share - US Tax,Foreign Tax Withholding,VOO,-,-,-11.8,-,-11.8
+2023-03-29,RRSP,VOO(US9229083632) Cash Dividend USD 1.4874 per Share (Ordinary Dividend),Dividend,VOO,-,-,26.22,-,26.22
+2023-03-29,Margin,VOO(US9229083632) Cash Dividend USD 1.4874 per Share (Ordinary Dividend),Dividend,VOO,-,-,44.36,-,44.36
+2023-03-29,Margin,VOO(US9229083632) Cash Dividend USD 1.4874 per Share - US Tax,Foreign Tax Withholding,VOO,-,-,-13.31,-,-13.31
+2023-03-26,Margin,Electronic Fund Transfer,Deposit,-,-,-,"1,000.00",-,"1,000.00"
+2023-03-09,TFSA,MSFT(US5949181045) Cash Dividend USD 0.68 per Share (Ordinary Dividend),Dividend,MSFT,-,-,56.42,-,56.42
+2023-03-09,TFSA,MSFT(US5949181045) Cash Dividend USD 0.68 per Share - US Tax,Foreign Tax Withholding,MSFT,-,-,-8.46,-,-8.46
+2023-03-09,RRSP,Electronic Fund Transfer (Regular Contribution),Deposit,-,-,-,"10,500.00",-,"10,500.00"
+2023-03-09,RRSP,"Net Amount in Base from Forex Trade: 8,279 USD.CAD",Forex Trade Component,USD.CAD,"8,279.00",1.3769  CAD,46.09,-2.76,46.09
+2023-03-09,RRSP,HORIZONS USD CASH MAXIMIZER,Buy,HSUV.U,100,103.2200  USD,"-14,273.26",-1.12,"-14,274.38"
+2023-03-09,RRSP,HORIZONS USD CASH MAXIMIZER,Buy,HSUV.U,93,103.2200  USD,"-13,274.13",-0.64,"-13,274.78"
+2023-03-08,RRSP,HORIZONS HIGH INT SAVINGS,Sell,CASH,-100,50.0550  CAD,"5,005.50",-1,"5,004.50"
+2023-03-08,RRSP,HORIZONS HIGH INT SAVINGS,Sell,CASH,-2,50.0500  CAD,100.1,-0.02,100.08
+2023-03-08,RRSP,HORIZONS HIGH INT SAVINGS,Sell,CASH,-100,50.0550  CAD,"5,005.50",-1,"5,004.50"
+2023-03-08,RRSP,HORIZONS HIGH INT SAVINGS,Sell,CASH,-100,50.0550  CAD,"5,005.50",-1,"5,004.50"
+2023-03-08,RRSP,"Net Amount in Base from Forex Trade: 11,750 USD.CAD",Forex Trade Component,USD.CAD,"11,750.00",1.3782  CAD,22.51,-2.75,22.51
+2023-03-07,RRSP,Net Amount in Base from Forex Trade: -1.59 USD.CAD,Forex Trade Component,USD.CAD,-1.59,1.3613  CAD,-0.02,-,-0.02
+2023-03-07,RRSP,CASH(CA4405671054) Cash Dividend CAD 0.19152 per Share (Ordinary Dividend),Dividend,CASH,-,-,57.84,-,57.84
+2023-03-03,Margin,USD Debit Interest for Feb-2023,Debit Interest,-,-,-,-3.43,-,-3.43
+2023-03-03,Margin,CAD IBKR Managed Securities (SYEP) Interest for Feb-2023,Credit Interest,-,-,-,1.8,-,1.8
+2023-03-03,TFSA,USD Credit Interest for Feb-2023,Credit Interest,-,-,-,1.35,-,1.35
+2023-03-03,RRSP,USD Credit Interest for Feb-2023,Credit Interest,-,-,-,2.16,-,2.16
+2023-02-28,RRSP,Electronic Fund Transfer (Regular Contribution),Deposit,-,-,-,"2,000.00",-,"2,000.00"
+2023-02-16,TFSA,AAPL(US0378331005) Cash Dividend USD 0.23 per Share (Ordinary Dividend),Dividend,AAPL,-,-,26.62,-,26.62
+2023-02-16,TFSA,AAPL(US0378331005) Cash Dividend USD 0.23 per Share - US Tax,Foreign Tax Withholding,AAPL,-,-,-4,-,-4
+2023-02-16,Margin,AAPL(US0378331005) Cash Dividend USD 0.23 per Share (Ordinary Dividend),Dividend,AAPL,-,-,18.57,-,18.57
+2023-02-16,Margin,AAPL(US0378331005) Cash Dividend USD 0.23 per Share - US Tax,Foreign Tax Withholding,AAPL,-,-,-5.57,-,-5.57
+2023-02-10,TFSA,CASH(CA4405671054) Cash Dividend CAD 0.20184 per Share (Ordinary Dividend),Dividend,CASH,-,-,26.04,-,26.04
+2023-02-10,RRSP,CASH(CA4405671054) Cash Dividend CAD 0.20184 per Share (Ordinary Dividend),Dividend,CASH,-,-,53.89,-,53.89
+2023-02-10,Margin,CASH(CA4405671054) Cash Dividend CAD 0.20184 per Share (Ordinary Dividend),Dividend,CASH,-,-,40.17,-,40.17
+2023-02-08,RRSP,"Net Amount in Base from Forex Trade: -11,261 USD.CAD",Forex Trade Component,USD.CAD,"-11,261.00",1.3435  CAD,-16.76,-2.68,-16.76
+2023-02-08,RRSP,HORIZONS HIGH INT SAVINGS,Buy,CASH,2,50.0600  CAD,-100.12,-0.5,-100.62
+2023-02-08,RRSP,HORIZONS HIGH INT SAVINGS,Buy,CASH,300,50.0550  CAD,"-15,016.50",-2.52,"-15,019.02"
+2023-02-08,RRSP,Net Amount in Base from Forex Trade: -0.30276614 USD.CAD,Forex Trade Component,USD.CAD,-0.3,1.3435  CAD,0,-,0
+2023-02-06,TFSA,VANGUARD S&P 500 ETF,Buy,VOO,21,376.9750  USD,"-10,644.49",-1.34,"-10,645.84"
+2023-02-06,Margin,VANGUARD S&P 500 ETF,Buy,VOO,22,376.1400  USD,"-11,126.67",-1.34,"-11,128.02"
+2023-02-03,RRSP,WALT DISNEY CO/THE,Buy,DIS,20,111.1600  USD,"-2,979.09",-1.34,"-2,980.43"
+2023-02-03,Margin,CAD IBKR Managed Securities (SYEP) Interest for Jan-2023,Credit Interest,-,-,-,3.28,-,3.28
+2023-02-02,TFSA,HORIZONS HIGH INT SAVINGS,Sell,CASH,-100,50.0200  CAD,"5,002.00",-1,"5,001.00"
+2023-02-02,RRSP,HORIZONS HIGH INT SAVINGS,Sell,CASH,-67,50.0100  CAD,"3,350.67",-1,"3,349.67"
+2023-02-02,RRSP,HORIZONS HIGH INT SAVINGS,Sell,CASH,-200,50.0200  CAD,"10,004.00",-1.67,"10,002.33"
+2023-02-02,TFSA,HORIZONS HIGH INT SAVINGS,Sell,CASH,-29,50.0100  CAD,"1,450.29",-0.29,"1,450.00"
+2023-02-02,TFSA,"Net Amount in Base from Forex Trade: 4,925 USD.CAD",Forex Trade Component,USD.CAD,"4,925.00",1.3287  CAD,11.13,-2.66,11.13
+2023-02-02,Margin,HORIZONS HIGH INT SAVINGS,Sell,CASH,-99,50.0100  CAD,"4,950.99",-1,"4,949.99"
+2023-02-02,TFSA,VANGUARD S&P 500 ETF,Buy,VOO,18,381.0580  USD,"-9,132.82",-1.33,"-9,134.15"
+2023-02-02,TFSA,MICROSOFT CORP,Buy,MSFT,7,260.2650  USD,"-2,425.80",-1.33,"-2,427.13"
+2023-02-02,TFSA,INVESCO NASDAQ NEXT GEN 100,Sell,QQQJ,-185,26.9400  USD,"6,636.06",-1.52,"6,634.54"
+2023-02-02,TFSA,INVESCO NASDAQ NEXT GEN 100,Sell,QQQJ,-100,26.9400  USD,"3,587.06",-0.67,"3,586.39"
+2023-02-02,TFSA,SOFI TECHNOLOGIES INC,Buy,SOFI,127,7.8650  USD,"-1,329.98",-1.33,"-1,331.31"
+2023-02-02,RRSP,"Net Amount in Base from Forex Trade: 11,500 USD.CAD",Forex Trade Component,USD.CAD,"11,500.00",1.3303  CAD,10.57,-2.66,10.57
+2023-02-02,TFSA,INVESCO QQQ TRUST SERIES 1,Buy,QQQ,6,307.6000  USD,"-2,457.42",-1.33,"-2,458.75"
+2023-02-02,RRSP,TESLA INC,Buy,TSLA,5,188.1100  USD,"-1,252.34",-1.33,"-1,253.67"
+2023-02-02,RRSP,VANGUARD S&P 500 ETF,Buy,VOO,13,380.8700  USD,"-6,592.67",-1.33,"-6,594.00"
+2023-02-02,RRSP,NVIDIA CORP,Buy,NVDA,4,213.3100  USD,"-1,136.09",-1.33,"-1,137.42"
+2023-02-02,Margin,"Net Amount in Base from Forex Trade: 7,515 USD.CAD",Forex Trade Component,USD.CAD,"7,515.00",1.3306  CAD,4.11,-2.66,4.11
+2023-02-02,TFSA,ALPHABET INC-CL A,Buy,GOOGL,20,106.2200  USD,"-2,828.64",-1.33,"-2,829.97"
+2023-02-01,Margin,HORIZONS HIGH INT SAVINGS,Sell,CASH,-100,50.0100  CAD,"5,001.00",-1,"5,000.00"
+2023-01-17,RRSP,HORIZONS HIGH INT SAVINGS,Buy,CASH,200,50.1100  CAD,"-10,022.00",-2,"-10,024.00"
+2023-01-15,RRSP,Electronic Fund Transfer (Regular Contribution),Deposit,-,-,-,"12,000.00",-,"12,000.00"
+2023-01-13,Margin,HORIZONS HIGH INT SAVINGS,Buy,CASH,100,50.1050  CAD,"-5,010.50",-1,"-5,011.50"
+2023-01-13,Margin,HORIZONS HIGH INT SAVINGS,Buy,CASH,99,50.1100  CAD,"-4,960.89",-0.99,"-4,961.88"
+2023-01-12,RRSP,TSM(US8740391003) Cash Dividend USD 0.447299 per Share (Ordinary Dividend),Dividend,TSM,-,-,11.37,-,11.37
+2023-01-12,RRSP,TSM(US8740391003) Cash Dividend USD 0.447299 per Share - TW Tax,Foreign Tax Withholding,TSM,-,-,-2.38,-,-2.38
+2023-01-04,TFSA,HORIZONS HIGH INT SAVINGS,Buy,CASH,100,50.0300  CAD,"-5,003.00",-1,"-5,004.00"
+2023-01-04,TFSA,HORIZONS HIGH INT SAVINGS,Buy,CASH,29,50.0300  CAD,"-1,450.87",-0.29,"-1,451.16"
+2023-01-04,RRSP,HORIZONS HIGH INT SAVINGS,Buy,CASH,67,50.0300  CAD,"-3,352.01",-1,"-3,353.01"
+2023-01-01,TFSA,Electronic Fund Transfer (Regular Contribution),Deposit,-,-,-,"6,500.00",-,"6,500.00"
+2023-01-01,TFSA,Cancellation (Regular Contribution),Withdrawal,-,-,-,"-6,500.00",-,"-6,500.00"
+2023-01-01,TFSA,Electronic Fund Transfer (Regular Contribution),Deposit,-,-,-,"6,500.00",-,"6,500.00"
+2022-12-23,TFSA,QQQJ(US46138G6310) Cash Dividend USD 0.07708 per Share (Ordinary Dividend),Dividend,QQQJ,-,-,29.87,-,29.87
+2022-12-23,TFSA,QQQJ(US46138G6310) Cash Dividend USD 0.07708 per Share - US Tax,Foreign Tax Withholding,QQQJ,-,-,-4.49,-,-4.49
+2022-12-22,RRSP,NVDA(US67066G1040) Cash Dividend USD 0.04 per Share (Ordinary Dividend),Dividend,NVDA,-,-,1.53,-,1.53
+2022-12-20,TFSA,PROSHARES ULTRAPRO QQQ,Sell,TQQQ,-200,18.1250  USD,"4,934.71",-1.51,"4,933.20"
+2022-12-08,TFSA,MSFT(US5949181045) Cash Dividend USD 0.68 per Share (Ordinary Dividend),Dividend,MSFT,-,-,48.99,-,48.99
+2022-12-08,TFSA,MSFT(US5949181045) Cash Dividend USD 0.68 per Share - US Tax,Foreign Tax Withholding,MSFT,-,-,-7.35,-,-7.35
+2022-12-05,Margin,CAD IBKR Managed Securities (SYEP) Interest for Nov-2022,Credit Interest,-,-,-,1.9,-,1.9
+2022-11-10,TFSA,AAPL(US0378331005) Cash Dividend USD 0.23 per Share (Ordinary Dividend),Dividend,AAPL,-,-,26.35,-,26.35
+2022-11-10,TFSA,AAPL(US0378331005) Cash Dividend USD 0.23 per Share - US Tax,Foreign Tax Withholding,AAPL,-,-,-3.96,-,-3.96
+2022-11-10,Margin,AAPL(US0378331005) Cash Dividend USD 0.23 per Share (Ordinary Dividend),Dividend,AAPL,-,-,18.38,-,18.38
+2022-11-10,Margin,AAPL(US0378331005) Cash Dividend USD 0.23 per Share - US Tax,Foreign Tax Withholding,AAPL,-,-,-5.51,-,-5.51
+2022-10-13,RRSP,TSM(US8740391003) Cash Dividend USD 0.434892 per Share (Ordinary Dividend),Dividend,TSM,-,-,11.48,-,11.48
+2022-10-13,RRSP,TSM(US8740391003) Cash Dividend USD 0.434892 per Share - TW Tax,Foreign Tax Withholding,TSM,-,-,-2.42,-,-2.42
+2022-10-04,TFSA,ALPHABET INC-CL A,Buy,GOOGL,20,101.4800  USD,"-2,742.19",-1.35,"-2,743.54"
+2022-10-01,Margin,Electronic Fund Transfer,Deposit,-,-,-,"10,000.00",-,"10,000.00"
+2022-10-01,Margin,Cancellation,Withdrawal,-,-,-,"-10,000.00",-,"-10,000.00"
+2022-10-01,Margin,Electronic Fund Transfer,Deposit,-,-,-,"10,000.00",-,"10,000.00"
+2022-09-29,RRSP,NVDA(US67066G1040) Cash Dividend USD 0.04 per Share (Ordinary Dividend),Dividend,NVDA,-,-,1.53,-,1.53
+2022-09-23,TFSA,QQQJ(US46138G6310) Cash Dividend USD 0.03839 per Share (Ordinary Dividend),Dividend,QQQJ,-,-,14.87,-,14.87
+2022-09-23,TFSA,QQQJ(US46138G6310) Cash Dividend USD 0.03839 per Share - US Tax,Foreign Tax Withholding,QQQJ,-,-,-2.23,-,-2.23
+2022-09-08,TFSA,MSFT(US5949181045) Cash Dividend USD 0.62 per Share (Ordinary Dividend),Dividend,MSFT,-,-,43.02,-,43.02
+2022-09-08,TFSA,MSFT(US5949181045) Cash Dividend USD 0.62 per Share - US Tax,Foreign Tax Withholding,MSFT,-,-,-6.45,-,-6.45
+2022-09-06,Margin,CAD IBKR Managed Securities (SYEP) Interest for Aug-2022,Credit Interest,-,-,-,0.06,-,0.06
+2022-08-11,TFSA,AAPL(US0378331005) Cash Dividend USD 0.23 per Share (Ordinary Dividend),Dividend,AAPL,-,-,25.24,-,25.24
+2022-08-11,TFSA,AAPL(US0378331005) Cash Dividend USD 0.23 per Share - US Tax,Foreign Tax Withholding,AAPL,-,-,-3.79,-,-3.79
+2022-08-11,Margin,AAPL(US0378331005) Cash Dividend USD 0.23 per Share (Ordinary Dividend),Dividend,AAPL,-,-,17.61,-,17.61
+2022-08-11,Margin,AAPL(US0378331005) Cash Dividend USD 0.23 per Share - US Tax,Foreign Tax Withholding,AAPL,-,-,-5.28,-,-5.28
+2022-07-14,RRSP,TSM(US8740391003) Cash Dividend USD 0.461579 per Share (Ordinary Dividend),Dividend,TSM,-,-,11.5,-,11.5
+2022-07-14,RRSP,TSM(US8740391003) Cash Dividend USD 0.461579 per Share - TW Tax,Foreign Tax Withholding,TSM,-,-,-2.41,-,-2.41
+2022-07-06,Margin,CAD IBKR Managed Securities (SYEP) Interest for Jun-2022,Credit Interest,-,-,-,0.21,-,0.21
+2022-07-01,RRSP,NVDA(US67066G1040) Cash Dividend USD 0.04 per Share (Ordinary Dividend),Dividend,NVDA,-,-,1.44,-,1.44
+2022-06-30,TFSA,QQQJ(US46138G6310) Cash Dividend USD 0.03704 per Share (Ordinary Dividend),Dividend,QQQJ,-,-,13.59,-,13.59
+2022-06-30,TFSA,QQQJ(US46138G6310) Cash Dividend USD 0.03704 per Share - US Tax,Foreign Tax Withholding,QQQJ,-,-,-2.03,-,-2.03
+2022-06-09,TFSA,MSFT(US5949181045) Cash Dividend USD 0.62 per Share (Ordinary Dividend),Dividend,MSFT,-,-,41.73,-,41.73
+2022-06-09,TFSA,MSFT(US5949181045) Cash Dividend USD 0.62 per Share - US Tax,Foreign Tax Withholding,MSFT,-,-,-6.26,-,-6.26
+2022-06-03,Margin,USD Debit Interest for May-2022,Debit Interest,-,-,-,-0.19,-,-0.19
+2022-05-24,TFSA,PROSHARES ULTRAPRO QQQ,Sell,TQQQ,-208,25.9300  USD,"6,915.47",-1.53,"6,913.94"
+2022-05-13,RRSP,Electronic Fund Transfer (Regular Contribution),Deposit,-,-,-,"3,300.00",-,"3,300.00"
+2022-05-12,Margin,Disbursement Initiated by Rishi Sharma,Withdrawal,-,-,-,"-3,300.00",-,"-3,300.00"
+2022-05-12,RRSP,PROSHARES ULTRAPRO QQQ,Sell,TQQQ,-296,28.7800  USD,"11,113.73",-2.24,"11,111.50"
+2022-05-12,TFSA,AAPL(US0378331005) Cash Dividend USD 0.23 per Share (Ordinary Dividend),Dividend,AAPL,-,-,25.8,-,25.8
+2022-05-12,TFSA,AAPL(US0378331005) Cash Dividend USD 0.23 per Share - US Tax,Foreign Tax Withholding,AAPL,-,-,-3.87,-,-3.87
+2022-05-12,Margin,AAPL(US0378331005) Cash Dividend USD 0.23 per Share (Ordinary Dividend),Dividend,AAPL,-,-,18,-,18
+2022-05-12,Margin,AAPL(US0378331005) Cash Dividend USD 0.23 per Share - US Tax,Foreign Tax Withholding,AAPL,-,-,-5.4,-,-5.4
+2022-05-11,Margin,PROSHARES ULTRAPRO QQQ,Sell,TQQQ,-0.61,29.7100  USD,23.65,-0.24,23.41
+2022-05-11,Margin,PROSHARES ULTRAPRO QQQ,Sell,TQQQ,-76,29.7100  USD,"2,933.77",-1.09,"2,932.68"
+2022-05-11,Margin,"Net Amount in Base from Forex Trade: -2,208 USD.CAD",Forex Trade Component,USD.CAD,"-2,208.00",1.2987  CAD,-3.93,-2.61,-3.93
+2022-05-09,RRSP,Net Amount in Base from Forex Trade: 800 USD.CAD,Forex Trade Component,USD.CAD,800,1.2937  CAD,3.58,-2.58,3.58
+2022-05-09,RRSP,PROSHARES ULTRAPRO QQQ,Buy,TQQQ,20,31.9700  USD,-832.12,-1.3,-833.42
+2022-05-09,TFSA,INVESCO NASDAQ NEXT GEN 100,Sell,QQQJ,-100,24.2400  USD,"3,154.59",-1.33,"3,153.26"
+2022-05-07,RRSP,Electronic Fund Transfer (Regular Contribution),Deposit,-,-,-,"1,000.00",-,"1,000.00"
+2022-05-04,RRSP,ADVANCED MICRO DEVICES,Buy,AMD,2,93.2600  USD,-237.53,-1.27,-238.81
+2022-05-04,Margin,"Net Amount in Base from Forex Trade: 1,558 USD.CAD",Forex Trade Component,USD.CAD,"1,558.00",1.2821  CAD,-15.97,-2.57,-15.97
+2022-05-04,Margin,ADVANCED MICRO DEVICES,Buy,AMD,20,93.2000  USD,"-2,373.80",-1.27,"-2,375.08"
+2022-05-04,Margin,Electronic Fund Transfer,Deposit,-,-,-,500,-,500
+2022-05-04,Margin,Cancellation,Withdrawal,-,-,-,-500,-,-500
+2022-05-04,Margin,Electronic Fund Transfer,Deposit,-,-,-,500,-,500
+2022-04-29,Margin,Electronic Fund Transfer,Deposit,-,-,-,"2,000.00",-,"2,000.00"
+2022-04-26,Margin,"Net Amount in Base from Forex Trade: 3,232 USD.CAD",Forex Trade Component,USD.CAD,"3,232.00",1.2801  CAD,5.37,-2.55,5.37
+2022-04-26,Margin,PROSHARES ULTRAPRO QQQ,Buy,TQQQ,76,39.1580  USD,"-3,817.03",-1.28,"-3,818.31"
+2022-04-26,Margin,PROSHARES ULTRAPRO QQQ,Buy,TQQQ,0.61,39.1600  USD,-30.77,-,-30.77
+2022-04-18,RRSP,"Net Amount in Base from Forex Trade: 1,585 USD.CAD",Forex Trade Component,USD.CAD,"1,585.00",1.2618  CAD,-3.63,-2.52,-3.63
+2022-04-18,RRSP,PROSHARES ULTRAPRO QQQ,Buy,TQQQ,30,47.6500  USD,"-1,802.74",-1.26,"-1,804.00"
+2022-04-14,Margin,Electronic Fund Transfer,Deposit,-,-,-,"4,000.00",-,"4,000.00"
+2022-04-14,RRSP,TSM(US8740391003) Cash Dividend USD 0.475613 per Share (Ordinary Div - NRA Withholding Exempt),Dividend,TSM,-,-,11.4,-,11.4
+2022-04-14,RRSP,TSM(US8740391003) Cash Dividend USD 0.475613 per Share - TW Tax,Foreign Tax Withholding,TSM,-,-,-2.4,-,-2.4
+2022-04-05,Margin,CAD IBKR Managed Securities (SYEP) Interest for Mar-2022,Credit Interest,-,-,-,0.31,-,0.31
+2022-03-31,TFSA,QQQJ(US46138G6310) Cash Dividend USD 0.02849 per Share (Ordinary Dividend),Dividend,QQQJ,-,-,13.72,-,13.72
+2022-03-31,TFSA,QQQJ(US46138G6310) Cash Dividend USD 0.02849 per Share - US Tax,Foreign Tax Withholding,QQQJ,-,-,-4.12,-,-4.12
+2022-03-31,TFSA,QQQJ(US46138G6310) Cash Dividend USD 0.02849 per Share - US Tax,Foreign Tax Withholding,QQQJ,-,-,4.12,-,4.12
+2022-03-31,TFSA,QQQJ(US46138G6310) Cash Dividend USD 0.02849 per Share - US Tax,Foreign Tax Withholding,QQQJ,-,-,-2.07,-,-2.07
+2022-03-24,RRSP,NVDA(US67066G1040) Cash Dividend USD 0.04 per Share (Ordinary Dividend),Dividend,NVDA,-,-,1.4,-,1.4
+2022-03-17,RRSP,Electronic Fund Transfer (Regular Contribution),Deposit,-,-,-,"2,000.00",-,"2,000.00"
+2022-03-10,TFSA,MSFT(US5949181045) Cash Dividend USD 0.62 per Share (Ordinary Dividend),Dividend,MSFT,-,-,41.96,-,41.96
+2022-03-10,TFSA,MSFT(US5949181045) Cash Dividend USD 0.62 per Share - US Tax,Foreign Tax Withholding,MSFT,-,-,-12.59,-,-12.59
+2022-03-09,RRSP,Net Amount in Base from Forex Trade: 750 USD.CAD,Forex Trade Component,USD.CAD,750,1.2826  CAD,-3.97,-2.58,-3.97
+2022-03-09,RRSP,PROSHARES ULTRAPRO QQQ,Buy,TQQQ,35,45.4500  USD,"-2,037.27",-1.28,"-2,038.55"
+2022-03-08,RRSP,PROSHARES ULTRAPRO QQQ,Buy,TQQQ,30,42.0873  USD,"-1,627.39",-1.29,"-1,628.68"
+2022-03-02,RRSP,Electronic Fund Transfer (Regular Contribution),Deposit,-,-,-,"1,000.00",-,"1,000.00"
+2022-02-24,RRSP,"Net Amount in Base from Forex Trade: 5,239 USD.CAD",Forex Trade Component,USD.CAD,"5,239.00",1.2833  CAD,-10.51,-2.55,-10.51
+2022-02-24,RRSP,Net Amount in Base from Forex Trade: 361 USD.CAD,Forex Trade Component,USD.CAD,361,1.2845  CAD,-3.52,-2.55,-3.52
+2022-02-24,RRSP,PROSHARES ULTRAPRO QQQ,Buy,TQQQ,81,42.8800  USD,"-4,452.05",-1.28,"-4,453.33"
+2022-02-24,TFSA,PROSHARES ULTRAPRO QQQ,Buy,TQQQ,15,42.7800  USD,-822.53,-1.28,-823.81
+2022-02-10,TFSA,AAPL(US0378331005) Cash Dividend USD 0.22 per Share (Ordinary Dividend),Dividend,AAPL,-,-,24.07,-,24.07
+2022-02-10,TFSA,AAPL(US0378331005) Cash Dividend USD 0.22 per Share - US Tax,Foreign Tax Withholding,AAPL,-,-,-7.23,-,-7.23
+2022-02-10,Margin,AAPL(US0378331005) Cash Dividend USD 0.22 per Share (Ordinary Dividend),Dividend,AAPL,-,-,16.79,-,16.79
+2022-02-10,Margin,AAPL(US0378331005) Cash Dividend USD 0.22 per Share - US Tax,Foreign Tax Withholding,AAPL,-,-,-5.04,-,-5.04
+2022-02-02,RRSP,Electronic Fund Transfer (Regular Contribution),Deposit,-,-,-,"1,200.00",-,"1,200.00"
+2022-02-02,TFSA,R*****19:US Consolidated Snapshot for Jan 2022,Other Fee,-,-,-,-0.03,-,-0.03
+2022-02-02,TFSA,R*****19:US Consolidated Snapshot for Jan 2022,Other Fee,-,-,-,0.03,-,0.03
+2022-01-27,RRSP,Electronic Fund Transfer (Regular Contribution),Deposit,-,-,-,"2,000.00",-,"2,000.00"
+2022-01-26,TFSA,MICROSOFT CORP,Buy,MSFT,3,298.8700  USD,"-1,135.92",-1.27,"-1,137.18"
+2022-01-26,TFSA,PROSHARES ULTRAPRO QQQ,Buy,TQQQ,167,56.6384  USD,"-11,983.12",-1.27,"-11,984.38"
+2022-01-25,RRSP,Electronic Fund Transfer (Regular Contribution),Deposit,-,-,-,"2,000.00",-,"2,000.00"
+2022-01-24,TFSA,PROSHARES ULTRAPRO QQQ,Sell,TQQQ,-200,53.9200  USD,"13,628.82",-1.37,"13,627.45"
+2022-01-13,RRSP,TSM(US8740391003) Cash Dividend USD 0.496981 per Share (Ordinary Dividend),Dividend,TSM,-,-,11.82,-,11.82
+2022-01-13,RRSP,TSM(US8740391003) Cash Dividend USD 0.496981 per Share - TW Tax,Foreign Tax Withholding,TSM,-,-,-2.48,-,-2.48
+2022-01-11,TFSA,"Net Amount in Base from Forex Trade: 4,885 USD.CAD",Forex Trade Component,USD.CAD,"4,885.00",1.2590  CAD,-10.11,-2.54,-10.11
+2022-01-11,TFSA,BLOCK INC,Buy,SQ,20,148.3600  USD,"-3,730.96",-1.26,"-3,732.21"
+2022-01-11,TFSA,PROSHARES ULTRAPRO QQQ,Buy,TQQQ,13,149.2000  USD,"-2,438.85",-1.26,"-2,440.11"
+2022-01-07,Margin,Net Amount in Base from Forex Trade: -0.06500838 USD.CAD,Forex Trade Component,USD.CAD,-0.07,1.2726  CAD,0,-,0
+2022-01-07,TFSA,MICROSOFT CORP,Buy,MSFT,7,312.3900  USD,"-2,764.90",-1.26,"-2,766.17"
+2022-01-05,Margin,USD IBKR Managed Securities (SYEP) Interest for Dec-2021,Credit Interest,-,-,-,0.04,-,0.04
+2022-01-04,RRSP,TESLA INC,Buy,TSLA,10,1185.4900  USD,"-15,062.84",-1.27,"-15,064.11"
+2022-01-04,TFSA,Electronic Fund Transfer (Regular Contribution),Deposit,-,-,-,"6,000.00",-,"6,000.00"
+2022-01-04,RRSP,NVIDIA CORP,Buy,NVDA,28,286.5900  USD,"-10,195.96",-1.27,"-10,197.23"
+2022-01-04,Margin,WALT DISNEY CO/THE,Buy,DIS,0.36,157.0500  USD,-72.1,-0.72,-72.82
+2022-01-04,Margin,WALT DISNEY CO/THE,Buy,DIS,25,157.0500  USD,"-4,988.69",-0.55,"-4,989.24"
+2022-01-04,TFSA,R*****19:US Consolidated Snapshot for Dec 2021,Other Fee,-,-,-,-0.04,-,-0.04
+2022-01-04,TFSA,R*****19:US Consolidated Snapshot for Dec 2021,Other Fee,-,-,-,0.04,-,0.04
+2022-01-04,TFSA,GST-HST R*****19:US Consolidated Snapshot for Dec 2021,Sales Tax,-,-,-,-0.01,-,-0.01
+2022-01-04,TFSA,GST-HST CANCEL R*****19:US Consolidated Snapshot for Dec 2021,Sales Tax,-,-,-,0.01,-,0.01
+2021-12-31,TFSA,TQQQ(US74347X8314) Cash Dividend USD 0.000119 per Share (Ordinary Dividend),Dividend,TQQQ,-,-,0.03,-,0.03
+2021-12-31,RRSP,TQQQ(US74347X8314) Cash Dividend USD 0.000119 per Share (Ordinary Dividend),Dividend,TQQQ,-,-,0.01,-,0.01
+2021-12-31,TFSA,QQQJ(US46138G6310) Cash Dividend USD 0.22789 per Share (Mixed Income),Dividend,QQQJ,-,-,111.82,-,111.82
+2021-12-31,TFSA,QQQJ(US46138G6310) Cash Dividend USD 0.22789 per Share - US Tax,Foreign Tax Withholding,QQQJ,-,-,-1.58,-,-1.58
+2021-12-31,TFSA,QQQJ(US46138G6310) Cash Dividend USD 0.22789 per Share - US Tax,Foreign Tax Withholding,QQQJ,-,-,1.56,-,1.56
+2021-12-31,TFSA,QQQJ(US46138G6310) Cash Dividend USD 0.22789 per Share - US Tax,Foreign Tax Withholding,QQQJ,-,-,-10.18,-,-10.18
+2021-12-31,TFSA,QQQJ(US46138G6310) Cash Dividend USD 0.22789 per Share - US Tax,Foreign Tax Withholding,QQQJ,-,-,10.22,-,10.22
+2021-12-31,TFSA,QQQJ(US46138G6310) Cash Dividend USD 0.22789 per Share - US Tax,Foreign Tax Withholding,QQQJ,-,-,-16.63,-,-16.63
+2021-12-23,RRSP,NVDA(US67066G1040) Cash Dividend USD 0.04 per Share (Ordinary Dividend),Dividend,NVDA,-,-,1.64,-,1.64
+2021-12-13,TFSA,PROSHARES ULTRAPRO QQQ,Buy,TQQQ,150,164.2400  USD,"-31,553.79",-1.28,"-31,555.07"
+2021-12-13,TFSA,PROSHARES ULTRAPRO QQQ,Buy,TQQQ,50,164.2400  USD,"-10,517.93",-,"-10,517.93"
+2021-12-13,RRSP,PROSHARES ULTRAPRO QQQ,Buy,TQQQ,50,164.0782  USD,"-10,507.57",-1.28,"-10,508.85"
+2021-12-09,TFSA,MSFT(US5949181045) Cash Dividend USD 0.62 per Share (Ordinary Dividend),Dividend,MSFT,-,-,33.89,-,33.89
+2021-12-09,TFSA,MSFT(US5949181045) Cash Dividend USD 0.62 per Share - US Tax,Foreign Tax Withholding,MSFT,-,-,-5.09,-,-5.09
+2021-12-06,RRSP,NVIDIA CORP,Sell,NVDA,-13,286.5300  USD,"4,751.47",-1.3,"4,750.17"
+2021-12-06,RRSP,NVIDIA CORP,Sell,NVDA,-19,286.5300  USD,"6,944.46",-0.04,"6,944.42"
+2021-12-06,RRSP,TESLA INC,Sell,TSLA,-11,958.3200  USD,"13,446.76",-1.35,"13,445.42"
+2021-12-03,Margin,USD IBKR Managed Securities (SYEP) Interest for Nov-2021,Credit Interest,-,-,-,0.03,-,0.03
+2021-12-03,Margin,PROSHARES ULTRAPRO QQQ,Sell,TQQQ,-15,145.6750  USD,"2,807.01",-1.3,"2,805.71"
+2021-11-26,TFSA,PROSHARES ULTRAPRO QQQ,Sell,TQQQ,-113,161.1300  USD,"23,287.64",-1.41,"23,286.22"
+2021-11-26,TFSA,PROSHARES ULTRAPRO QQQ,Sell,TQQQ,-100,161.1300  USD,"20,608.53",-0.2,"20,608.32"
+2021-11-26,RRSP,PROSHARES ULTRAPRO QQQ,Sell,TQQQ,-52,161.5500  USD,"10,744.37",-1.34,"10,743.03"
+2021-11-11,TFSA,AAPL(US0378331005) Cash Dividend USD 0.22 per Share (Ordinary Dividend),Dividend,AAPL,-,-,23.74,-,23.74
+2021-11-11,TFSA,AAPL(US0378331005) Cash Dividend USD 0.22 per Share - US Tax,Foreign Tax Withholding,AAPL,-,-,-3.56,-,-3.56
+2021-11-11,Margin,AAPL(US0378331005) Cash Dividend USD 0.22 per Share (Ordinary Dividend),Dividend,AAPL,-,-,16.56,-,16.56
+2021-11-11,Margin,AAPL(US0378331005) Cash Dividend USD 0.22 per Share - US Tax,Foreign Tax Withholding,AAPL,-,-,-4.97,-,-4.97
+2021-11-03,Margin,CAD IBKR Managed Securities (SYEP) Interest for Oct-2021,Credit Interest,-,-,-,1.38,-,1.38
+2021-11-03,Margin,USD Debit Interest for Oct-2021,Debit Interest,-,-,-,-0.63,-,-0.63
+2021-11-02,TFSA,R*****19:US Consolidated Snapshot for Oct 2021,Other Fee,-,-,-,-0.06,-,-0.06
+2021-11-02,TFSA,R*****19:US Consolidated Snapshot for Oct 2021,Other Fee,-,-,-,0.06,-,0.06
+2021-11-02,TFSA,GST-HST R*****19:US Consolidated Snapshot for Oct 2021,Sales Tax,-,-,-,-0.01,-,-0.01
+2021-11-02,TFSA,GST-HST CANCEL R*****19:US Consolidated Snapshot for Oct 2021,Sales Tax,-,-,-,0.01,-,0.01
+2021-11-01,TFSA,PROSHARES ULTRAPRO QQQ,Buy,TQQQ,25,155.0750  USD,"-4,795.69",-1.24,"-4,796.93"
+2021-10-28,TFSA,PALANTIR TECHNOLOGIES INC-A,Sell,PLTR,-79,25.4350  USD,"2,480.56",-1.26,"2,479.30"
+2021-10-28,TFSA,PALANTIR TECHNOLOGIES INC-A,Sell,PLTR,-100,25.4350  USD,"3,139.95",-0.03,"3,139.92"
+2021-10-28,Margin,PALANTIR TECHNOLOGIES INC-A,Sell,PLTR,-80,25.4350  USD,"2,511.96",-1.26,"2,510.70"
+2021-10-26,TFSA,PROSHARES ULTRAPRO QQQ,Buy,TQQQ,66,150.0800  USD,"-12,271.65",-1.24,"-12,272.89"
+2021-10-26,TFSA,PROSHARES ULTRAPRO QQQ,Buy,TQQQ,60,150.0400  USD,"-11,153.07",-1.24,"-11,154.31"
+2021-10-25,TFSA,ARK INNOVATION ETF,Sell,ARKK,-1,120.1600  USD,148.81,-1.24,147.57
+2021-10-25,TFSA,ARK INNOVATION ETF,Sell,ARKK,-75,120.1500  USD,"11,159.53",-0.07,"11,159.46"
+2021-10-25,TFSA,ARK INNOVATION ETF,Sell,ARKK,-75,120.1500  USD,"11,159.53",-0.07,"11,159.46"
+2021-10-25,TFSA,ARK INNOVATION ETF,Sell,ARKK,-6,120.1500  USD,892.76,-0.01,892.76
+2021-10-20,RRSP,Electronic Fund Transfer (Regular Contribution),Deposit,-,-,-,"2,000.00",-,"2,000.00"
+2021-10-14,TFSA,PROSHARES ULTRAPRO QQQ,Buy,TQQQ,8,133.0700  USD,"-1,316.75",-1.24,"-1,317.99"
+2021-10-14,TFSA,PROSHARES ULTRAPRO QQQ,Buy,TQQQ,29,133.0700  USD,"-4,773.23",-,"-4,773.23"
+2021-10-14,RRSP,TSM(US8740391003) Cash Dividend USD 0.491246 per Share (Ordinary Dividend),Dividend,TSM,-,-,11.54,-,11.54
+2021-10-14,RRSP,TSM(US8740391003) Cash Dividend USD 0.491246 per Share - TW Tax,Foreign Tax Withholding,TSM,-,-,-2.42,-,-2.42
+2021-10-05,Margin,USD Debit Interest for Sep-2021,Debit Interest,-,-,-,-0.6,-,-0.6
+2021-10-05,Margin,USD IBKR Managed Securities (SYEP) Interest for Sep-2021,Credit Interest,-,-,-,0.06,-,0.06
+2021-10-05,Margin,CAD IBKR Managed Securities (SYEP) Interest for Sep-2021,Credit Interest,-,-,-,0.02,-,0.02
+2021-10-04,Margin,"Net Amount in Base from Forex Trade: 1,113 USD.CAD",Forex Trade Component,USD.CAD,"1,113.00",1.2578  CAD,-1.42,-2.53,-1.42
+2021-10-04,TFSA,"Net Amount in Base from Forex Trade: 7,950 USD.CAD",Forex Trade Component,USD.CAD,"7,950.00",1.2578  CAD,5.42,-2.53,5.42
+2021-10-04,TFSA,PROSHARES ULTRAPRO QQQ,Buy,TQQQ,25,116.7280  USD,"-3,673.43",-1.26,"-3,674.69"
+2021-10-04,TFSA,R*****19:Global Snapshot for Sep 2021,Other Fee,-,-,-,-0.08,-,-0.08
+2021-10-04,TFSA,R*****19:Global Snapshot for Sep 2021,Other Fee,-,-,-,0.08,-,0.08
+2021-10-04,TFSA,GST-HST R*****19:Global Snapshot for Sep 2021,Sales Tax,-,-,-,-0.01,-,-0.01
+2021-10-04,TFSA,GST-HST CANCEL R*****19:Global Snapshot for Sep 2021,Sales Tax,-,-,-,0.01,-,0.01
+2021-09-30,TFSA,QQQJ(US46138G6310) Cash Dividend USD 0.0243 per Share (Ordinary Dividend),Dividend,QQQJ,-,-,11.87,-,11.87
+2021-09-30,TFSA,QQQJ(US46138G6310) Cash Dividend USD 0.0243 per Share - US Tax,Foreign Tax Withholding,QQQJ,-,-,-1.78,-,-1.78
+2021-09-29,TFSA,LIGHTSPEED COMMERCE INC,Sell,LSPD,-81,125.8500  CAD,"10,193.85",-1,"10,192.85"
+2021-09-29,Margin,LIGHTSPEED COMMERCE INC,Sell,LSPD,-10,125.8400  CAD,"1,258.40",-1,"1,257.40"
+2021-09-28,RRSP,Net Amount in Base from Forex Trade: -0.29 USD.CAD,Forex Trade Component,USD.CAD,-0.29,1.2628  CAD,0,-,0
+2021-09-23,RRSP,Electronic Fund Transfer (Regular Contribution),Deposit,-,-,-,"2,000.00",-,"2,000.00"
+2021-09-23,RRSP,NVDA(US67066G1040) Cash Dividend USD 0.04 per Share (Ordinary Dividend),Dividend,NVDA,-,-,1.62,-,1.62
+2021-09-23,RRSP,"Net Amount in Base from Forex Trade: 1,739 USD.CAD",Forex Trade Component,USD.CAD,"1,739.00",1.2649  CAD,-1.42,-2.55,-1.42
+2021-09-23,RRSP,PROSHARES ULTRAPRO QQQ,Buy,TQQQ,12,141.3900  USD,"-2,147.15",-1.27,"-2,148.41"
+2021-09-23,RRSP,Net Amount in Base from Forex Trade: -49 USD.CAD,Forex Trade Component,USD.CAD,-49,1.2645  CAD,-2.6,-2.55,-2.6
+2021-09-22,Margin,Net Amount in Base from Forex Trade: -250 EUR.CAD,Forex Trade Component,EUR.CAD,-250,1.4928  CAD,-2.58,-2.56,-2.58
+2021-09-22,Margin,Net Amount in Base from Forex Trade: 250 EUR.CAD,Forex Trade Component,EUR.CAD,250,1.4930  CAD,-2.63,-2.56,-2.63
+2021-09-21,Margin,PROSHARES ULTRAPRO QQQ,Buy,TQQQ,10,136.3475  USD,"-1,747.29",-1.28,"-1,748.57"
+2021-09-13,Margin,"METRO OMONOIA 2 ATHENS CENTER, GRC (Foreign Amount: 152.60 CAD) (CASH WITHDRAWAL)",Debit Card Activity,-,-,-,-230.13,-,-230.13
+2021-09-13,Margin,Net Amount in Base from Forex Trade: -250 EUR.CAD,Forex Trade Component,EUR.CAD,-250,1.4918  CAD,-2.99,-2.54,-2.99
+2021-09-10,Margin,ATM Withdrawal Fee,Other Fee,-,-,-,-0.5,-,-0.5
+2021-09-09,Margin,"ALPHA BANK ERMIONI, GRC (Foreign Amount: 405.53 CAD) (CASH WITHDRAWAL)",Debit Card Activity,-,-,-,-405.53,-,-405.53
+2021-09-09,TFSA,MSFT(US5949181045) Cash Dividend USD 0.56 per Share (Ordinary Dividend),Dividend,MSFT,-,-,30.49,-,30.49
+2021-09-09,TFSA,MSFT(US5949181045) Cash Dividend USD 0.56 per Share - US Tax,Foreign Tax Withholding,MSFT,-,-,-4.57,-,-4.57
+2021-09-08,Margin,ATM Withdrawal Fee,Other Fee,-,-,-,-0.5,-,-0.5
+2021-09-03,Margin,USD IBKR Managed Securities (SYEP) Interest for Aug-2021,Credit Interest,-,-,-,0.06,-,0.06
+2021-08-26,Margin,"B B V A PALMA DE MALL, ESP (Foreign Amount: 56.00 CAD) (CASH WITHDRAWAL)",Debit Card Activity,-,-,-,-83.51,-,-83.51
+2021-08-25,Margin,ATM Withdrawal Fee,Other Fee,-,-,-,-0.5,-,-0.5
+2021-08-25,Margin,Net Amount in Base from Forex Trade: 250 EUR.CAD,Forex Trade Component,EUR.CAD,250,1.4812  CAD,-2.32,-2.52,-2.32
+2021-08-25,Margin,Electronic Fund Transfer,Deposit,-,-,-,"1,000.00",-,"1,000.00"
+2021-08-12,TFSA,AAPL(US0378331005) Cash Dividend USD 0.22 per Share (Ordinary Dividend),Dividend,AAPL,-,-,23.7,-,23.7
+2021-08-12,TFSA,AAPL(US0378331005) Cash Dividend USD 0.22 per Share - US Tax,Foreign Tax Withholding,AAPL,-,-,-3.56,-,-3.56
+2021-08-12,Margin,AAPL(US0378331005) Cash Dividend USD 0.22 per Share (Ordinary Dividend),Dividend,AAPL,-,-,16.53,-,16.53
+2021-08-12,Margin,AAPL(US0378331005) Cash Dividend USD 0.22 per Share - US Tax,Foreign Tax Withholding,AAPL,-,-,-4.96,-,-4.96
+2021-08-06,Margin,Net Amount in Base from Forex Trade: -0.02 USD.CAD,Forex Trade Component,USD.CAD,-0.02,1.2504  CAD,0,-,0
+2021-08-04,Margin,CAD IBKR Managed Securities (SYEP) Interest for Jul-2021,Credit Interest,-,-,-,0.7,-,0.7
+2021-08-04,Margin,USD IBKR Managed Securities (SYEP) Interest for Jul-2021,Credit Interest,-,-,-,0.03,-,0.03
+2021-07-15,RRSP,TSM(US8740391003) Cash Dividend USD 0.445601 per Share (Ordinary Dividend),Dividend,TSM,-,-,10.67,-,10.67
+2021-07-15,RRSP,TSM(US8740391003) Cash Dividend USD 0.445601 per Share - TW Tax,Foreign Tax Withholding,TSM,-,-,-2.24,-,-2.24
+2021-07-06,RRSP,Net Amount in Base from Forex Trade: -1.28 USD.CAD,Forex Trade Component,USD.CAD,-1.28,1.2342  CAD,-0.01,-,-0.01
+2021-07-06,Margin,CAD Debit Interest for Jun-2021,Debit Interest,-,-,-,-0.09,-,-0.09
+2021-07-06,Margin,CAD IBKR Managed Securities (SYEP) Interest for Jun-2021,Credit Interest,-,-,-,1.71,-,1.71
+2021-07-05,TFSA,Balance of Monthly Minimum Fee for Jun 2021,Other Fee,-,-,-,-12.4,-,-12.4
+2021-07-05,RRSP,Balance of Monthly Minimum Fee for Jun 2021,Other Fee,-,-,-,-9.98,-,-9.98
+2021-07-05,Margin,Balance of Monthly Minimum Fee for Jun 2021,Other Fee,-,-,-,-9.98,-,-9.98
+2021-07-01,RRSP,NVDA(US67066G1040) Cash Dividend USD 0.16 per Share (Ordinary Dividend),Dividend,NVDA,-,-,1.59,-,1.59
+2021-06-30,TFSA,QQQJ(US46138G6310) Cash Dividend USD 0.02649 per Share (Ordinary Dividend),Dividend,QQQJ,-,-,12.65,-,12.65
+2021-06-30,TFSA,QQQJ(US46138G6310) Cash Dividend USD 0.02649 per Share - US Tax,Foreign Tax Withholding,QQQJ,-,-,-1.9,-,-1.9
+2021-06-16,RRSP,Net Amount in Base from Forex Trade: -0.96227398 USD.CAD,Forex Trade Component,USD.CAD,-0.96,1.2187  CAD,-0.01,-,-0.01
+2021-06-14,Margin,Net Amount in Base from Forex Trade: -0.191704 USD.CAD,Forex Trade Component,USD.CAD,-0.19,1.2155  CAD,0,-,0
+2021-06-11,RRSP,Net Amount in Base from Forex Trade: -196 USD.CAD,Forex Trade Component,USD.CAD,-196,1.2107  CAD,-3.38,-2.42,-3.38
+2021-06-10,TFSA,MSFT (US5949181045) Cash Dividend USD 0.56 (Ordinary Dividend),Dividend,MSFT,-,-,29.12,-,29.12
+2021-06-10,TFSA,MSFT (US5949181045) Cash Dividend USD 0.56 - US Tax,Foreign Tax Withholding,MSFT,-,-,-4.37,-,-4.37
+2021-06-10,Margin,Electronic Fund Transfer,Deposit,-,-,-,200,-,200
+2021-06-09,Margin,Net Amount in Base from Forex Trade: -74 USD.CAD,Forex Trade Component,USD.CAD,-74,1.2103  CAD,-2.46,-2.42,-2.46
+2021-06-04,RRSP,Net Amount in Base from Forex Trade: -10 USD.CAD,Forex Trade Component,USD.CAD,-10,1.2122  CAD,0.04,-,0.04
+2021-06-03,Margin,CAD Debit Interest for May-2021,Debit Interest,-,-,-,-0.12,-,-0.12
+2021-06-03,RRSP,Balance of Monthly Minimum Fee for May 2021,Other Fee,-,-,-,-12.06,-,-12.06
+2021-06-03,Margin,Balance of Monthly Minimum Fee for May 2021,Other Fee,-,-,-,-1.02,-,-1.02
+2021-06-03,TFSA,R*****19:Global Snapshot for May 2021,Other Fee,-,-,-,-0.07,-,-0.07
+2021-06-03,TFSA,R*****19:Global Snapshot for May 2021,Other Fee,-,-,-,0.07,-,0.07
+2021-06-03,TFSA,R*****19:US Consolidated Snapshot for May 2021,Other Fee,-,-,-,-0.02,-,-0.02
+2021-06-03,TFSA,R*****19:US Consolidated Snapshot for May 2021,Other Fee,-,-,-,0.02,-,0.02
+2021-06-03,TFSA,Balance of Monthly Minimum Fee for May 2021,Other Fee,-,-,-,-11.13,-,-11.13
+2021-06-03,TFSA,GST-HST R*****19:Global Snapshot for May 2021,Sales Tax,-,-,-,-0.01,-,-0.01
+2021-06-03,TFSA,GST-HST CANCEL R*****19:Global Snapshot for May 2021,Sales Tax,-,-,-,0.01,-,0.01
+2021-05-19,Margin,PURPOSE BITCOIN ETF,Buy,BTCC.B,50,6.4300  CAD,-321.5,-1,-322.5
+2021-05-19,Margin,PURPOSE BITCOIN ETF,Buy,BTCC.B,100,6.4300  CAD,-643,-0.5,-643.5
+2021-05-19,Margin,PURPOSE BITCOIN ETF,Cancel,BTCC.B,-100,6.4300  CAD,643,-,643
+2021-05-19,Margin,PURPOSE BITCOIN ETF,Buy,BTCC.B,100,6.4300  CAD,-643,-,-643
+2021-05-19,Margin,PURPOSE BITCOIN ETF,Cancel,BTCC.B,-50,6.4300  CAD,321.5,-,321.5
+2021-05-19,Margin,PURPOSE BITCOIN ETF,Buy,BTCC.B,50,6.4300  CAD,-321.5,-,-321.5
+2021-05-17,Margin,PURPOSE BITCOIN ETF,Buy,BTCC.B,25,7.9500  CAD,-198.75,-1,-199.75
+2021-05-17,Margin,PURPOSE BITCOIN ETF,Buy,BTCC.B,100,7.9500  CAD,-795,-0.25,-795.25
+2021-05-17,Margin,PURPOSE BITCOIN ETF,Cancel,BTCC.B,-100,7.9500  CAD,795,-,795
+2021-05-17,Margin,PURPOSE BITCOIN ETF,Buy,BTCC.B,100,7.9500  CAD,-795,-,-795
+2021-05-17,Margin,PURPOSE BITCOIN ETF,Cancel,BTCC.B,-25,7.9500  CAD,198.75,-,198.75
+2021-05-17,Margin,PURPOSE BITCOIN ETF,Buy,BTCC.B,25,7.9500  CAD,-198.75,-,-198.75
+2021-05-17,Margin,Electronic Fund Transfer,Deposit,-,-,-,"1,500.00",-,"1,500.00"
+2021-05-13,TFSA,AAPL(US0378331005) Cash Dividend USD 0.22 per Share (Ordinary Dividend),Dividend,AAPL,-,-,23.01,-,23.01
+2021-05-13,TFSA,AAPL(US0378331005) Cash Dividend USD 0.22 per Share - US Tax,Foreign Tax Withholding,AAPL,-,-,-3.45,-,-3.45
+2021-05-13,Margin,AAPL(US0378331005) Cash Dividend USD 0.22 per Share (Ordinary Dividend),Dividend,AAPL,-,-,16.05,-,16.05
+2021-05-13,Margin,AAPL(US0378331005) Cash Dividend USD 0.22 per Share - US Tax,Foreign Tax Withholding,AAPL,-,-,-4.82,-,-4.82
+2021-05-10,Margin,CI GALAXY ETHEREUM ETF,Buy,ETHX.B,50,18.4500  CAD,-922.5,-1,-923.5
+2021-05-10,Margin,PROSHARES ULTRAPRO QQQ,Buy,TQQQ,5,99.0100  USD,-599.21,-1.21,-600.42
+2021-05-10,Margin,Net Amount in Base from Forex Trade: 413 USD.CAD,Forex Trade Component,USD.CAD,413,1.2087  CAD,-1.72,-2.43,-1.72
+2021-05-10,Margin,CI GALAXY ETHEREUM ETF,Cancel,ETHX.B,-50,18.4500  CAD,922.5,-,922.5
+2021-05-10,Margin,CI GALAXY ETHEREUM ETF,Buy,ETHX.B,50,18.4500  CAD,-922.5,-,-922.5
+2021-05-05,RRSP,Net Amount in Base from Forex Trade: -10 USD.CAD,Forex Trade Component,USD.CAD,-10,1.2286  CAD,0.02,-,0.02
+2021-05-05,TFSA,R*****19:US Consolidated Snapshot for Apr 2021,Other Fee,-,-,-,-0.01,-,-0.01
+2021-05-05,TFSA,R*****19:US Consolidated Snapshot for Apr 2021,Other Fee,-,-,-,0.01,-,0.01
+2021-05-05,Margin,Electronic Fund Transfer,Deposit,-,-,-,"1,500.00",-,"1,500.00"
+2021-05-04,TFSA,ADVANCED MICRO DEVICES,Buy,AMD,1,77.3690  USD,-95.23,-0.95,-96.18
+2021-05-04,Margin,Net Amount in Base from Forex Trade: 649 USD.CAD,Forex Trade Component,USD.CAD,649,1.2327  CAD,-3.66,-2.46,-3.66
+2021-05-04,Margin,ADVANCED MICRO DEVICES,Buy,AMD,0.45,77.5600  USD,-42.63,-0.43,-43.06
+2021-05-04,Margin,ADVANCED MICRO DEVICES,Buy,AMD,6,77.5600  USD,-572.77,-0.8,-573.57
+2021-05-04,RRSP,Balance of Monthly Minimum Fee for Apr 2021,Other Fee,-,-,-,-12.29,-,-12.29
+2021-05-04,TFSA,Balance of Monthly Minimum Fee for Apr 2021,Other Fee,-,-,-,-12.29,-,-12.29
+2021-05-04,Margin,Balance of Monthly Minimum Fee for Apr 2021,Other Fee,-,-,-,-4.07,-,-4.07
+2021-04-29,Margin,Net Amount in Base from Forex Trade: 0.3501692 USD.CAD,Forex Trade Component,USD.CAD,0.35,1.2312  CAD,0,-,0
+2021-04-26,Margin,"Net Amount in Base from Forex Trade: -2,141 USD.CAD",Forex Trade Component,USD.CAD,"-2,141.00",1.2410  CAD,0.93,-2.5,0.93
+2021-04-26,Margin,PURPOSE BITCOIN ETF,Buy,BTCC.B,200,9.9800  CAD,"-1,996.00",-2,"-1,998.00"
+2021-04-26,Margin,PURPOSE BITCOIN ETF,Cancel,BTCC.B,-200,9.9800  CAD,"1,996.00",-,"1,996.00"
+2021-04-26,Margin,PURPOSE BITCOIN ETF,Buy,BTCC.B,200,9.9800  CAD,"-1,996.00",-,"-1,996.00"
+2021-04-22,Margin,"Net Amount in Base from Forex Trade: 3,605 USD.CAD",Forex Trade Component,USD.CAD,"3,605.00",1.2482  CAD,5.43,-2.5,5.43
+2021-04-22,Margin,PALANTIR TECHNOLOGIES INC-A,Buy,PLTR,80,23.4200  USD,"-2,342.75",-1.25,"-2,344.00"
+2021-04-19,Margin,Electronic Fund Transfer,Deposit,-,-,-,"1,500.00",-,"1,500.00"
+2021-04-15,RRSP,TSM(US8740391003) Cash Dividend USD 0.439846 per Share (Ordinary Dividend),Dividend,TSM,-,-,10.48,-,10.48
+2021-04-15,RRSP,TSM(US8740391003) Cash Dividend USD 0.439846 per Share - TW Tax,Foreign Tax Withholding,TSM,-,-,-2.2,-,-2.2
+2021-04-05,RRSP,Net Amount in Base from Forex Trade: -10 USD.CAD,Forex Trade Component,USD.CAD,-10,1.2567  CAD,0.05,-,0.05
+2021-04-05,Margin,Electronic Fund Transfer,Deposit,-,-,-,"1,500.00",-,"1,500.00"
+2021-04-02,RRSP,Net Amount in Base from Forex Trade: -9 USD.CAD,Forex Trade Component,USD.CAD,-9,1.2532  CAD,-0.04,-,-0.04
+2021-04-02,TFSA,Balance of Monthly Minimum Fee for Mar 2021,Other Fee,-,-,-,-6.26,-,-6.26
+2021-04-02,Margin,Balance of Monthly Minimum Fee for Mar 2021,Other Fee,-,-,-,-6.6,-,-6.6
+2021-04-02,RRSP,Balance of Monthly Minimum Fee for Mar 2021,Other Fee,-,-,-,-12.56,-,-12.56
+2021-04-02,TFSA,R*****19:Global Snapshot for Mar 2021,Other Fee,-,-,-,-0.08,-,-0.08
+2021-04-02,TFSA,R*****19:Global Snapshot for Mar 2021,Other Fee,-,-,-,0.08,-,0.08
+2021-04-02,TFSA,GST-HST R*****19:Global Snapshot for Mar 2021,Sales Tax,-,-,-,-0.01,-,-0.01
+2021-04-02,TFSA,GST-HST CANCEL R*****19:Global Snapshot for Mar 2021,Sales Tax,-,-,-,0.01,-,0.01
+2021-04-01,RRSP,RRSP Quarterly Fee 2021 Q1,Other Fee,-,-,-,-12.5,-,-12.5
+2021-04-01,RRSP,GST-HST RRSP Quarterly Fee 2021 Q1,Sales Tax,-,-,-,-1.63,-,-1.63
+2021-03-31,RRSP,NVDA(US67066G1040) Cash Dividend USD 0.16 per Share (Ordinary Dividend),Dividend,NVDA,-,-,1.61,-,1.61
+2021-03-31,TFSA,QQQJ(US46138G6310) Cash Dividend USD 0.02756 per Share (Ordinary Dividend),Dividend,QQQJ,-,-,13.33,-,13.33
+2021-03-31,TFSA,QQQJ(US46138G6310) Cash Dividend USD 0.02756 per Share - US Tax,Foreign Tax Withholding,QQQJ,-,-,-2,-,-2
+2021-03-26,Margin,Electronic Fund Transfer,Deposit,-,-,-,"1,000.00",-,"1,000.00"
+2021-03-22,Margin,Electronic Fund Transfer,Deposit,-,-,-,"1,000.00",-,"1,000.00"
+2021-03-18,Margin,"Net Amount in Base from Forex Trade: 25,000 USD.CAD",Forex Trade Component,USD.CAD,"25,000.00",1.2449  CAD,90.77,-2.48,90.77
+2021-03-18,Margin,Net Amount in Base from Forex Trade: -500 USD.CAD,Forex Trade Component,USD.CAD,-500,1.2449  CAD,-4.36,-2.48,-4.36
+2021-03-18,Margin,"Net Amount in Base from Forex Trade: -24,100 USD.CAD",Forex Trade Component,USD.CAD,"-24,100.00",1.2448  CAD,-91.58,-,-91.58
+2021-03-18,Margin,LIGHTSPEED POS INC-SUB VOTE,Buy,LSPD,10,81.5200  CAD,-815.2,-1,-816.2
+2021-03-11,TFSA,MSFT (US5949181045) Cash Dividend USD 0.56 (Ordinary Dividend),Dividend,MSFT,-,-,30.18,-,30.18
+2021-03-11,TFSA,MSFT (US5949181045) Cash Dividend USD 0.56 - US Tax,Foreign Tax Withholding,MSFT,-,-,-4.52,-,-4.52
+2021-03-11,Margin,Electronic Fund Transfer,Deposit,-,-,-,500,-,500
+2021-03-10,TFSA,"Net Amount in Base from Forex Trade: 1,825 USD.CAD",Forex Trade Component,USD.CAD,"1,825.00",1.2621  CAD,-2.84,-2.53,-2.84
+2021-03-10,TFSA,PALANTIR TECHNOLOGIES INC-A,Buy,PLTR,20,25.0573  USD,-632.4,-1.26,-633.66
+2021-03-10,TFSA,SQUARE INC - A,Buy,SQ,5,230.2700  USD,"-1,452.89",-1.26,"-1,454.15"
+2021-03-10,TFSA,ARK INNOVATION ETF,Buy,ARKK,5,123.3100  USD,-778.02,-1.26,-779.29
+2021-03-08,Margin,Electronic Fund Transfer,Deposit,-,-,-,600,-,600
+2021-03-03,Margin,USD Debit Interest for Feb-2021,Debit Interest,-,-,-,-0.01,-,-0.01
+2021-03-03,TFSA,R*****19:Global Snapshot for Feb 2021,Other Fee,-,-,-,-0.15,-,-0.15
+2021-03-03,TFSA,R*****19:Global Snapshot for Feb 2021,Other Fee,-,-,-,0.15,-,0.15
+2021-03-03,TFSA,R*****19:US Consolidated Snapshot for Feb 2021,Other Fee,-,-,-,-0.25,-,-0.25
+2021-03-03,TFSA,R*****19:US Consolidated Snapshot for Feb 2021,Other Fee,-,-,-,0.25,-,0.25
+2021-03-03,TFSA,GST-HST R*****19:Global Snapshot for Feb 2021,Sales Tax,-,-,-,-0.02,-,-0.02
+2021-03-03,TFSA,GST-HST CANCEL R*****19:Global Snapshot for Feb 2021,Sales Tax,-,-,-,0.02,-,0.02
+2021-03-03,TFSA,GST-HST R*****19:US Consolidated Snapshot for Feb 2021,Sales Tax,-,-,-,-0.03,-,-0.03
+2021-03-03,TFSA,GST-HST CANCEL R*****19:US Consolidated Snapshot for Feb 2021,Sales Tax,-,-,-,0.03,-,0.03
+2021-03-02,Margin,Balance of Monthly Minimum Fee for Feb 2021,Other Fee,-,-,-,-5.88,-,-5.88
+2021-02-25,TFSA,Electronic Fund Transfer (Regular Contribution),Deposit,-,-,-,951,-,951
+2021-02-24,TFSA,Electronic Fund Transfer (Regular Contribution),Deposit,-,-,-,"1,000.00",-,"1,000.00"
+2021-02-23,TFSA,PALANTIR TECHNOLOGIES INC-A,Buy,PLTR,100,25.4800  USD,"-3,207.42",-1.26,"-3,208.68"
+2021-02-23,TFSA,PURPOSE BITCOIN ETF - CAD,Buy,BTCC.B,200,9.1700  CAD,"-1,834.00",-2,"-1,836.00"
+2021-02-23,TFSA,PURPOSE BITCOIN ETF - CAD,Buy,BTCC.B,100,9.1700  CAD,-917,-1,-918
+2021-02-23,TFSA,APPLE INC,Buy,AAPL,20,123.0900  USD,"-3,098.91",-1.26,"-3,100.17"
+2021-02-23,RRSP,PROSHARES ULTRAPRO QQQ,Buy,TQQQ,40,96.4800  USD,"-4,857.96",-1.26,"-4,859.22"
+2021-02-23,TFSA,PURPOSE BITCOIN ETF - CAD,Cancel,BTCC.B,-200,9.1700  CAD,"1,834.00",-,"1,834.00"
+2021-02-23,TFSA,PURPOSE BITCOIN ETF - CAD,Buy,BTCC.B,200,9.1700  CAD,"-1,834.00",-,"-1,834.00"
+2021-02-23,TFSA,PURPOSE BITCOIN ETF - CAD,Cancel,BTCC.B,-100,9.1700  CAD,917,-,917
+2021-02-23,TFSA,PURPOSE BITCOIN ETF - CAD,Buy,BTCC.B,100,9.1700  CAD,-917,-,-917
+2021-02-18,TFSA,APPLE INC,Buy,AAPL,15,128.1900  USD,"-2,437.79",-1.27,"-2,439.06"
+2021-02-18,TFSA,PALANTIR TECHNOLOGIES INC-A,Buy,PLTR,59,25.0900  USD,"-1,876.74",-1.27,"-1,878.00"
+2021-02-17,TFSA,Electronic Fund Transfer (Regular Contribution),Deposit,-,-,-,"1,000.00",-,"1,000.00"
+2021-02-16,TFSA,PROSHARES ULTRAPRO QQQ,Buy,TQQQ,80,111.3800  USD,"-11,308.19",-1.27,"-11,309.46"
+2021-02-16,TFSA,PROSHARES ULTRAPRO QQQ,Sell,TQQQ,-80,109.5420  USD,"11,121.58",-1.53,"11,120.05"
+2021-02-12,TFSA,BITCOIN FUND/THE,Sell,QBTC.U,-46,53.5500  USD,"3,125.93",-1.35,"3,124.58"
+2021-02-12,TFSA,BITCOIN FUND/THE,Sell,QBTC.U,-100,53.5600  USD,"6,796.76",-0.17,"6,796.60"
+2021-02-12,TFSA,Electronic Fund Transfer (Regular Contribution),Deposit,-,-,-,"1,300.00",-,"1,300.00"
+2021-02-11,Margin,Disbursement Initiated by Rishi Sharma,Withdrawal,-,-,-,"-1,420.00",-,"-1,420.00"
+2021-02-11,TFSA,NOKIA CORP-SPON ADR,Sell,NOK,-200,4.1400  USD,"1,051.81",-1.32,"1,050.48"
+2021-02-11,TFSA,NOKIA CORP-SPON ADR,Sell,NOK,-100,4.1400  USD,525.9,-0.66,525.24
+2021-02-11,RRSP,NOKIA CORP-SPON ADR,Sell,NOK,-200,4.1400  USD,"1,051.81",-1.32,"1,050.48"
+2021-02-11,RRSP,NOKIA CORP-SPON ADR,Sell,NOK,-100,4.1400  USD,525.9,-0.66,525.24
+2021-02-11,TFSA,AAPL(US0378331005) Cash Dividend USD 0.205 per Share (Ordinary Dividend),Dividend,AAPL,-,-,13.29,-,13.29
+2021-02-11,TFSA,AAPL(US0378331005) Cash Dividend USD 0.205 per Share - US Tax,Foreign Tax Withholding,AAPL,-,-,-1.99,-,-1.99
+2021-02-11,Margin,AAPL(US0378331005) Cash Dividend USD 0.205 per Share (Ordinary Dividend),Dividend,AAPL,-,-,15.62,-,15.62
+2021-02-11,Margin,AAPL(US0378331005) Cash Dividend USD 0.205 per Share - US Tax,Foreign Tax Withholding,AAPL,-,-,-4.69,-,-4.69
+2021-02-10,RRSP,TAIWAN SEMICONDUCTOR-SP ADR,Buy,TSM,11,134.4800  USD,"-1,878.83",-1.27,"-1,880.10"
+2021-02-10,RRSP,TESLA INC,Buy,TSLA,1,813.4300  USD,"-1,033.14",-1.27,"-1,034.41"
+2021-02-10,Margin,"Net Amount in Base from Forex Trade: -1,130 USD.CAD",Forex Trade Component,USD.CAD,"-1,130.00",1.2693  CAD,-3.44,-2.54,-3.44
+2021-02-10,TFSA,Electronic Fund Transfer (Regular Contribution),Deposit,-,-,-,800,-,800
+2021-02-09,TFSA,LIGHTSPEED POS INC-SUB VOTE,Buy,LSPD,1,92.7000  CAD,-92.7,-0.46,-93.16
+2021-02-08,RRSP,CORSAIR GAMING INC,Sell,CRSR,-110,45.8500  USD,"6,424.91",-1.43,"6,423.48"
+2021-02-08,Margin,CORSAIR GAMING INC,Sell,CRSR,-25,46.0000  USD,"1,464.99",-1.31,"1,463.67"
+2021-02-03,Margin,CORSAIR GAMING INC,Buy,CRSR,25,40.7500  USD,"-1,302.47",-1.28,"-1,303.75"
+2021-02-03,Margin,USD Debit Interest for Jan-2021,Debit Interest,-,-,-,-0.06,-,-0.06
+2021-02-02,Margin,APPLE INC,Buy,AAPL,60,135.1050  USD,"-10,360.66",-1.28,"-10,361.94"
+2021-02-02,TFSA,R*****19:US Consolidated Snapshot for Jan 2021,Other Fee,-,-,-,-0.13,-,-0.13
+2021-02-02,TFSA,R*****19:US Consolidated Snapshot for Jan 2021,Other Fee,-,-,-,0.13,-,0.13
+2021-02-02,TFSA,GST-HST R*****19:US Consolidated Snapshot for Jan 2021,Sales Tax,-,-,-,-0.02,-,-0.02
+2021-02-02,TFSA,GST-HST CANCEL R*****19:US Consolidated Snapshot for Jan 2021,Sales Tax,-,-,-,0.02,-,0.02
+2021-02-01,RRSP,ADVANCED MICRO DEVICES,Buy,AMD,50,86.7200  USD,"-5,573.93",-1.29,"-5,575.21"
+2021-02-01,RRSP,CORSAIR GAMING INC,Buy,CRSR,6,37.0000  USD,-285.38,-1.29,-286.67
+2021-02-01,RRSP,CORSAIR GAMING INC,Buy,CRSR,54,37.0000  USD,"-2,568.43",-,"-2,568.43"
+2021-02-01,RRSP,CORSAIR GAMING INC,Buy,CRSR,50,37.0000  USD,"-2,378.18",-,"-2,378.18"
+2021-02-01,RRSP,TAIWAN SEMICONDUCTOR-SP ADR,Buy,TSM,8,125.0473  USD,"-1,285.99",-1.29,"-1,287.27"
+2021-01-29,Margin,APPLE INC,Sell,AAPL,-2,134.8300  USD,344.57,-1.29,343.29
+2021-01-29,RRSP,MICROSOFT CORP,Sell,MSFT,-10,236.5700  USD,"3,022.89",-1.35,"3,021.55"
+2021-01-29,RRSP,MICROSOFT CORP,Sell,MSFT,-9,236.2000  USD,"2,716.35",-1.34,"2,715.01"
+2021-01-29,RRSP,MICROSOFT CORP,Sell,MSFT,-20,236.2000  USD,"6,036.33",-0.14,"6,036.19"
+2021-01-29,RRSP,MICROSOFT CORP,Sell,MSFT,-1,236.2000  USD,301.82,-0.01,301.81
+2021-01-29,Margin,APPLE INC,Sell,AAPL,-68,132.5900  USD,"11,520.80",-1.54,"11,519.26"
+2021-01-29,TFSA,BITCOIN FUND/THE,Buy,QBTC.U,13,38.4200  USD,-638.21,-1.28,-639.49
+2021-01-28,RRSP,MICROSOFT CORP,Buy,MSFT,40,237.1700  USD,"-12,171.56",-1.28,"-12,172.85"
+2021-01-28,RRSP,NOKIA CORP-SPON ADR,Buy,NOK,100,4.7000  USD,-603.01,-1.28,-604.29
+2021-01-28,RRSP,NOKIA CORP-SPON ADR,Buy,NOK,100,4.7000  USD,-603.01,-,-603.01
+2021-01-28,RRSP,NOKIA CORP-SPON ADR,Buy,NOK,100,4.7000  USD,-603.01,-0.64,-603.65
+2021-01-27,TFSA,BITCOIN FUND/THE,Buy,QBTC.U,60,32.2500  USD,"-2,477.38",-1.28,"-2,478.66"
+2021-01-27,TFSA,NOKIA CORP-SPON ADR,Buy,NOK,300,7.1900  USD,"-2,761.61",-1.92,"-2,763.53"
+2021-01-27,TFSA,NOKIA CORP-SPON ADR,Sell,NOK,-300,7.2000  USD,"2,765.45",-2.03,"2,763.42"
+2021-01-27,TFSA,NOKIA CORP-SPON ADR,Buy,NOK,300,6.7900  USD,"-2,607.97",-1.92,"-2,609.89"
+2021-01-25,TFSA,"Net Amount in Base from Forex Trade: 3,450 USD.CAD",Forex Trade Component,USD.CAD,"3,450.00",1.2723  CAD,4.35,-2.55,4.35
+2021-01-25,TFSA,PALANTIR TECHNOLOGIES INC-A,Sell,PLTR,-100,37.0000  USD,"4,714.91",-1.39,"4,713.52"
+2021-01-25,RRSP,PALANTIR TECHNOLOGIES INC-A,Sell,PLTR,-300,36.5000  USD,"13,953.58",-2.27,"13,951.32"
+2021-01-25,Margin,GAMESTOP CORP-CLASS A,Sell,GME,-20,118.5100  USD,"3,020.35",-1.34,"3,019.00"
+2021-01-25,Margin,GAMESTOP CORP-CLASS A,Buy,GME,20,126.4700  USD,"-3,223.21",-1.27,"-3,224.49"
+2021-01-25,TFSA,APPLE INC,Buy,AAPL,25,142.6300  USD,"-4,543.84",-1.27,"-4,545.11"
+2021-01-20,TFSA,WECOMMERCE HOLDINGS LTD,Sell,WE,-100,25.0100  CAD,"2,501.00",-1,"2,500.00"
+2021-01-20,TFSA,WECOMMERCE HOLDINGS LTD,Sell,WE,-45,25.0000  CAD,"1,125.00",-0.45,"1,124.55"
+2021-01-19,TFSA,Electronic Fund Transfer (Regular Contribution),Deposit,-,-,-,800,-,800
+2021-01-15,Margin,IROBOT CORP,Buy,IRBT,30,90.7000  USD,"-3,465.74",-1.27,"-3,467.01"
+2021-01-15,Margin,IROBOT CORP,Sell,IRBT,-30,90.3500  USD,"3,452.36",-1.35,"3,451.01"
+2021-01-15,TFSA,IROBOT CORP,Sell,IRBT,-9,90.2000  USD,"1,033.99",-1.3,"1,032.69"
+2021-01-11,TFSA,Net Amount in Base from Forex Trade: 60 USD.CAD,Forex Trade Component,USD.CAD,60,1.2815  CAD,-2.72,-2.54,-2.72
+2021-01-11,TFSA,Net Amount in Base from Forex Trade: 940 USD.CAD,Forex Trade Component,USD.CAD,940,1.2817  CAD,-5.55,-2.54,-5.55
+2021-01-11,TFSA,BITCOIN FUND/THE,Buy,QBTC.U,23,43.6400  USD,"-1,283.26",-1.28,"-1,284.53"
+2021-01-08,TFSA,Net Amount in Base from Forex Trade: 100 USD.CAD,Forex Trade Component,USD.CAD,100,1.2682  CAD,-2.47,-2.54,-2.47
+2021-01-08,TFSA,BITCOIN FUND/THE,Buy,QBTC.U,50,54.4700  USD,"-3,455.58",-1.27,"-3,456.85"
+2021-01-08,TFSA,"Net Amount in Base from Forex Trade: 2,660 USD.CAD",Forex Trade Component,USD.CAD,"2,660.00",1.2686  CAD,-2.01,-2.54,-2.01
+2021-01-07,Margin,Net Amount in Base from Forex Trade: -0.1568957 USD.CAD,Forex Trade Component,USD.CAD,-0.16,1.2677  CAD,0,-,0
+2021-01-07,TFSA,AMAZON.COM INC,Sell,AMZN,-2,3201.5100  USD,"8,124.79",-1.45,"8,123.34"
+2021-01-07,TFSA,ARK INNOVATION ETF,Buy,ARKK,52,134.4200  USD,"-8,869.41",-1.27,"-8,870.68"
+2021-01-07,TFSA,IROBOT CORP,Buy,IRBT,9,82.5800  USD,-943.07,-1.27,-944.34
+2021-01-06,TFSA,WECOMMERCE HOLDINGS LTD,Buy,WE,75,22.9900  CAD,"-1,724.25",-1,"-1,725.25"
+2021-01-06,TFSA,R*****19:US Consolidated Snapshot for Dec 2020,Other Fee,-,-,-,-0.04,-,-0.04
+2021-01-06,TFSA,R*****19:US Consolidated Snapshot for Dec 2020,Other Fee,-,-,-,0.04,-,0.04
+2021-01-06,TFSA,GST-HST R*****19:US Consolidated Snapshot for Dec 2020,Sales Tax,-,-,-,-0.01,-,-0.01
+2021-01-06,TFSA,GST-HST CANCEL R*****19:US Consolidated Snapshot for Dec 2020,Sales Tax,-,-,-,0.01,-,0.01
+2021-01-06,TFSA,Electronic Fund Transfer (Regular Contribution),Deposit,-,-,-,"1,300.00",-,"1,300.00"
+2021-01-05,Margin,Disbursement Initiated by Rishi Sharma,Withdrawal,-,-,-,"-1,318.99",-,"-1,318.99"
+2021-01-05,Margin,Balance of Monthly Minimum Fee for Dec 2020,Other Fee,-,-,-,-8.86,-,-8.86
+2021-01-05,TFSA,Balance of Monthly Minimum Fee for Dec 2020,Other Fee,-,-,-,-9.74,-,-9.74
+2021-01-05,RRSP,RRSP Quarterly Fee 2020 Q4,Other Fee,-,-,-,-12.5,-,-12.5
+2021-01-05,RRSP,Balance of Monthly Minimum Fee for Dec 2020,Other Fee,-,-,-,-12.73,-,-12.73
+2021-01-05,RRSP,GST-HST RRSP Quarterly Fee 2020 Q4,Sales Tax,-,-,-,-1.63,-,-1.63
+2021-01-05,TFSA,Electronic Fund Transfer (Regular Contribution),Deposit,-,-,-,"3,500.00",-,"3,500.00"
+2021-01-04,TFSA,PALANTIR TECHNOLOGIES INC-A,Buy,PLTR,100,23.5500  USD,"-3,008.75",-1.28,"-3,010.03"
+2021-01-04,TFSA,SPDR GOLD SHARES,Sell,GLD,-50,182.1820  USD,"11,637.79",-1.54,"11,636.24"
+2021-01-04,TFSA,CHEWY INC - CLASS A,Buy,CHWY,60,88.4500  USD,"-6,780.22",-1.28,"-6,781.50"
+2021-01-04,TFSA,INVESCO NASDAQ NEXT GEN 100,Buy,QQQJ,100,30.4200  USD,"-3,886.46",-1.28,"-3,887.74"
+2021-01-04,TFSA,INVESCO NASDAQ NEXT GEN 100,Buy,QQQJ,100,30.4200  USD,"-3,886.46",-,"-3,886.46"
+2021-01-04,TFSA,INVESCO NASDAQ NEXT GEN 100,Buy,QQQJ,100,30.4200  USD,"-3,886.46",-0.64,"-3,887.10"
+2021-01-04,TFSA,INVESCO NASDAQ NEXT GEN 100,Buy,QQQJ,85,30.4200  USD,"-3,303.49",-0.54,"-3,304.03"
+2021-01-04,TFSA,ARK INNOVATION ETF,Buy,ARKK,100,124.5800  USD,"-15,916.34",-1.28,"-15,917.62"
+2021-01-04,Margin,"Net Amount in Base from Forex Trade: -1,018 USD.CAD",Forex Trade Component,USD.CAD,"-1,018.00",1.2777  CAD,-2.39,-2.55,-2.39
+2021-01-04,TFSA,APPLE INC,Buy,AAPL,8,128.8400  USD,"-1,316.85",-1.28,"-1,318.13"
+2020-12-31,TFSA,QQQ(US46090E1038) Cash Dividend USD 0.56133 per Share (Ordinary Dividend),Dividend,QQQ,-,-,57.19,-,57.19
+2020-12-31,TFSA,QQQ(US46090E1038) Cash Dividend USD 0.56133 per Share - US Tax,Foreign Tax Withholding,QQQ,-,-,-8.58,-,-8.58
+2020-12-30,TFSA,INVESCO QQQ TRUST SERIES 1,Sell,QQQ,-80,313.4340  USD,"31,977.79",-1.99,"31,975.80"
+2020-12-29,RRSP,NVDA(US67066G1040) Cash Dividend USD 0.16 per Share (Ordinary Dividend),Dividend,NVDA,-,-,1.64,-,1.64
+2020-12-24,TFSA,WECOMMERCE HOLDINGS LTD,Buy,WE,70,19.2500  CAD,"-1,347.50",-1,"-1,348.50"
+2020-12-21,TFSA,Electronic Fund Transfer (Regular Contribution),Deposit,-,-,-,"3,000.00",-,"3,000.00"
+2020-12-10,TFSA,MSFT (US5949181045) Cash Dividend USD 0.56 (Ordinary Dividend),Dividend,MSFT,-,-,30.67,-,30.67
+2020-12-10,TFSA,MSFT (US5949181045) Cash Dividend USD 0.56 - US Tax,Foreign Tax Withholding,MSFT,-,-,-4.6,-,-4.6
+2020-12-03,TFSA,R*****19:Global Snapshot for Nov 2020,Other Fee,-,-,-,-0.04,-,-0.04
+2020-12-03,TFSA,R*****19:Global Snapshot for Nov 2020,Other Fee,-,-,-,0.04,-,0.04
+2020-12-03,TFSA,Balance of Monthly Minimum Fee for Nov 2020,Other Fee,-,-,-,-0.28,-,-0.28
+2020-12-03,RRSP,Balance of Monthly Minimum Fee for Nov 2020,Other Fee,-,-,-,-7.14,-,-7.14
+2020-12-03,Margin,Balance of Monthly Minimum Fee for Nov 2020,Other Fee,-,-,-,-8.96,-,-8.96
+2020-12-03,TFSA,GST-HST R*****19:Global Snapshot for Nov 2020,Sales Tax,-,-,-,-0.01,-,-0.01
+2020-12-03,TFSA,GST-HST CANCEL R*****19:Global Snapshot for Nov 2020,Sales Tax,-,-,-,0.01,-,0.01
+2020-12-01,Margin,"Net Amount in Base from Forex Trade: 1,700 USD.CAD",Forex Trade Component,USD.CAD,"1,700.00",1.2950  CAD,-5.27,-2.6,-5.27
+2020-12-01,Margin,APPLE INC,Buy,AAPL,70,123.0650  USD,"-11,142.06",-1.29,"-11,143.35"
+2020-11-20,RRSP,Net Amount in Base from Forex Trade: -30 USD.CAD,Forex Trade Component,USD.CAD,-30,1.3071  CAD,-2.69,-2.61,-2.69
+2020-11-20,RRSP,NVIDIA CORP,Buy,NVDA,8,530.2000  USD,"-5,554.38",-1.31,"-5,555.68"
+2020-11-17,Margin,Electronic Fund Transfer,Deposit,-,-,-,"1,000.00",-,"1,000.00"
+2020-11-17,Margin,JPMORGAN CHASE & CO,Sell,JPM,-43,114.9800  USD,"6,479.30",-1.46,"6,477.84"
+2020-11-17,RRSP,PALANTIR TECHNOLOGIES INC-A,Buy,PLTR,300,17.7000  USD,"-6,958.76",-1.97,"-6,960.72"
+2020-11-11,Margin,JPMORGAN CHASE & CO,Buy,JPM,43,114.2173  USD,"-6,415.20",-1.31,"-6,416.50"
+2020-11-11,Margin,SQUARE INC - A,Buy,SQ,25,180.1000  USD,"-5,881.17",-1.31,"-5,882.47"
+2020-11-11,TFSA,"Net Amount in Base from Forex Trade: 1,900 USD.CAD",Forex Trade Component,USD.CAD,"1,900.00",1.3063  CAD,-2.8,-2.61,-2.8
+2020-11-11,TFSA,APPLE INC,Buy,AAPL,18,118.3500  USD,"-2,782.60",-1.31,"-2,783.90"
+2020-11-10,TFSA,LIGHTSPEED POS INC-SUB VOTE,Buy,LSPD,80,51.0100  CAD,"-4,080.80",-1,"-4,081.80"
+2020-11-09,TFSA,"Net Amount in Base from Forex Trade: 1,050 USD.CAD",Forex Trade Component,USD.CAD,"1,050.00",1.2988  CAD,-0.46,-2.61,-0.46
+2020-11-09,TFSA,Net Amount in Base from Forex Trade: 500 USD.CAD,Forex Trade Component,USD.CAD,500,1.2987  CAD,1.06,-,1.06
+2020-11-09,TFSA,AMAZON.COM INC,Buy,AMZN,1,3236.9400  USD,"-4,210.61",-1.3,"-4,211.91"
+2020-11-09,TFSA,Net Amount in Base from Forex Trade: 200 USD.CAD,Forex Trade Component,USD.CAD,200,1.2980  CAD,-2.05,-2.61,-2.05
+2020-11-04,RRSP,Net Amount in Base from Forex Trade: -8 USD.CAD,Forex Trade Component,USD.CAD,-8,1.3211  CAD,0.06,-,0.06
+2020-11-03,RRSP,Balance of Monthly Minimum Fee for Oct 2020,Other Fee,-,-,-,-10.47,-,-10.47
+2020-11-03,Margin,Balance of Monthly Minimum Fee for Oct 2020,Other Fee,-,-,-,-13.32,-,-13.32
+2020-11-03,TFSA,Balance of Monthly Minimum Fee for Oct 2020,Other Fee,-,-,-,-3.61,-,-3.61
+2020-11-02,TFSA,AMAZON.COM INC,Buy,AMZN,1,3051.5100  USD,"-4,033.18",-1.32,"-4,034.50"
+2020-10-29,TFSA,INVESCO QQQ TRUST SERIES 1,Buy,QQQ,10,273.9700  USD,"-3,650.65",-1.33,"-3,651.98"
+2020-10-22,RRSP,TESLA INC,Buy,TSLA,10,439.4200  USD,"-5,772.66",-1.31,"-5,773.97"
+2020-10-19,TFSA,MICROSOFT CORP,Buy,MSFT,20,220.0900  USD,"-5,805.97",-1.32,"-5,807.29"
+2020-10-12,TFSA,STARBUCKS CORP,Sell,SBUX,-78,90.7550  USD,"9,282.55",-1.53,"9,281.02"
+2020-10-12,RRSP,VISA INC-CLASS A SHARES,Sell,V,-30,206.9627  USD,"8,141.71",-1.5,"8,140.21"
+2020-10-12,TFSA,ADVANCED MICRO DEVICES,Buy,AMD,70,84.4800  USD,"-7,754.50",-1.31,"-7,755.81"
+2020-10-07,TFSA,INVESCO QQQ TRUST SERIES 1,Buy,QQQ,70,277.8500  USD,"-25,782.26",-1.33,"-25,783.58"
+2020-10-06,TFSA,SOCIAL CAPITAL HEDOSPHIA III,Sell,IPOC U,-200,12.0800  USD,"3,216.66",-1.43,"3,215.23"
+2020-10-06,TFSA,SOCIAL CAPITAL HEDOSPHIA III,Sell,IPOC U,-194,11.9000  USD,"3,073.67",-1.39,"3,072.28"
+2020-10-05,Margin,USD IBKR Managed Securities (SYEP) Interest for Sep-2020,Credit Interest,-,-,-,0.08,-,0.08
+2020-10-02,TFSA,Balance of Monthly Minimum Fee for Sep 2020,Other Fee,-,-,-,-10.56,-,-10.56
+2020-10-02,Margin,Balance of Monthly Minimum Fee for Sep 2020,Other Fee,-,-,-,-10.58,-,-10.58
+2020-10-02,RRSP,Balance of Monthly Minimum Fee for Sep 2020,Other Fee,-,-,-,-13.32,-,-13.32
+2020-10-01,RRSP,RRSP Quarterly Fee 2020 Q3,Other Fee,-,-,-,-12.5,-,-12.5
+2020-10-01,RRSP,GST-HST RRSP Quarterly Fee 2020 Q3,Sales Tax,-,-,-,-1.63,-,-1.63
+2020-09-30,Margin,Electronic Fund Transfer,Deposit,-,-,-,500,-,500
+2020-09-10,TFSA,MSFT (US5949181045) Cash Dividend USD 0.51 (Ordinary Dividend),Dividend,MSFT,-,-,15.47,-,15.47
+2020-09-10,TFSA,MSFT (US5949181045) Cash Dividend USD 0.51 - US Tax,Foreign Tax Withholding,MSFT,-,-,-2.32,-,-2.32
+2020-09-03,Margin,USD IBKR Managed Securities (SYEP) Interest for Aug-2020,Credit Interest,-,-,-,0.74,-,0.74
+2020-09-03,Margin,PROSHARES ULTRAPRO S&P 500,Sell,UPRO,-25,62.8120  USD,"2,061.33",-1.36,"2,059.97"
+2020-09-02,TFSA,Balance of Monthly Minimum Fee for Aug 2020,Other Fee,-,-,-,-13.05,-,-13.05
+2020-09-02,Margin,Balance of Monthly Minimum Fee for Aug 2020,Other Fee,-,-,-,-10.38,-,-10.38
+2020-09-02,RRSP,Balance of Monthly Minimum Fee for Aug 2020,Other Fee,-,-,-,-13.05,-,-13.05
+2020-09-01,TFSA,PROSHARES ULTRAPRO S&P 500,Sell,UPRO,-20,64.6200  USD,"1,688.52",-1.35,"1,687.17"
+2020-09-01,TFSA,DRX DLY 20+ YR TREAS BULL 3X,Sell,TMF,-42,39.2100  USD,"2,151.57",-1.36,"2,150.21"
+2020-09-01,Margin,DRX DLY 20+ YR TREAS BULL 3X,Sell,TMF,-20,39.1900  USD,"1,024.03",-1.33,"1,022.70"
+2020-09-01,RRSP,V(US92826C8394) Cash Dividend USD 0.30 per Share (Ordinary Dividend),Dividend,V,-,-,11.76,-,11.76
+2020-08-21,TFSA,SBUX(US8552441094) Cash Dividend USD 0.41 per Share (Ordinary Dividend),Dividend,SBUX,-,-,42.14,-,42.14
+2020-08-21,TFSA,SBUX(US8552441094) Cash Dividend USD 0.41 per Share - US Tax,Foreign Tax Withholding,SBUX,-,-,-6.32,-,-6.32
+2020-08-05,Margin,Disbursement Initiated by Rishi Sharma,Withdrawal,-,-,-,"-2,000.00",-,"-2,000.00"
+2020-08-05,Margin,USD IBKR Managed Securities (SYEP) Interest for Jul-2020,Credit Interest,-,-,-,0.5,-,0.5
+2020-08-05,Margin,"Net Amount in Base from Forex Trade: -2,000 USD.CAD",Forex Trade Component,USD.CAD,"-2,000.00",1.3241  CAD,-7.16,-2.66,-7.16
+2020-08-05,TFSA,Balance of Monthly Minimum Fee for Jul 2020,Other Fee,-,-,-,-12.07,-,-12.07
+2020-08-05,RRSP,Balance of Monthly Minimum Fee for Jul 2020,Other Fee,-,-,-,-13.41,-,-13.41
+2020-08-05,Margin,Balance of Monthly Minimum Fee for Jul 2020,Other Fee,-,-,-,-13.41,-,-13.41
+2020-07-29,TFSA,SPDR GOLD SHARES,Buy,GLD,50,183.4580  USD,"-12,232.06",-1.33,"-12,233.40"
+2020-07-06,Margin,USD IBKR Managed Securities (SYEP) Interest for Jun-2020,Credit Interest,-,-,-,0.32,-,0.32
+2020-07-02,TFSA,Balance of Monthly Minimum Fee for Jun 2020,Other Fee,-,-,-,-13.58,-,-13.58
+2020-07-02,Margin,Balance of Monthly Minimum Fee for Jun 2020,Other Fee,-,-,-,-9.94,-,-9.94
+2020-07-02,RRSP,RRSP Quarterly Fee 2020 Q2,Other Fee,-,-,-,-12.5,-,-12.5
+2020-07-02,RRSP,Balance of Monthly Minimum Fee for Jun 2020,Other Fee,-,-,-,-13.58,-,-13.58
+2020-07-02,RRSP,GST-HST RRSP Quarterly Fee 2020 Q2,Sales Tax,-,-,-,-1.63,-,-1.63
+2020-06-11,TFSA,MSFT (US5949181045) Cash Dividend USD 0.51 (Ordinary Dividend),Dividend,MSFT,-,-,15.99,-,15.99
+2020-06-11,TFSA,MSFT (US5949181045) Cash Dividend USD 0.51 - US Tax,Foreign Tax Withholding,MSFT,-,-,-2.4,-,-2.4
+2020-06-04,Margin,BYND 21AUG20 120.0 P,Sell,BYND 200821P00120000,-1,11.3500  USD,"1,532.02",-0.93,"1,531.09"
+2020-06-04,Margin,"Net Amount in Base from Forex Trade: 2,900 USD.CAD",Forex Trade Component,USD.CAD,"2,900.00",1.3504  CAD,-4.58,-2.7,-4.58
+2020-06-03,Margin,USD IBKR Managed Securities (SYEP) Interest for May-2020,Credit Interest,-,-,-,0.77,-,0.77
+2020-06-03,TFSA,R*****19:Global Snapshot PNP for May 2020,Other Fee,-,-,-,-0.08,-,-0.08
+2020-06-03,TFSA,R*****19:Global Snapshot PNP for May 2020,Other Fee,-,-,-,0.08,-,0.08
+2020-06-03,TFSA,R*****19:US Consolidated Snapshot for May 2020,Other Fee,-,-,-,-0.03,-,-0.03
+2020-06-03,TFSA,R*****19:US Consolidated Snapshot for May 2020,Other Fee,-,-,-,0.03,-,0.03
+2020-06-03,TFSA,GST-HST R*****19:Global Snapshot PNP for May 2020,Sales Tax,-,-,-,-0.01,-,-0.01
+2020-06-03,TFSA,GST-HST CANCEL R*****19:Global Snapshot PNP for May 2020,Sales Tax,-,-,-,0.01,-,0.01
+2020-06-02,RRSP,V(US92826C8394) Cash Dividend USD 0.30 per Share (Ordinary Dividend),Dividend,V,-,-,12.17,-,12.17
+2020-06-02,Margin,Balance of Monthly Minimum Fee for May 2020,Other Fee,-,-,-,-9.34,-,-9.34
+2020-06-02,RRSP,Balance of Monthly Minimum Fee for May 2020,Other Fee,-,-,-,-13.77,-,-13.77
+2020-06-02,TFSA,Balance of Monthly Minimum Fee for May 2020,Other Fee,-,-,-,-12.23,-,-12.23
+2020-05-22,TFSA,SBUX(US8552441094) Cash Dividend USD 0.41 per Share (Ordinary Dividend),Dividend,SBUX,-,-,44.79,-,44.79
+2020-05-22,TFSA,SBUX(US8552441094) Cash Dividend USD 0.41 per Share - US Tax,Foreign Tax Withholding,SBUX,-,-,-6.72,-,-6.72
+2020-05-19,TFSA,ALIBABA GROUP HOLDING-SP ADR,Sell,BABA,-24,220.2500  USD,"7,370.27",-1.56,"7,368.71"
+2020-05-12,Margin,BYND 21AUG20 160.0 C,Buy,BYND 200821C00160000,2,16.5000  USD,"-4,645.74",-2.09,"-4,647.83"
+2020-05-08,Margin,BYND 21AUG20 160.0 C,Sell,BYND 200821C00160000,-2,9.3500  USD,"2,603.41",-1.3,"2,602.12"
+2020-05-08,Margin,BYND 21AUG20 120.0 P,Buy,BYND 200821P00120000,1,20.0000  USD,"-2,784.40",-1.11,"-2,785.51"
+2020-05-05,Margin,USD IBKR Managed Securities (SYEP) Interest for Apr-2020,Credit Interest,-,-,-,0.62,-,0.62
+2020-05-05,TFSA,R*****19:US Consolidated Snapshot for Apr 2020,Other Fee,-,-,-,-0.03,-,-0.03
+2020-05-05,TFSA,R*****19:US Consolidated Snapshot for Apr 2020,Other Fee,-,-,-,0.03,-,0.03
+2020-05-05,TFSA,Balance of Monthly Minimum Fee for Apr 2020,Other Fee,-,-,-,-2.33,-,-2.33
+2020-05-05,RRSP,Balance of Monthly Minimum Fee for Apr 2020,Other Fee,-,-,-,-12.46,-,-12.46
+2020-05-05,Margin,Balance of Monthly Minimum Fee for Apr 2020,Other Fee,-,-,-,-12.36,-,-12.36
+2020-04-30,RRSP,QQQ(US46090E1038) Cash Dividend USD 0.36269 per Share (Ordinary Dividend),Dividend,QQQ,-,-,12.65,-,12.65
+2020-04-30,TFSA,QQQ(US46090E1038) Cash Dividend USD 0.36269 per Share (Ordinary Dividend),Dividend,QQQ,-,-,20.23,-,20.23
+2020-04-30,TFSA,QQQ(US46090E1038) Cash Dividend USD 0.36269 per Share - US Tax,Foreign Tax Withholding,QQQ,-,-,-3.04,-,-3.04
+2020-04-29,TFSA,ALIBABA GROUP HOLDING-SP ADR,Buy,BABA,24,203.9300  USD,"-6,792.34",-1.39,"-6,793.73"
+2020-04-27,TFSA,SOCIAL CAPITAL HEDOSPHIA,Buy,IPOC U,100,10.1300  USD,"-1,421.64",-1.4,"-1,423.05"
+2020-04-27,TFSA,SOCIAL CAPITAL HEDOSPHIA,Buy,IPOC U,94,10.1300  USD,"-1,336.35",-,"-1,336.35"
+2020-04-27,TFSA,SOCIAL CAPITAL HEDOSPHIA,Buy,IPOC U,100,10.1300  USD,"-1,421.64",-0.66,"-1,422.30"
+2020-04-27,TFSA,SOCIAL CAPITAL HEDOSPHIA,Buy,IPOC U,100,10.1300  USD,"-1,421.64",-0.7,"-1,422.35"
+2020-04-27,TFSA,ISHARES S&P/TSX GLOBAL GOLD,Sell,XGD,-300,21.2300  CAD,"6,369.00",-3,"6,366.00"
+2020-04-27,TFSA,ISHARES S&P/TSX GLOBAL GOLD,Sell,XGD,-25,21.2300  CAD,530.75,-0.25,530.5
+2020-04-27,TFSA,ISHARES S&P/TSX GLOBAL GOLD,Sell,XGD,-100,21.2300  CAD,"2,123.00",-1,"2,122.00"
+2020-04-09,TFSA,IQ(US46267X1081) ADR Fee USD 0.02 per Share,Other Fee,IQ,-,-,-3.08,-,-3.08
+2020-04-07,RRSP,MICROSOFT CORP,Sell,MSFT,-17,164.6600  USD,"3,916.95",-1.49,"3,915.46"
+2020-04-07,Margin,MICROSOFT CORP,Sell,MSFT,-10,164.6000  USD,"2,303.25",-1.45,"2,301.80"
+2020-04-07,Margin,MICROSOFT CORP,Sell,MSFT,-27,164.6000  USD,"6,218.77",-0.14,"6,218.63"
+2020-04-06,TFSA,INVESCO QQQ TRUST SERIES 1,Sell,QQQ,-40,191.7500  USD,"10,821.60",-1.66,"10,819.95"
+2020-04-06,TFSA,MICROSOFT CORP,Sell,MSFT,-27,160.1500  USD,"6,100.80",-1.55,"6,099.25"
+2020-04-06,TFSA,MICROSOFT CORP,Sell,MSFT,-10,160.1500  USD,"2,259.56",-0.05,"2,259.50"
+2020-04-03,Margin,USD IBKR Managed Securities (SYEP) Interest for Mar-2020,Credit Interest,-,-,-,0.16,-,0.16
+2020-04-03,TFSA,R*****19:Global Snapshot for Mar 2020,Other Fee,-,-,-,-0.04,-,-0.04
+2020-04-03,TFSA,R*****19:Global Snapshot for Mar 2020,Other Fee,-,-,-,0.04,-,0.04
+2020-04-03,TFSA,R*****19:US Consolidated Snapshot for Mar 2020,Other Fee,-,-,-,-0.03,-,-0.03
+2020-04-03,TFSA,R*****19:US Consolidated Snapshot for Mar 2020,Other Fee,-,-,-,0.03,-,0.03
+2020-04-03,TFSA,Balance of Monthly Minimum Fee for Mar 2020,Other Fee,-,-,-,-9.15,-,-9.15
+2020-04-03,TFSA,GST-HST R*****19:Global Snapshot for Mar 2020,Sales Tax,-,-,-,-0.01,-,-0.01
+2020-04-03,TFSA,GST-HST CANCEL R*****19:Global Snapshot for Mar 2020,Sales Tax,-,-,-,0.01,-,0.01
+2020-04-03,Margin,Balance of Monthly Minimum Fee for Mar 2020,Other Fee,-,-,-,-3.69,-,-3.69
+2020-04-03,RRSP,Balance of Monthly Minimum Fee for Mar 2020,Other Fee,-,-,-,-12.5,-,-12.5
+2020-04-03,Margin,Electronic Fund Transfer,Deposit,-,-,-,600,-,600
+2020-04-01,TFSA,UPRO(US74347X8645) Cash Dividend USD 0.056591 per Share (Ordinary Dividend),Dividend,UPRO,-,-,1.6,-,1.6
+2020-04-01,TFSA,UPRO(US74347X8645) Cash Dividend USD 0.056591 per Share - US Tax,Foreign Tax Withholding,UPRO,-,-,-0.24,-,-0.24
+2020-04-01,Margin,UPRO(US74347X8645) Cash Dividend USD 0.056591 per Share (Ordinary Dividend),Dividend,UPRO,-,-,2,-,2
+2020-04-01,Margin,UPRO(US74347X8645) Cash Dividend USD 0.056591 per Share - US Tax,Foreign Tax Withholding,UPRO,-,-,-0.6,-,-0.6
+2020-04-01,RRSP,RRSP Quarterly Fee 2020 Q1,Other Fee,-,-,-,-12.5,-,-12.5
+2020-04-01,RRSP,GST-HST RRSP Quarterly Fee 2020 Q1,Sales Tax,-,-,-,-1.63,-,-1.63
+2020-04-01,TFSA,UPRO(US74347X8645) Cash Dividend USD 0.056591 per Share - US Tax,Foreign Tax Withholding,UPRO,-,-,0.21,-,0.21
+2020-04-01,TFSA,UPRO(US74347X8645) Cash Dividend USD 0.056591 per Share - US Tax,Foreign Tax Withholding,UPRO,-,-,-0.19,-,-0.19
+2020-04-01,Margin,UPRO(US74347X8645) Cash Dividend USD 0.056591 per Share - US Tax,Foreign Tax Withholding,UPRO,-,-,0.53,-,0.53
+2020-04-01,Margin,UPRO(US74347X8645) Cash Dividend USD 0.056591 per Share - US Tax,Foreign Tax Withholding,UPRO,-,-,-0.49,-,-0.49
+2020-03-31,TFSA,IQIYI INC-ADR,Sell,IQ,-110,18.3000  USD,"2,831.08",-1.49,"2,829.60"
+2020-03-31,Margin,WALT DISNEY CO/THE,Sell,DIS,-20,100.4835  USD,"2,826.40",-1.47,"2,824.93"
+2020-03-31,RRSP,INVESCO QQQ TRUST SERIES 1,Sell,QQQ,-25,191.4200  USD,"6,730.33",-1.56,"6,728.77"
+2020-03-31,TFSA,AMAZON.COM INC,Sell,AMZN,-10,1961.7700  USD,"27,590.33",-2.02,"27,588.32"
+2020-03-31,TFSA,TMF(US25459W5408) Cash Dividend USD 0.09925 per Share (Ordinary Dividend),Dividend,TMF,-,-,5.86,-,5.86
+2020-03-31,TFSA,TMF(US25459W5408) Cash Dividend USD 0.09925 per Share - US Tax,Foreign Tax Withholding,TMF,-,-,-0.89,-,-0.89
+2020-03-31,Margin,TMF(US25459W5408) Cash Dividend USD 0.09925 per Share (Ordinary Dividend),Dividend,TMF,-,-,2.8,-,2.8
+2020-03-31,Margin,TMF(US25459W5408) Cash Dividend USD 0.09925 per Share - US Tax,Foreign Tax Withholding,TMF,-,-,-0.84,-,-0.84
+2020-03-31,TFSA,XGD(CA46428M1086) Cash Dividend CAD 0.008 per Share (Ordinary Dividend),Dividend,XGD,-,-,3.4,-,3.4
+2020-03-27,Margin,SHOPIFY INC - CLASS A,Sell,SHOP,-3,593.0600  CAD,"1,779.18",-1,"1,778.18"
+2020-03-19,TFSA,STARBUCKS CORP,Buy,SBUX,3,58.9900  USD,-256.8,-1.45,-258.25
+2020-03-19,Margin,SHOPIFY INC - CLASS A,Buy,SHOP,3,476.8400  CAD,"-1,430.52",-1,"-1,431.52"
+2020-03-17,Margin,MICROSOFT CORP,Buy,MSFT,7,137.1073  USD,"-1,362.85",-1.42,"-1,364.27"
+2020-03-17,Margin,Electronic Fund Transfer,Deposit,-,-,-,"1,500.00",-,"1,500.00"
+2020-03-16,Margin,Electronic Fund Transfer,Deposit,-,-,-,"1,500.00",-,"1,500.00"
+2020-03-12,TFSA,MSFT (US5949181045) Cash Dividend USD 0.51 (Ordinary Dividend),Dividend,MSFT,-,-,42.61,-,42.61
+2020-03-12,TFSA,MSFT (US5949181045) Cash Dividend USD 0.51 - US Tax,Foreign Tax Withholding,MSFT,-,-,-6.39,-,-6.39
+2020-03-12,Margin,MSFT (US5949181045) Cash Dividend USD 0.51 (Ordinary Dividend),Dividend,MSFT,-,-,21.3,-,21.3
+2020-03-12,Margin,MSFT (US5949181045) Cash Dividend USD 0.51 - US Tax,Foreign Tax Withholding,MSFT,-,-,-6.39,-,-6.39
+2020-03-09,Margin,"Net Amount in Base from Forex Trade: 4,115 USD.CAD",Forex Trade Component,USD.CAD,"4,115.00",1.3604  CAD,37.85,-2.68,37.85
+2020-03-09,Margin,PROSHARES ULTRAPRO S&P 500,Buy,UPRO,25,43.6250  USD,"-1,494.48",-1.37,"-1,495.85"
+2020-03-09,Margin,DRX DLY 20+ YR TREAS BULL 3X,Buy,TMF,20,56.4500  USD,"-1,547.07",-1.37,"-1,548.44"
+2020-03-04,RRSP,Balance of Monthly Minimum Fee for Feb 2020,Other Fee,-,-,-,-6.07,-,-6.07
+2020-03-04,TFSA,R*****19:US Consolidated Snapshot for Feb 2020,Other Fee,-,-,-,-0.04,-,-0.04
+2020-03-04,TFSA,R*****19:US Consolidated Snapshot for Feb 2020,Other Fee,-,-,-,0.04,-,0.04
+2020-03-04,TFSA,Balance of Monthly Minimum Fee for Feb 2020,Other Fee,-,-,-,-3.43,-,-3.43
+2020-03-04,Margin,Balance of Monthly Minimum Fee for Feb 2020,Other Fee,-,-,-,-6.99,-,-6.99
+2020-03-04,TFSA,GST-HST R*****19:US Consolidated Snapshot for Feb 2020,Sales Tax,-,-,-,-0.01,-,-0.01
+2020-03-04,TFSA,GST-HST CANCEL R*****19:US Consolidated Snapshot for Feb 2020,Sales Tax,-,-,-,0.01,-,0.01
+2020-03-03,RRSP,V(US92826C8394) Cash Dividend USD 0.30 per Share (Ordinary Dividend),Dividend,V,-,-,12.05,-,12.05
+2020-03-02,Margin,Electronic Fund Transfer,Deposit,-,-,-,"5,000.00",-,"5,000.00"
+2020-02-27,RRSP,MICROSOFT CORP,Buy,MSFT,6,165.4100  USD,"-1,329.20",-1.34,"-1,330.54"
+2020-02-27,Margin,"Net Amount in Base from Forex Trade: 4,000 USD.CAD",Forex Trade Component,USD.CAD,"4,000.00",1.3363  CAD,9.17,-2.67,9.17
+2020-02-27,Margin,WALT DISNEY CO/THE,Buy,DIS,20,120.5400  USD,"-3,228.78",-1.34,"-3,230.12"
+2020-02-24,Margin,PURPOSE HIGH INTEREST SAVING,Sell,PSA,-20,50.0700  CAD,"1,001.40",-1,"1,000.40"
+2020-02-24,Margin,PURPOSE HIGH INTEREST SAVING,Sell,PSA,-100,50.0700  CAD,"5,007.00",-0.2,"5,006.80"
+2020-02-24,RRSP,"Net Amount in Base from Forex Trade: 2,000 USD.CAD",Forex Trade Component,USD.CAD,"2,000.00",1.3274  CAD,1.24,-2.64,1.24
+2020-02-24,RRSP,MICROSOFT CORP,Buy,MSFT,11,172.9400  USD,"-2,528.78",-1.33,"-2,530.11"
+2020-02-24,Margin,PURPOSE HIGH INTEREST SAVING,Cancel,PSA,100,50.0700  CAD,"-5,007.00",-,"-5,007.00"
+2020-02-24,Margin,PURPOSE HIGH INTEREST SAVING,Sell,PSA,-100,50.0700  CAD,"5,007.00",-,"5,007.00"
+2020-02-24,Margin,PURPOSE HIGH INTEREST SAVING,Cancel,PSA,20,50.0700  CAD,"-1,001.40",-,"-1,001.40"
+2020-02-24,Margin,PURPOSE HIGH INTEREST SAVING,Sell,PSA,-20,50.0700  CAD,"1,001.40",-,"1,001.40"
+2020-02-21,TFSA,SBUX (US8552441094) Cash Dividend USD 0.41 (Ordinary Dividend),Dividend,SBUX,-,-,40.66,-,40.66
+2020-02-21,TFSA,SBUX (US8552441094) Cash Dividend USD 0.41 - US Tax,Foreign Tax Withholding,SBUX,-,-,-6.1,-,-6.1
+2020-02-20,TFSA,"Net Amount in Base from Forex Trade: 3,020 USD.CAD",Forex Trade Component,USD.CAD,"3,020.00",1.3233  CAD,5.12,-2.64,5.12
+2020-02-20,TFSA,DRX DLY 20+ YR TREAS BULL 3X,Buy,TMF,42,32.1693  USD,"-1,791.44",-1.33,"-1,792.76"
+2020-02-20,TFSA,PROSHARES ULTRAPRO S&P 500,Buy,UPRO,20,80.4200  USD,"-2,132.58",-1.33,"-2,133.90"
+2020-02-19,TFSA,PURPOSE HIGH INTEREST SAVING,Sell,PSA,-75,50.0600  CAD,"3,754.50",-1,"3,753.50"
+2020-02-19,RRSP,PURPOSE HIGH INTEREST SAVING,Sell,PSA,-50,50.0600  CAD,"2,503.00",-1,"2,502.00"
+2020-02-19,RRSP,PURPOSE HIGH INTEREST SAVING,Cancel,PSA,50,50.0600  CAD,"-2,503.00",-,"-2,503.00"
+2020-02-19,RRSP,PURPOSE HIGH INTEREST SAVING,Sell,PSA,-50,50.0600  CAD,"2,503.00",-,"2,503.00"
+2020-02-19,TFSA,PURPOSE HIGH INTEREST SAVING,Cancel,PSA,75,50.0600  CAD,"-3,754.50",-,"-3,754.50"
+2020-02-19,TFSA,PURPOSE HIGH INTEREST SAVING,Sell,PSA,-75,50.0600  CAD,"3,754.50",-,"3,754.50"
+2020-02-18,TFSA,"Net Amount in Base from Forex Trade: -2,800 USD.CAD",Forex Trade Component,USD.CAD,"-2,800.00",1.3253  CAD,-4.35,-2.65,-4.35
+2020-02-18,TFSA,PURPOSE HIGH INTEREST SAVING,Buy,PSA,75,50.0600  CAD,"-3,754.50",-1,"-3,755.50"
+2020-02-18,RRSP,PURPOSE HIGH INTEREST SAVING,Buy,PSA,50,50.0600  CAD,"-2,503.00",-1,"-2,504.00"
+2020-02-18,Margin,PURPOSE HIGH INTEREST SAVING,Buy,PSA,100,50.0600  CAD,"-5,006.00",-1,"-5,007.00"
+2020-02-18,Margin,PURPOSE HIGH INTEREST SAVING,Buy,PSA,20,50.0600  CAD,"-1,001.20",-0.2,"-1,001.40"
+2020-02-18,RRSP,PURPOSE HIGH INTEREST SAVING,Cancel,PSA,-50,50.0600  CAD,"2,503.00",-,"2,503.00"
+2020-02-18,RRSP,PURPOSE HIGH INTEREST SAVING,Buy,PSA,50,50.0600  CAD,"-2,503.00",-,"-2,503.00"
+2020-02-18,Margin,PURPOSE HIGH INTEREST SAVING,Cancel,PSA,-20,50.0600  CAD,"1,001.20",-,"1,001.20"
+2020-02-18,Margin,PURPOSE HIGH INTEREST SAVING,Buy,PSA,20,50.0600  CAD,"-1,001.20",-,"-1,001.20"
+2020-02-18,TFSA,PURPOSE HIGH INTEREST SAVING,Cancel,PSA,-75,50.0600  CAD,"3,754.50",-,"3,754.50"
+2020-02-18,TFSA,PURPOSE HIGH INTEREST SAVING,Buy,PSA,75,50.0600  CAD,"-3,754.50",-,"-3,754.50"
+2020-02-18,Margin,PURPOSE HIGH INTEREST SAVING,Cancel,PSA,-100,50.0600  CAD,"5,006.00",-,"5,006.00"
+2020-02-18,Margin,PURPOSE HIGH INTEREST SAVING,Buy,PSA,100,50.0600  CAD,"-5,006.00",-,"-5,006.00"
+2020-02-05,TFSA,USD Credit Interest for Jan-2020,Credit Interest,-,-,-,2.43,-,2.43
+2020-02-05,RRSP,USD Credit Interest for Jan-2020,Credit Interest,-,-,-,0.17,-,0.17
+2020-02-05,Margin,Balance of Monthly Minimum Fee for Jan 2020,Other Fee,-,-,-,-10.84,-,-10.84
+2020-02-05,TFSA,r*****19:US Reg NMS Snapshot for Jan 2020,Other Fee,-,-,-,-0.13,-,-0.13
+2020-02-05,TFSA,R*****19:Global Snapshot for Jan 2020,Other Fee,-,-,-,-0.08,-,-0.08
+2020-02-05,TFSA,R*****19:Global Snapshot for Jan 2020,Other Fee,-,-,-,0.08,-,0.08
+2020-02-05,TFSA,Balance of Monthly Minimum Fee for Jan 2020,Other Fee,-,-,-,-2.48,-,-2.48
+2020-02-05,RRSP,Balance of Monthly Minimum Fee for Jan 2020,Other Fee,-,-,-,-9.59,-,-9.59
+2020-02-05,TFSA,GST-HST r*****19:US Reg NMS Snapshot for Jan 2020,Sales Tax,-,-,-,-0.02,-,-0.02
+2020-02-05,TFSA,GST-HST R*****19:Global Snapshot for Jan 2020,Sales Tax,-,-,-,-0.01,-,-0.01
+2020-02-05,TFSA,GST-HST CANCEL R*****19:Global Snapshot for Jan 2020,Sales Tax,-,-,-,0.01,-,0.01
+2020-01-22,TFSA,ISHARES S&P/TSX GLOBAL GOLD,Buy,XGD,400,16.2600  CAD,"-6,504.00",-4,"-6,508.00"
+2020-01-22,TFSA,ISHARES S&P/TSX GLOBAL GOLD,Buy,XGD,25,16.2600  CAD,-406.5,-0.25,-406.75
+2020-01-13,RRSP,VISA INC-CLASS A SHARES,Buy,V,30,195.0900  USD,"-7,641.29",-1.31,"-7,642.59"
+2020-01-13,RRSP,INVESCO QQQ TRUST SERIES 1,Buy,QQQ,25,219.0150  USD,"-7,148.65",-1.31,"-7,149.96"
+2020-01-13,TFSA,INVESCO QQQ TRUST SERIES 1,Buy,QQQ,40,219.1270  USD,"-11,443.69",-1.31,"-11,444.99"
+2020-01-13,TFSA,PURPOSE HIGH INTEREST SAVING,Sell,PSA,-20,50.0300  CAD,"1,000.60",-1,999.6
+2020-01-13,RRSP,PURPOSE HIGH INTEREST SAVING,Sell,PSA,-50,50.0300  CAD,"2,501.50",-1,"2,500.50"
+2020-01-13,TFSA,PURPOSE HIGH INTEREST SAVING,Cancel,PSA,20,50.0300  CAD,"-1,000.60",-,"-1,000.60"
+2020-01-13,TFSA,PURPOSE HIGH INTEREST SAVING,Sell,PSA,-20,50.0300  CAD,"1,000.60",-,"1,000.60"
+2020-01-13,RRSP,PURPOSE HIGH INTEREST SAVING,Cancel,PSA,50,50.0300  CAD,"-2,501.50",-,"-2,501.50"
+2020-01-13,RRSP,PURPOSE HIGH INTEREST SAVING,Sell,PSA,-50,50.0300  CAD,"2,501.50",-,"2,501.50"
+2020-01-10,TFSA,PROSHARES ULTRAPRO S&P 500,Sell,UPRO,-100,72.9600  USD,"9,521.28",-1.52,"9,519.76"
+2020-01-09,TFSA,MICROSOFT CORP,Buy,MSFT,60,161.8000  USD,"-12,673.79",-1.31,"-12,675.10"
+2020-01-08,TFSA,PROSHARES ULTRAPRO S&P 500,Buy,UPRO,100,71.8000  USD,"-9,362.00",-1.3,"-9,363.31"
+2020-01-08,RRSP,PSA(CA74640A1084) Cash Dividend CAD 0.0987 per Share (Ordinary Dividend),Dividend,PSA,-,-,4.94,-,4.94
+2020-01-08,TFSA,PSA(CA74640A1084) Cash Dividend CAD 0.0987 per Share (Ordinary Dividend),Dividend,PSA,-,-,1.97,-,1.97
+2020-01-08,Margin,PSA(CA74640A1084) Cash Dividend CAD 0.0987 per Share (Ordinary Dividend),Dividend,PSA,-,-,23.69,-,23.69
+2020-01-06,TFSA,USD Credit Interest for Dec-2019,Credit Interest,-,-,-,6.43,-,6.43
+2020-01-03,Margin,Disbursement Initiated by Rishi Sharma,Withdrawal,-,-,-,"-7,000.00",-,"-7,000.00"
+2020-01-03,TFSA,Balance of Monthly Minimum Fee for Dec 2019,Other Fee,-,-,-,-12.99,-,-12.99
+2020-01-03,Margin,Balance of Monthly Minimum Fee for Dec 2019,Other Fee,-,-,-,-12.99,-,-12.99
+2020-01-03,RRSP,Balance of Monthly Minimum Fee for Dec 2019,Other Fee,-,-,-,-9.47,-,-9.47
+2020-01-03,TFSA,Electronic Fund Transfer (Regular Contribution),Deposit,-,-,-,"6,000.00",-,"6,000.00"
+2020-01-02,Margin,PURPOSE HIGH INTEREST SAVING,Sell,PSA,-200,50.0050  CAD,"10,001.00",-2,"9,999.00"
+2020-01-02,Margin,PURPOSE HIGH INTEREST SAVING,Sell,PSA,-40,50.0000  CAD,"2,000.00",-0.4,"1,999.60"
+2020-01-02,RRSP,RRSP Quarterly Fee 2019 Q4,Other Fee,-,-,-,-12.5,-,-12.5
+2020-01-02,RRSP,GST-HST RRSP Quarterly Fee 2019 Q4,Sales Tax,-,-,-,-1.63,-,-1.63
+2020-01-02,Margin,PURPOSE HIGH INTEREST SAVING,Cancel,PSA,200,50.0050  CAD,"-10,001.00",-,"-10,001.00"
+2020-01-02,Margin,PURPOSE HIGH INTEREST SAVING,Sell,PSA,-200,50.0050  CAD,"10,001.00",-,"10,001.00"
+2020-01-02,Margin,PURPOSE HIGH INTEREST SAVING,Cancel,PSA,40,50.0000  CAD,"-2,000.00",-,"-2,000.00"
+2020-01-02,Margin,PURPOSE HIGH INTEREST SAVING,Sell,PSA,-40,50.0000  CAD,"2,000.00",-,"2,000.00"
+2019-12-30,RRSP,ETRACS MONTHLY PAY 2XLEVERAG,Sell,MORL,-400,14.3100  USD,"7,480.12",-2.83,"7,477.29"
+2019-12-30,RRSP,ETRACS MONTHLY PAY 2XLEVERAG,Sell,MORL,-100,14.3100  USD,"1,870.03",-0.71,"1,869.32"
+2019-12-23,RRSP,MORL(US90269A3023) Cash Dividend USD 0.0535 per Share (Exempt From Withholding),Dividend,MORL,-,-,35.17,-,35.17
+2019-12-12,Margin,MSFT (US5949181045) Cash Dividend USD 0.51 (Ordinary Dividend),Dividend,MSFT,-,-,20.17,-,20.17
+2019-12-12,Margin,MSFT (US5949181045) Cash Dividend USD 0.51 - US Tax,Foreign Tax Withholding,MSFT,-,-,-6.05,-,-6.05
+2019-12-06,RRSP,PSA(CA74640A1084) Cash Dividend CAD 0.0874 per Share (Ordinary Dividend),Dividend,PSA,-,-,4.37,-,4.37
+2019-12-06,Margin,PSA(CA74640A1084) Cash Dividend CAD 0.0874 per Share (Ordinary Dividend),Dividend,PSA,-,-,20.98,-,20.98
+2019-12-06,TFSA,PSA(CA74640A1084) Cash Dividend CAD 0.0874 per Share (Ordinary Dividend),Dividend,PSA,-,-,1.75,-,1.75
+2019-12-04,Margin,CAD Debit Interest for Nov-2019,Debit Interest,-,-,-,-0.12,-,-0.12
+2019-12-04,Margin,CAD IBKR Managed Securities (SYEP) Interest for Nov-2019,Credit Interest,-,-,-,0.58,-,0.58
+2019-12-04,TFSA,USD Credit Interest for Nov-2019,Credit Interest,-,-,-,3.78,-,3.78
+2019-12-03,Margin,Balance of Monthly Minimum Fee for Nov 2019,Other Fee,-,-,-,-13.27,-,-13.27
+2019-12-03,RRSP,Balance of Monthly Minimum Fee for Nov 2019,Other Fee,-,-,-,-10.18,-,-10.18
+2019-12-03,Margin,Electronic Fund Transfer,Deposit,-,-,-,400,-,400
+2019-11-29,TFSA,SBUX (US8552441094) Cash Dividend USD 0.41 (Ordinary Dividend),Dividend,SBUX,-,-,40.82,-,40.82
+2019-11-29,TFSA,SBUX (US8552441094) Cash Dividend USD 0.41 - US Tax,Foreign Tax Withholding,SBUX,-,-,-6.12,-,-6.12
+2019-11-20,RRSP,MORL(US90269A3023) Cash Dividend USD 0.1333 per Share (Exempt From Withholding),Dividend,MORL,-,-,88.66,-,88.66
+2019-11-18,TFSA,WALT DISNEY CO/THE,Buy,DIS,1,146.1900  USD,-193.01,-1.32,-194.33
+2019-11-18,TFSA,WALT DISNEY CO/THE,Buy,DIS,79,146.1900  USD,"-15,248.16",-,"-15,248.16"
+2019-11-18,TFSA,WALT DISNEY CO/THE,Sell,DIS,-80,147.6300  USD,"15,593.27",-1.66,"15,591.62"
+2019-11-18,Margin,Electronic Fund Transfer,Deposit,-,-,-,600,-,600
+2019-11-14,TFSA,WALT DISNEY CO/THE,Sell,DIS,-25,148.8200  USD,"4,928.92",-1.43,"4,927.49"
+2019-11-14,TFSA,WALT DISNEY CO/THE,Sell,DIS,-95,148.8200  USD,"18,729.89",-0.4,"18,729.49"
+2019-11-13,TFSA,WALT DISNEY CO/THE,Buy,DIS,20,137.8900  USD,"-3,654.36",-1.33,"-3,655.69"
+2019-11-13,TFSA,WALT DISNEY CO/THE,Buy,DIS,30,137.8900  USD,"-5,481.54",-,"-5,481.54"
+2019-11-07,TFSA,WALT DISNEY CO/THE,Buy,DIS,70,133.1000  USD,"-12,272.35",-1.32,"-12,273.67"
+2019-11-07,TFSA,PSA(CA74640A1084) Cash Dividend CAD 0.0936 per Share (Ordinary Dividend),Dividend,PSA,-,-,1.87,-,1.87
+2019-11-07,Margin,PSA(CA74640A1084) Cash Dividend CAD 0.0936 per Share (Ordinary Dividend),Dividend,PSA,-,-,22.46,-,22.46
+2019-11-07,RRSP,PSA(CA74640A1084) Cash Dividend CAD 0.0936 per Share (Ordinary Dividend),Dividend,PSA,-,-,4.68,-,4.68
+2019-11-05,Margin,CAD Debit Interest for Oct-2019,Debit Interest,-,-,-,-1.51,-,-1.51
+2019-11-05,Margin,Electronic Fund Transfer,Deposit,-,-,-,450,-,450
+2019-11-04,TFSA,INVESCO S&P 500 HIGH DIVIDEN,Sell,SPHD,-200,43.3300  USD,"11,395.79",-1.58,"11,394.21"
+2019-11-04,TFSA,APPLE INC,Sell,AAPL,-52,257.0000  USD,"17,573.66",-1.69,"17,571.97"
+2019-11-04,RRSP,APPLE INC,Sell,AAPL,-14,257.0300  USD,"4,731.92",-1.42,"4,730.51"
+2019-11-04,RRSP,APPLE INC,Sell,AAPL,-2,257.0210  USD,675.97,-0.01,675.95
+2019-11-04,TFSA,FEDEX CORPORATION,Buy,FDX,35,162.8700  USD,"-7,496.09",-1.31,"-7,497.41"
+2019-11-04,TFSA,FEDEX CORPORATION,Sell,FDX,-35,164.5600  USD,"7,573.87",-1.48,"7,572.40"
+2019-11-04,TFSA,STARBUCKS CORP,Buy,SBUX,75,82.4750  USD,"-8,134.10",-1.31,"-8,135.41"
+2019-11-04,TFSA,Balance of Monthly Minimum Fee for Oct 2019,Other Fee,-,-,-,-13.16,-,-13.16
+2019-11-04,RRSP,Balance of Monthly Minimum Fee for Oct 2019,Other Fee,-,-,-,-13.16,-,-13.16
+2019-11-04,Margin,Balance of Monthly Minimum Fee for Oct 2019,Other Fee,-,-,-,-13.16,-,-13.16
+2019-10-31,TFSA,SPHD(US46138E3624) Cash Dividend USD 0.15216 per Share (Ordinary Dividend),Dividend,SPHD,-,-,40.05,-,40.05
+2019-10-31,TFSA,SPHD(US46138E3624) Cash Dividend USD 0.15216 per Share - US Tax,Foreign Tax Withholding,SPHD,-,-,-6,-,-6
+2019-10-21,RRSP,MORL(US90269A3023) Cash Dividend USD 0.4386 per Share (Exempt From Withholding),Dividend,MORL,-,-,287.02,-,287.02
+2019-10-16,Margin,Electronic Fund Transfer,Deposit,-,-,-,450,-,450
+2019-10-07,RRSP,PSA(CA74640A1084) Cash Dividend CAD 0.0886 per Share (Ordinary Dividend),Dividend,PSA,-,-,4.43,-,4.43
+2019-10-07,TFSA,PSA(CA74640A1084) Cash Dividend CAD 0.0886 per Share (Ordinary Dividend),Dividend,PSA,-,-,1.77,-,1.77
+2019-10-07,Margin,PSA(CA74640A1084) Cash Dividend CAD 0.0886 per Share (Ordinary Dividend),Dividend,PSA,-,-,21.26,-,21.26
+2019-10-03,Margin,CAD Debit Interest for Sep-2019,Debit Interest,-,-,-,-1.98,-,-1.98
+2019-10-02,TFSA,Balance of Monthly Minimum Fee for Sep 2019,Other Fee,-,-,-,-3.97,-,-3.97
+2019-10-02,Margin,Balance of Monthly Minimum Fee for Sep 2019,Other Fee,-,-,-,-3.97,-,-3.97
+2019-10-02,RRSP,Balance of Monthly Minimum Fee for Sep 2019,Other Fee,-,-,-,-3.97,-,-3.97
+2019-10-01,RRSP,RRSP Quarterly Fee 2019 Q3,Other Fee,-,-,-,-12.5,-,-12.5
+2019-10-01,RRSP,GST-HST RRSP Quarterly Fee 2019 Q3,Sales Tax,-,-,-,-1.63,-,-1.63
+2019-09-30,TFSA,SPHD(US46138E3624) Cash Dividend USD 0.15203 per Share (Ordinary Dividend),Dividend,SPHD,-,-,40.26,-,40.26
+2019-09-30,TFSA,SPHD(US46138E3624) Cash Dividend USD 0.15203 per Share - US Tax,Foreign Tax Withholding,SPHD,-,-,-6.04,-,-6.04
+2019-09-23,RRSP,MORL(US90269A3023) Cash Dividend USD 0.0566 per Share (Exempt From Withholding),Dividend,MORL,-,-,37.53,-,37.53
+2019-09-12,Margin,MSFT (US5949181045) Cash Dividend USD 0.46 (Ordinary Dividend),Dividend,MSFT,-,-,18.23,-,18.23
+2019-09-12,Margin,MSFT (US5949181045) Cash Dividend USD 0.46 - US Tax,Foreign Tax Withholding,MSFT,-,-,-5.47,-,-5.47
+2019-09-09,TFSA,PSA(CA74640A1084) Cash Dividend CAD 0.0889 per Share (Ordinary Dividend),Dividend,PSA,-,-,1.78,-,1.78
+2019-09-09,Margin,PSA(CA74640A1084) Cash Dividend CAD 0.0889 per Share (Ordinary Dividend),Dividend,PSA,-,-,21.34,-,21.34
+2019-09-09,RRSP,PSA(CA74640A1084) Cash Dividend CAD 0.0889 per Share (Ordinary Dividend),Dividend,PSA,-,-,4.45,-,4.45
+2019-09-05,Margin,CAD Debit Interest for Aug-2019,Debit Interest,-,-,-,-0.42,-,-0.42
+2019-09-04,TFSA,Balance of Monthly Minimum Fee for Aug 2019,Other Fee,-,-,-,-3.99,-,-3.99
+2019-09-04,Margin,Balance of Monthly Minimum Fee for Aug 2019,Other Fee,-,-,-,-0.33,-,-0.33
+2019-09-04,RRSP,Balance of Monthly Minimum Fee for Aug 2019,Other Fee,-,-,-,-3.99,-,-3.99
+2019-08-30,TFSA,SPHD(US46138E3624) Cash Dividend USD 0.15287 per Share (Ordinary Dividend),Dividend,SPHD,-,-,40.71,-,40.71
+2019-08-30,TFSA,SPHD(US46138E3624) Cash Dividend USD 0.15287 per Share - US Tax,Foreign Tax Withholding,SPHD,-,-,-6.11,-,-6.11
+2019-08-23,Margin,PURPOSE HIGH INTEREST SAVING,Buy,PSA,70,50.0800  CAD,"-3,505.60",-1,"-3,506.60"
+2019-08-23,Margin,PURPOSE HIGH INTEREST SAVING,Cancel,PSA,-70,50.0800  CAD,"3,505.60",-,"3,505.60"
+2019-08-23,Margin,PURPOSE HIGH INTEREST SAVING,Buy,PSA,70,50.0800  CAD,"-3,505.60",-,"-3,505.60"
+2019-08-20,RRSP,MORL(US90269A3023) Cash Dividend USD 0.0861 per Share (Exempt From Withholding),Dividend,MORL,-,-,57.33,-,57.33
+2019-08-19,Margin,Electronic Fund Transfer,Deposit,-,-,-,400,-,400
+2019-08-15,RRSP,AAPL(US0378331005) Cash Dividend USD 0.77 per Share (Ordinary Dividend),Dividend,AAPL,-,-,16.4,-,16.4
+2019-08-15,TFSA,AAPL(US0378331005) Cash Dividend USD 0.77 per Share (Ordinary Dividend),Dividend,AAPL,-,-,53.3,-,53.3
+2019-08-15,TFSA,AAPL(US0378331005) Cash Dividend USD 0.77 per Share - US Tax,Foreign Tax Withholding,AAPL,-,-,-8,-,-8
+2019-08-08,TFSA,PSA(CA74640A1084) Cash Dividend 0.09860000 CAD per Share (Ordinary Dividend),Dividend,PSA,-,-,1.97,-,1.97
+2019-08-08,RRSP,PSA(CA74640A1084) Cash Dividend 0.09860000 CAD per Share (Ordinary Dividend),Dividend,PSA,-,-,4.93,-,4.93
+2019-08-08,Margin,PSA(CA74640A1084) Cash Dividend 0.09860000 CAD per Share (Ordinary Dividend),Dividend,PSA,-,-,16.76,-,16.76
+2019-08-05,TFSA,USD Credit Interest for Jul-2019,Credit Interest,-,-,-,8.28,-,8.28
+2019-08-01,Margin,MICROSOFT CORP,Buy,MSFT,20,138.3800  USD,"-3,656.55",-1.32,"-3,657.87"
+2019-08-01,Margin,MICROSOFT CORP,Buy,MSFT,10,138.4800  USD,"-1,829.60",-1.32,"-1,830.92"
+2019-08-01,Margin,Electronic Fund Transfer,Deposit,-,-,-,450,-,450
+2019-07-25,TFSA,INVESCO S&P 500 HIGH DIVIDEN,Buy,SPHD,200,42.1900  USD,"-11,107.78",-1.32,"-11,109.10"
+2019-07-23,RRSP,MORL(US90269A3023) Cash Dividend 0.50180000 USD per Share (Exempt From Withholding),Dividend,MORL,-,-,329.51,-,329.51
+2019-07-17,TFSA,PURPOSE HIGH INTEREST SAVING,Buy,PSA,20,50.0700  CAD,"-1,001.40",-1,"-1,002.40"
+2019-07-17,TFSA,PURPOSE HIGH INTEREST SAVING,Cancel,PSA,-20,50.0700  CAD,"1,001.40",-,"1,001.40"
+2019-07-17,TFSA,PURPOSE HIGH INTEREST SAVING,Buy,PSA,20,50.0700  CAD,"-1,001.40",-,"-1,001.40"
+2019-07-16,Margin,Electronic Fund Transfer,Deposit,-,-,-,450,-,450
+2019-07-11,TFSA,AMAZON.COM INC,Buy,AMZN,10,2029.0700  USD,"-26,517.92",-1.31,"-26,519.22"
+2019-07-08,Margin,PURPOSE HIGH INTEREST SAVING,Buy,PSA,50,50.0400  CAD,"-2,502.00",-1,"-2,503.00"
+2019-07-08,Margin,PURPOSE HIGH INTEREST SAVING,Buy,PSA,100,50.0350  CAD,"-5,003.50",-0.5,"-5,004.00"
+2019-07-08,RRSP,PURPOSE HIGH INTEREST SAVING,Buy,PSA,50,50.0400  CAD,"-2,502.00",-1,"-2,503.00"
+2019-07-08,Margin,PURPOSE HIGH INTEREST SAVING,Sell,PSA,-25,50.0300  CAD,"1,250.75",-1,"1,249.75"
+2019-07-08,Margin,PURPOSE HIGH INTEREST SAVING,Sell,PSA,-300,50.0300  CAD,"15,009.00",-2.25,"15,006.75"
+2019-07-08,Margin,PURPOSE HIGH INTEREST SAVING,Buy,PSA,70,50.0400  CAD,"-3,502.80",-1,"-3,503.80"
+2019-07-08,Margin,PURPOSE HIGH INTEREST SAVING,Buy,PSA,100,50.0350  CAD,"-5,003.50",-0.7,"-5,004.20"
+2019-07-08,Margin,PURPOSE HIGH INTEREST SAVING,Cancel,PSA,-50,50.0400  CAD,"2,502.00",-,"2,502.00"
+2019-07-08,Margin,PURPOSE HIGH INTEREST SAVING,Cancel,PSA,-100,50.0350  CAD,"5,003.50",-,"5,003.50"
+2019-07-08,Margin,PURPOSE HIGH INTEREST SAVING,Cancel,PSA,-100,50.0350  CAD,"5,003.50",-,"5,003.50"
+2019-07-08,RRSP,PURPOSE HIGH INTEREST SAVING,Cancel,PSA,-50,50.0400  CAD,"2,502.00",-,"2,502.00"
+2019-07-08,Margin,PURPOSE HIGH INTEREST SAVING,Cancel,PSA,300,50.0300  CAD,"-15,009.00",-,"-15,009.00"
+2019-07-08,Margin,PURPOSE HIGH INTEREST SAVING,Cancel,PSA,-70,50.0400  CAD,"3,502.80",-,"3,502.80"
+2019-07-08,Margin,PURPOSE HIGH INTEREST SAVING,Cancel,PSA,25,50.0300  CAD,"-1,250.75",-,"-1,250.75"
+2019-07-08,Margin,PURPOSE HIGH INTEREST SAVING,Buy,PSA,50,50.0400  CAD,"-2,502.00",-,"-2,502.00"
+2019-07-08,Margin,PURPOSE HIGH INTEREST SAVING,Buy,PSA,100,50.0350  CAD,"-5,003.50",-,"-5,003.50"
+2019-07-08,Margin,PURPOSE HIGH INTEREST SAVING,Buy,PSA,100,50.0350  CAD,"-5,003.50",-,"-5,003.50"
+2019-07-08,RRSP,PURPOSE HIGH INTEREST SAVING,Buy,PSA,50,50.0400  CAD,"-2,502.00",-,"-2,502.00"
+2019-07-08,Margin,PURPOSE HIGH INTEREST SAVING,Sell,PSA,-300,50.0300  CAD,"15,009.00",-,"15,009.00"
+2019-07-08,Margin,PURPOSE HIGH INTEREST SAVING,Buy,PSA,70,50.0400  CAD,"-3,502.80",-,"-3,502.80"
+2019-07-08,Margin,PURPOSE HIGH INTEREST SAVING,Sell,PSA,-25,50.0300  CAD,"1,250.75",-,"1,250.75"
+2019-07-08,Margin,PSA(CA74640A1084) Cash Dividend 0.08360000 CAD per Share (Ordinary Dividend),Dividend,PSA,-,-,14.63,-,14.63
+2019-07-05,TFSA,ALIBABA GROUP HOLDING-SP ADR,Sell,BABA,-30,173.4900  USD,"6,807.23",-1.45,"6,805.77"
+2019-07-05,TFSA,FACEBOOK INC-CLASS A,Sell,FB,-25,196.0500  USD,"6,410.34",-1.44,"6,408.90"
+2019-07-03,Margin,CAD Net Short Stock Interest for Jun-2019,Credit Interest,-,-,-,0.12,-,0.12
+2019-07-03,TFSA,USD Credit Interest for Jun-2019,Credit Interest,-,-,-,16.11,-,16.11
+2019-07-03,Margin,Electronic Fund Transfer,Deposit,-,-,-,450,-,450
+2019-07-02,RRSP,RRSP Quarterly Fee 2019 Q2,Other Fee,-,-,-,-12.5,-,-12.5
+2019-07-02,RRSP,GST-HST RRSP Quarterly Fee 2019 Q2,Sales Tax,-,-,-,-1.63,-,-1.63
+2019-07-02,TFSA,Balance of Monthly Minimum Fee for Jun 2019,Other Fee,-,-,-,-1.31,-,-1.31
+2019-07-02,Margin,Balance of Monthly Minimum Fee for Jun 2019,Other Fee,-,-,-,-3.93,-,-3.93
+2019-07-02,RRSP,Balance of Monthly Minimum Fee for Jun 2019,Other Fee,-,-,-,-3.93,-,-3.93
+2019-06-20,RRSP,MORL(US90269A3023) Cash Dividend 0.06020000 USD per Share (Exempt From Withholding),Dividend,MORL,-,-,39.7,-,39.7
+2019-06-18,TFSA,FACEBOOK INC-CLASS A,Buy,FB,25,191.6300  USD,"-6,408.11",-1.34,"-6,409.44"
+2019-06-17,Margin,Electronic Fund Transfer,Deposit,-,-,-,410,-,410
+2019-06-13,TFSA,ALIBABA GROUP HOLDING-SP ADR,Buy,BABA,30,160.3400  USD,"-6,409.59",-1.33,"-6,410.92"
+2019-06-07,Margin,PSA(CA74640A1084) Cash Dividend 0.09240000 CAD per Share (Ordinary Dividend),Dividend,PSA,-,-,16.17,-,16.17
+2019-06-05,TFSA,USD Credit Interest for May-2019,Credit Interest,-,-,-,21.24,-,21.24
+2019-06-04,TFSA,Balance of Monthly Minimum Fee for May 2019,Other Fee,-,-,-,-4.05,-,-4.05
+2019-06-04,Margin,Balance of Monthly Minimum Fee for May 2019,Other Fee,-,-,-,-4.05,-,-4.05
+2019-06-04,RRSP,Balance of Monthly Minimum Fee for May 2019,Other Fee,-,-,-,-4.05,-,-4.05
+2019-05-21,RRSP,MORL(US90269A3023) Cash Dividend 0.13460000 USD per Share (Exempt From Withholding),Dividend,MORL,-,-,90.22,-,90.22
+2019-05-16,RRSP,AAPL(US0378331005) Cash Dividend 0.77000000 USD per Share (Ordinary Dividend),Dividend,AAPL,-,-,16.58,-,16.58
+2019-05-16,TFSA,AAPL(US0378331005) Cash Dividend 0.77000000 USD per Share (Ordinary Dividend),Dividend,AAPL,-,-,53.89,-,53.89
+2019-05-16,TFSA,AAPL(US0378331005) Cash Dividend 0.77000000 USD per Share - US Tax,Foreign Tax Withholding,AAPL,-,-,-8.09,-,-8.09
+2019-05-07,Margin,PSA(CA74640A1084) Cash Dividend 0.09620000 CAD per Share (Ordinary Dividend),Dividend,PSA,-,-,16.83,-,16.83
+2019-05-06,Margin,Disbursement Initiated by Rishi Sharma,Withdrawal,-,-,-,"-3,000.00",-,"-3,000.00"
+2019-05-03,TFSA,USD Credit Interest for Apr-2019,Credit Interest,-,-,-,19.82,-,19.82
+2019-05-03,Margin,USD Net Short Stock Interest for Apr-2019,Debit Interest,-,-,-,-0.3,-,-0.3
+2019-05-02,TFSA,Balance of Monthly Minimum Fee for Apr 2019,Other Fee,-,-,-,-2.62,-,-2.62
+2019-05-02,RRSP,Balance of Monthly Minimum Fee for Apr 2019,Other Fee,-,-,-,-0.67,-,-0.67
+2019-05-02,Margin,Balance of Monthly Minimum Fee for Apr 2019,Other Fee,-,-,-,-0.93,-,-0.93
+2019-05-02,TFSA,R*****19:Global Snapshot for Apr 2019,Other Fee,-,-,-,-0.04,-,-0.04
+2019-05-02,TFSA,R*****19:Global Snapshot for Apr 2019,Other Fee,-,-,-,0.04,-,0.04
+2019-05-02,TFSA,GST-HST R*****19:Global Snapshot for Apr 2019,Sales Tax,-,-,-,-0.01,-,-0.01
+2019-05-02,TFSA,GST-HST CANCEL R*****19:Global Snapshot for Apr 2019,Sales Tax,-,-,-,0.01,-,0.01
+2019-04-23,Margin,Electronic Fund Transfer,Deposit,-,-,-,"1,330.00",-,"1,330.00"
+2019-04-23,TFSA,SQUARE INC - A,Sell,SQ,-23,72.7100  USD,"2,244.43",-1.39,"2,243.04"
+2019-04-23,TFSA,SQUARE INC - A,Sell,SQ,-2,72.7100  USD,195.17,0,195.16
+2019-04-23,RRSP,MORL(US90269A3023) Cash Dividend 0.52400000 USD per Share (Exempt From Withholding),Dividend,MORL,-,-,351.63,-,351.63
+2019-04-18,Margin,SQUARE INC - A,Buy,SQ,25,70.4800  USD,"-2,357.38",-1.34,"-2,358.72"
+2019-04-09,Margin,Electronic Fund Transfer,Deposit,-,-,-,"1,200.00",-,"1,200.00"
+2019-04-09,RRSP,ETRACS MONTHLY PAY 2XLEVERAG,Buy,MORL,500,15.2968  USD,"-10,194.55",-3.33,"-10,197.88"
+2019-04-09,TFSA,IQ(46267X108) ADR Fee 0.02000000 USD per Share,Other Fee,IQ,-,-,-2.97,-,-2.97
+2019-04-08,Margin,PURPOSE HIGH INTEREST SAVING,Buy,PSA,100,50.0350  CAD,"-5,003.50",-1,"-5,004.50"
+2019-04-08,Margin,PURPOSE HIGH INTEREST SAVING,Buy,PSA,75,50.0400  CAD,"-3,753.00",-0.75,"-3,753.75"
+2019-04-08,Margin,PURPOSE HIGH INTEREST SAVING,Cancel,PSA,-75,50.0400  CAD,"3,753.00",-,"3,753.00"
+2019-04-08,Margin,PURPOSE HIGH INTEREST SAVING,Buy,PSA,75,50.0400  CAD,"-3,753.00",-,"-3,753.00"
+2019-04-08,Margin,PURPOSE HIGH INTEREST SAVING,Cancel,PSA,-100,50.0350  CAD,"5,003.50",-,"5,003.50"
+2019-04-08,Margin,PURPOSE HIGH INTEREST SAVING,Buy,PSA,100,50.0350  CAD,"-5,003.50",-,"-5,003.50"
+2019-04-03,TFSA,USD Credit Interest for Mar-2019,Credit Interest,-,-,-,8.02,-,8.02
+2019-04-03,Margin,USD Debit Interest for Mar-2019,Debit Interest,-,-,-,-1.21,-,-1.21
+2019-04-03,Margin,USD Net Short Stock Interest for Mar-2019,Debit Interest,-,-,-,-0.36,-,-0.36
+2019-04-03,Margin,Electronic Fund Transfer,Deposit,-,-,-,"1,000.00",-,"1,000.00"
+2019-04-01,RRSP,RRSP Quarterly Fee 2019 Q1,Other Fee,-,-,-,-12.5,-,-12.5
+2019-04-01,RRSP,GST-HST RRSP Quarterly Fee 2019 Q1,Sales Tax,-,-,-,-1.63,-,-1.63
+2019-03-22,TFSA,NVDA(US67066G1040) Cash Dividend 0.16000000 USD per Share (Ordinary Dividend),Dividend,NVDA,-,-,11.6,-,11.6
+2019-03-22,TFSA,NVDA(US67066G1040) Cash Dividend 0.16000000 USD per Share - US Tax,Foreign Tax Withholding,NVDA,-,-,-1.75,-,-1.75
+2019-03-21,RRSP,JPMORGAN CHASE & CO,Sell,JPM,-38,102.9811  USD,"5,229.32",-1.41,"5,227.91"
+2019-03-18,TFSA,SQUARE INC - A,Sell,SQ,-21,75.4000  USD,"2,111.31",-1.36,"2,109.94"
+2019-03-18,TFSA,SQUARE INC - A,Sell,SQ,-79,75.4000  USD,"7,942.53",-0.12,"7,942.41"
+2019-03-18,RRSP,AMAZON.COM INC,Sell,AMZN,-2,1739.8227  USD,"4,639.76",-1.39,"4,638.37"
+2019-03-18,Margin,AMAZON.COM INC,Sell,AMZN,-3,1739.8000  USD,"6,959.55",-1.42,"6,958.12"
+2019-03-15,TFSA,MICROSOFT CORP,Sell,MSFT,-40,116.8100  USD,"6,231.11",-1.42,"6,229.69"
+2019-03-15,TFSA,VISA INC-CLASS A SHARES,Sell,V,-79,156.4732  USD,"16,485.14",-1.56,"16,483.58"
+2019-03-14,TFSA,MSFT (US5949181045) Cash Dividend USD 0.46 (Ordinary Dividend),Dividend,MSFT,-,-,24.53,-,24.53
+2019-03-14,TFSA,MSFT (US5949181045) Cash Dividend USD 0.46 - US Tax,Foreign Tax Withholding,MSFT,-,-,-3.68,-,-3.68
+2019-03-11,TFSA,NVIDIA CORP,Sell,NVDA,-54,153.5000  USD,"11,102.29",-1.49,"11,100.79"
+2019-03-11,TFSA,SQUARE INC - A,Buy,SQ,35,75.8000  USD,"-3,553.43",-1.34,"-3,554.77"
+2019-03-11,TFSA,SQUARE INC - A,Buy,SQ,65,75.8000  USD,"-6,599.22",-,"-6,599.22"
+2019-03-11,Margin,Electronic Fund Transfer,Deposit,-,-,-,"3,000.00",-,"3,000.00"
+2019-03-05,Margin,USD Debit Interest for Feb-2019,Debit Interest,-,-,-,-0.27,-,-0.27
+2019-03-05,Margin,USD Net Short Stock Interest for Feb-2019,Credit Interest,-,-,-,0.01,-,0.01
+2019-03-05,TFSA,V(US92826C8394) Cash Dividend 0.25000000 USD per Share (Ordinary Dividend),Dividend,V,-,-,26.37,-,26.37
+2019-03-05,TFSA,V(US92826C8394) Cash Dividend 0.25000000 USD per Share - US Tax,Foreign Tax Withholding,V,-,-,-3.95,-,-3.95
+2019-03-05,Margin,Electronic Fund Transfer,Deposit,-,-,-,"1,500.00",-,"1,500.00"
+2019-03-01,Margin,SQUARE INC - A,Sell,SQ,-25,79.2500  USD,"2,634.67",-1.37,"2,633.30"
+2019-02-28,TFSA,"Net Amount in Base from Forex Trade: 5,000 USD.CAD",Forex Trade Component,USD.CAD,"5,000.00",1.3176  CAD,-3.28,-2.63,-3.28
+2019-02-28,TFSA,SQUARE INC - A,Buy,SQ,25,76.8000  USD,"-2,529.60",-1.32,"-2,530.92"
+2019-02-27,TFSA,ORGANIGRAM HOLDINGS INC,Sell,OGI,-200,8.2200  CAD,"1,644.00",-2,"1,642.00"
+2019-02-27,TFSA,ORGANIGRAM HOLDINGS INC,Sell,OGI,-50,8.2200  CAD,411,-0.5,410.5
+2019-02-27,TFSA,ORGANIGRAM HOLDINGS INC,Sell,OGI,-100,8.2100  CAD,821,-1,820
+2019-02-27,TFSA,ORGANIGRAM HOLDINGS INC,Sell,OGI,-100,8.2100  CAD,821,-1,820
+2019-02-27,TFSA,ORGANIGRAM HOLDINGS INC,Sell,OGI,-300,8.2100  CAD,"2,463.00",-3,"2,460.00"
+2019-02-26,Margin,Electronic Fund Transfer,Deposit,-,-,-,"1,300.00",-,"1,300.00"
+2019-02-21,Margin,AMAZON.COM INC,Buy,AMZN,1,1606.0000  USD,"-2,124.90",-1.32,"-2,126.22"
+2019-02-14,RRSP,"Net Amount in Base from Forex Trade: 4,000 USD.CAD",Forex Trade Component,USD.CAD,"4,000.00",1.3323  CAD,-13.97,-2.65,-13.97
+2019-02-14,RRSP,JPMORGAN CHASE & CO,Buy,JPM,38,102.2100  USD,"-5,163.75",-1.33,"-5,165.08"
+2019-02-14,TFSA,AAPL(US0378331005) Cash Dividend 0.73000000 USD per Share (Ordinary Dividend),Dividend,AAPL,-,-,50.47,-,50.47
+2019-02-14,TFSA,AAPL(US0378331005) Cash Dividend 0.73000000 USD per Share - US Tax,Foreign Tax Withholding,AAPL,-,-,-7.56,-,-7.56
+2019-02-14,RRSP,AAPL(US0378331005) Cash Dividend 0.73000000 USD per Share (Ordinary Dividend),Dividend,AAPL,-,-,15.53,-,15.53
+2019-02-13,Margin,UTILITIES SELECT SECTOR SPDR,Sell,XLU,-17,55.5527  USD,"1,251.70",-1.34,"1,250.36"
+2019-02-05,Margin,USD Net Short Stock Interest for Jan-2019,Credit Interest,-,-,-,0.08,-,0.08
+2019-01-31,RRSP,CHARLOTTES WEB HOLDINGS INC,Sell,CWEB,-200,20.7000  CAD,"4,140.00",-2,"4,138.00"
+2019-01-31,RRSP,CHARLOTTES WEB HOLDINGS INC,Sell,CWEB,-100,20.7000  CAD,"2,070.00",-1,"2,069.00"
+2019-01-31,RRSP,CHARLOTTES WEB HOLDINGS INC,Sell,CWEB,-50,20.7000  CAD,"1,035.00",-0.5,"1,034.50"
+2019-01-31,TFSA,APHRIA INC,Sell,APHA,-30,10.8600  CAD,325.8,-1,324.8
+2019-01-31,RRSP,APHRIA INC,Sell,APHA,-80,11.4200  CAD,913.6,-1,912.6
+2019-01-16,Margin,Electronic Fund Transfer,Deposit,-,-,-,"1,300.00",-,"1,300.00"
+2019-01-16,Margin,Electronic Fund Transfer,Deposit,-,-,-,"1,300.00",-,"1,300.00"
+2019-01-15,TFSA,JPMORGAN CHASE & CO,Sell,JPM,-13,99.4600  USD,"1,715.14",-1.35,"1,713.79"
+2019-01-08,TFSA,"Net Amount in Base from Forex Trade: 2,500 USD.CAD",Forex Trade Component,USD.CAD,"2,500.00",1.3300  CAD,-9.38,-2.66,-9.38
+2019-01-08,TFSA,JPMORGAN CHASE & CO,Buy,JPM,13,99.6500  USD,"-1,719.45",-1.33,"-1,720.78"
+2019-01-08,TFSA,VISA INC-CLASS A SHARES,Buy,V,9,136.8590  USD,"-1,634.88",-1.33,"-1,636.20"
+2019-01-04,TFSA,Electronic Fund Transfer (Regular Contribution),Deposit,-,-,-,"6,000.00",-,"6,000.00"
+2019-01-04,TFSA,"Net Amount in Base from Forex Trade: 1,000 USD.CAD",Forex Trade Component,USD.CAD,"1,000.00",1.3440  CAD,-9.3,-2.7,-9.3
+2019-01-04,TFSA,APPLE INC,Buy,AAPL,7,144.5900  USD,"-1,353.62",-1.34,"-1,354.96"
+2019-01-04,Margin,USD Net Short Stock Interest for Dec-2018,Credit Interest,-,-,-,0.03,-,0.03
+2019-01-03,TFSA,Balance of Monthly Minimum Fee for Dec 2018,Other Fee,-,-,-,-3.09,-,-3.09
+2019-01-03,RRSP,Balance of Monthly Minimum Fee for Dec 2018,Other Fee,-,-,-,-1.73,-,-1.73
+2019-01-02,RRSP,RRSP Quarterly Fee 2018 Q4,Other Fee,-,-,-,-12.5,-,-12.5
+2019-01-02,RRSP,GST-HST RRSP Quarterly Fee 2018 Q4,Sales Tax,-,-,-,-1.63,-,-1.63
+2018-12-27,Margin,XLU(US81369Y8865) Cash Dividend 0.45901900 USD per Share (Ordinary Dividend),Dividend,XLU,-,-,10.62,-,10.62
+2018-12-27,Margin,XLU(US81369Y8865) Cash Dividend 0.45901900 USD per Share - US Tax,Foreign Tax Withholding,XLU,-,-,-3.19,-,-3.19
+2018-12-21,TFSA,NVDA(US67066G1040) Cash Dividend 0.16000000 USD per Share (Ordinary Dividend),Dividend,NVDA,-,-,11.75,-,11.75
+2018-12-21,TFSA,NVDA(US67066G1040) Cash Dividend 0.16000000 USD per Share - US Tax,Foreign Tax Withholding,NVDA,-,-,-1.77,-,-1.77
+2018-12-13,TFSA,MSFT (US5949181045) Cash Dividend USD 0.46 (Ordinary Dividend),Dividend,MSFT,-,-,24.57,-,24.57
+2018-12-13,TFSA,MSFT (US5949181045) Cash Dividend USD 0.46 - US Tax,Foreign Tax Withholding,MSFT,-,-,-3.69,-,-3.69
+2018-12-13,RRSP,APHRIA INC,Buy,APHA,80,7.0700  CAD,-565.6,-1,-566.6
+2018-12-13,TFSA,APHRIA INC,Buy,APHA,30,7.0700  CAD,-212.1,-1,-213.1
+2018-12-11,Margin,UTILITIES SELECT SECTOR SPDR,Buy,XLU,17,56.5550  USD,"-1,287.36",-1.34,"-1,288.70"
+2018-12-06,TFSA,Balance of Monthly Minimum Fee for Nov 2018,Other Fee,-,-,-,-0.07,-,-0.07
+2018-12-05,Margin,USD Debit Interest for Nov-2018,Debit Interest,-,-,-,-0.16,-,-0.16
+2018-12-04,TFSA,V(US92826C8394) Cash Dividend 0.25000000 USD per Share (Ordinary Dividend),Dividend,V,-,-,23.21,-,23.21
+2018-12-04,TFSA,V(US92826C8394) Cash Dividend 0.25000000 USD per Share - US Tax,Foreign Tax Withholding,V,-,-,-3.49,-,-3.49
+2018-11-15,RRSP,AAPL(US0378331005) Cash Dividend 0.73000000 USD per Share (Ordinary Dividend),Dividend,AAPL,-,-,15.39,-,15.39
+2018-11-15,TFSA,AAPL(US0378331005) Cash Dividend 0.73000000 USD per Share (Ordinary Dividend),Dividend,AAPL,-,-,43.29,-,43.29
+2018-11-15,TFSA,AAPL(US0378331005) Cash Dividend 0.73000000 USD per Share - US Tax,Foreign Tax Withholding,AAPL,-,-,-6.5,-,-6.5
+2018-11-06,Margin,Electronic Fund Transfer,Deposit,-,-,-,"1,600.00",-,"1,600.00"
+2018-11-06,Margin,"Net Amount in Base from Forex Trade: 1,300 USD.CAD",Forex Trade Component,USD.CAD,"1,300.00",1.3134  CAD,-3.93,-2.62,-3.93
+2018-11-05,Margin,USD Debit Interest for Oct-2018,Debit Interest,-,-,-,-0.59,-,-0.59
+2018-11-05,RRSP,"Net Amount in Base from Forex Trade: 2,000 USD.CAD",Forex Trade Component,USD.CAD,"2,000.00",1.3104  CAD,-1.5,-2.62,-1.5
+2018-11-05,RRSP,APPLE INC,Buy,AAPL,9,201.2500  USD,"-2,374.55",-1.31,"-2,375.86"
+2018-11-02,RRSP,APPLE INC,Buy,AAPL,7,211.3950  USD,"-1,939.38",-1.31,"-1,940.69"
+2018-10-30,Margin,Electronic Fund Transfer,Deposit,-,-,-,800,-,800
+2018-10-30,Margin,Net Amount in Base from Forex Trade: 500 USD.CAD,Forex Trade Component,USD.CAD,500,1.3138  CAD,-4.03,-2.63,-4.03
+2018-10-30,RRSP,"Net Amount in Base from Forex Trade: 3,800 USD.CAD",Forex Trade Component,USD.CAD,"3,800.00",1.3137  CAD,-13,-2.63,-13
+2018-10-30,RRSP,AMAZON.COM INC,Buy,AMZN,2,1499.7300  USD,"-3,932.29",-1.31,"-3,933.60"
+2018-10-29,Margin,"Net Amount in Base from Forex Trade: 2,821 USD.CAD",Forex Trade Component,USD.CAD,"2,821.00",1.3115  CAD,2.8,-2.62,2.8
+2018-10-29,RRSP,VANGUARD US TOTAL MARKET IND,Sell,VUN,-100,48.7400  CAD,"4,874.00",-1,"4,873.00"
+2018-10-29,RRSP,VANGUARD US TOTAL MARKET IND,Sell,VUN,-50,48.7400  CAD,"2,437.00",-0.5,"2,436.50"
+2018-10-25,RRSP,VANGUARD US TOTAL MARKET IND,Buy,VUN,50,48.8300  CAD,"-2,441.50",-1,"-2,442.50"
+2018-10-25,RRSP,VANGUARD US TOTAL MARKET IND,Buy,VUN,100,48.8300  CAD,"-4,883.00",-0.5,"-4,883.50"
+2018-10-25,Margin,AMAZON.COM INC,Buy,AMZN,2,1739.7100  USD,"-4,547.60",-1.31,"-4,548.91"
+2018-10-23,Margin,Electronic Fund Transfer,Deposit,-,-,-,"2,200.00",-,"2,200.00"
+2018-10-16,Margin,Electronic Fund Transfer,Deposit,-,-,-,"1,500.00",-,"1,500.00"
+2018-10-16,RRSP,ISHARES S&P/TSX CAPPED INFO,Sell,XIT,-200,18.1700  CAD,"3,634.00",-2,"3,632.00"
+2018-10-16,RRSP,ISHARES S&P/TSX CAPPED INFO,Sell,XIT,-50,18.1600  CAD,908,-0.5,907.5
+2018-10-11,TFSA,MICROSOFT CORP,Buy,MSFT,40,107.0700  USD,"-5,581.77",-1.3,"-5,583.08"
+2018-10-11,TFSA,NVIDIA CORP,Buy,NVDA,9,239.1776  USD,"-2,805.48",-1.3,"-2,806.78"
+2018-10-11,RRSP,ISHARES S&P/TSX CAPPED INFO,Buy,XIT,50,17.8300  CAD,-891.5,-1,-892.5
+2018-10-11,RRSP,ISHARES S&P/TSX CAPPED INFO,Buy,XIT,200,17.8200  CAD,"-3,564.00",-1.5,"-3,565.50"
+2018-10-09,TFSA,CHARLOTTES WEB HOLDINGS INC,Sell,CWEB,-20,16.7000  CAD,334,-1,333
+2018-10-09,RRSP,CANOPY GROWTH CORP,Sell,WEED,-100,63.7500  CAD,"6,375.00",-1,"6,374.00"
+2018-10-09,TFSA,APPLE INC,Buy,AAPL,45,226.5500  USD,"-13,200.16",-1.29,"-13,201.46"
+2018-10-08,TFSA,VISA INC-CLASS A SHARES,Buy,V,30,141.0900  USD,"-5,485.58",-1.3,"-5,486.88"
+2018-10-03,TFSA,APPLE INC,Sell,AAPL,-55,232.2411  USD,"16,437.91",-1.51,"16,436.40"
+2018-10-03,TFSA,CHEGG INC,Sell,CHGG,-150,29.0810  USD,"5,613.65",-1.38,"5,612.27"
+2018-10-02,TFSA,NVIDIA CORP,Sell,NVDA,-35,291.0000  USD,"13,059.21",-1.46,"13,057.75"
+2018-10-02,TFSA,NVIDIA CORP,Buy,NVDA,45,287.8000  USD,"-16,605.77",-1.28,"-16,607.05"
+2018-10-02,TFSA,VISA INC-CLASS A SHARES,Buy,V,40,150.1300  USD,"-7,699.87",-1.28,"-7,701.15"
+2018-10-02,RRSP,"Net Amount in Base from Forex Trade: -4,330 USD.CAD",Forex Trade Component,USD.CAD,"-4,330.00",1.2812  CAD,-6.76,-2.56,-6.76
+2018-10-02,RRSP,CANOPY GROWTH CORP,Buy,WEED,100,59.4400  CAD,"-5,944.00",-1,"-5,945.00"
+2018-10-01,RRSP,RRSP Quarterly Fee 2018 Q3,Other Fee,-,-,-,-12.5,-,-12.5
+2018-10-01,RRSP,GST-HST RRSP Quarterly Fee 2018 Q3,Sales Tax,-,-,-,-1.63,-,-1.63
+2018-09-27,TFSA,CHEGG INC,Buy,CHGG,100,27.6750  USD,"-3,609.37",-1.3,"-3,610.68"
+2018-09-27,TFSA,CHEGG INC,Buy,CHGG,50,27.6750  USD,"-1,804.69",-,"-1,804.69"
+2018-09-26,TFSA,ALIBABA GROUP HOLDING-SP ADR,Buy,BABA,60,166.8575  USD,"-13,033.91",-1.3,"-13,035.21"
+2018-09-26,TFSA,ALIBABA GROUP HOLDING-SP ADR,Sell,BABA,-60,167.0000  USD,"13,045.04",-1.48,"13,043.56"
+2018-09-25,TFSA,SQUARE INC - A,Sell,SQ,-60,92.2400  USD,"7,168.15",-1.4,"7,166.76"
+2018-09-25,RRSP,SQUARE INC - A,Sell,SQ,-45,92.1425  USD,"5,370.43",-1.37,"5,369.06"
+2018-09-25,TFSA,MICROSOFT CORP,Sell,MSFT,-89,114.1200  USD,"13,154.93",-1.48,"13,153.45"
+2018-09-19,TFSA,APPLE INC,Buy,AAPL,55,218.6700  USD,"-15,536.28",-1.29,"-15,537.58"
+2018-09-19,TFSA,SQUARE INC - A,Buy,SQ,60,88.8900  USD,"-6,889.69",-1.29,"-6,890.98"
+2018-09-19,TFSA,CHARLOTTES WEB HOLDINGS INC,Buy,CWEB,20,16.6000  CAD,-332,-1,-333
+2018-09-19,RRSP,CHARLOTTES WEB HOLDINGS INC,Buy,CWEB,300,16.6500  CAD,"-4,995.00",-3,"-4,998.00"
+2018-09-19,RRSP,CHARLOTTES WEB HOLDINGS INC,Buy,CWEB,50,16.6500  CAD,-832.5,-0.5,-833
+2018-09-19,RRSP,SQUARE INC - A,Buy,SQ,45,84.5000  USD,"-4,912.07",-1.29,"-4,913.36"
+2018-09-13,TFSA,MSFT (US5949181045) Cash Dividend USD 0.42000000 (Ordinary Dividend),Dividend,MSFT,-,-,48.59,-,48.59
+2018-09-13,TFSA,MSFT (US5949181045) Cash Dividend USD 0.42000000 - US Tax,Foreign Tax Withholding,MSFT,-,-,-7.29,-,-7.29
+2018-09-12,TFSA,PAYPAL HOLDINGS INC,Sell,PYPL,-150,90.7900  USD,"17,701.33",-1.55,"17,699.77"
+2018-09-11,RRSP,Electronic Fund Transfer (Regular Contribution),Deposit,-,-,-,"4,000.00",-,"4,000.00"
+2018-09-11,TFSA,ORGANIGRAM HOLDINGS INC,Buy,OGI,200,7.8100  CAD,"-1,562.00",-2,"-1,564.00"
+2018-09-11,TFSA,ORGANIGRAM HOLDINGS INC,Buy,OGI,50,7.8100  CAD,-390.5,-0.5,-391
+2018-09-11,TFSA,ORGANIGRAM HOLDINGS INC,Buy,OGI,500,7.8100  CAD,"-3,905.00",-5,"-3,910.00"
+2018-09-10,TFSA,NVIDIA CORP,Buy,NVDA,35,275.1300  USD,"-12,675.38",-1.32,"-12,676.69"
+2018-09-06,TFSA,PAYPAL HOLDINGS INC,Buy,PYPL,123,88.8700  USD,"-14,363.35",-1.31,"-14,364.66"
+2018-09-06,TFSA,PAYPAL HOLDINGS INC,Buy,PYPL,27,88.8700  USD,"-3,152.93",-,"-3,152.93"
+2018-09-05,RRSP,FACEBOOK INC-A,Sell,FB,-25,169.8200  USD,"5,594.72",-1.39,"5,593.33"
+2018-09-05,RRSP,Balance of Monthly Minimum Fee for Aug 2018,Other Fee,-,-,-,-2.42,-,-2.42
+2018-08-31,TFSA,APPLE INC,Sell,AAPL,-65,227.1400  USD,"19,252.39",-1.56,"19,250.82"
+2018-08-30,TFSA,JPMORGAN CHASE & CO,Sell,JPM,-100,115.7550  USD,"15,027.31",-1.51,"15,025.81"
+2018-08-30,TFSA,MICRON TECHNOLOGY INC,Sell,MU,-23,53.1127  USD,"1,585.87",-1.32,"1,584.55"
+2018-08-28,TFSA,Electronic Fund Transfer (Regular Contribution),Deposit,-,-,-,"1,577.28",-,"1,577.28"
+2018-08-21,TFSA,CANOPY GROWTH CORP,Sell,WEED,-85,50.7500  CAD,"4,313.75",-1,"4,312.75"
+2018-08-16,TFSA,AAPL(US0378331005) Cash Dividend 0.73000000 USD per Share (Ordinary Dividend),Dividend,AAPL,-,-,62.43,-,62.43
+2018-08-16,TFSA,AAPL(US0378331005) Cash Dividend 0.73000000 USD per Share - US Tax,Foreign Tax Withholding,AAPL,-,-,-9.37,-,-9.37
+2018-08-02,TFSA,Balance of Monthly Minimum Fee for Jul 2018,Other Fee,-,-,-,-2.9,-,-2.9
+2018-08-02,RRSP,Balance of Monthly Minimum Fee for Jul 2018,Other Fee,-,-,-,-0.21,-,-0.21
+2018-07-31,TFSA,JPM (US46625H1005) Cash Dividend USD 0.56000000 (Ordinary Dividend),Dividend,JPM,-,-,72.84,-,72.84
+2018-07-31,TFSA,JPM (US46625H1005) Cash Dividend USD 0.56000000 - US Tax,Foreign Tax Withholding,JPM,-,-,-10.93,-,-10.93
+2018-07-27,RRSP,INTEL CORP,Sell,INTC,-95,49.1200  USD,"6,093.39",-1.4,"6,091.99"
+2018-07-27,RRSP,HARVEST ONE CANNABIS INC,Sell,HVT,-110,0.6700  CAD,73.7,-1,72.7
+2018-07-27,RRSP,FACEBOOK INC-A,Buy,FB,25,177.2573  USD,"-5,786.56",-1.31,"-5,787.87"
+2018-07-24,TFSA,CANOPY GROWTH CORP,Buy,WEED,85,33.1400  CAD,"-2,816.90",-1,"-2,817.90"
+2018-07-11,TFSA,IQ(312029611) ADR Fee 0.02000000 USD per Share,Other Fee,IQ,-,-,-2.89,-,-2.89
+2018-07-04,TFSA,Electronic Fund Transfer (Regular Contribution),Deposit,-,-,-,"2,000.00",-,"2,000.00"
+2018-07-03,RRSP,RRSP Quarterly Fee 2018 Q2,Other Fee,-,-,-,-12.5,-,-12.5
+2018-07-03,RRSP,GST-HST RRSP Quarterly Fee 2018 Q2,Sales Tax,-,-,-,-1.63,-,-1.63
+2018-06-29,TFSA,Electronic Fund Transfer (Regular Contribution),Deposit,-,-,-,"1,000.00",-,"1,000.00"
+2018-06-26,TFSA,"Net Amount in Base from Forex Trade: 1,200 USD.CAD",Forex Trade Component,USD.CAD,"1,200.00",1.3309  CAD,-3.24,-2.66,-3.24
+2018-06-26,TFSA,MICRON TECHNOLOGY INC,Buy,MU,23,53.8685  USD,"-1,648.33",-1.33,"-1,649.66"
+2018-06-26,TFSA,Net Amount in Base from Forex Trade: -100 USD.CAD,Forex Trade Component,USD.CAD,-100,1.3309  CAD,-2.61,-2.66,-2.61
+2018-06-22,RRSP,HYDROPOTHECARY CORP/THE,Sell,HEXO,-100,5.4400  CAD,544,-1,543
+2018-06-22,RRSP,HYDROPOTHECARY CORP/THE,Sell,HEXO,-40,5.4400  CAD,217.6,-0.4,217.2
+2018-06-22,RRSP,HYDROPOTHECARY CORP/THE,Sell,HEXO,-600,5.4400  CAD,"3,264.00",-6,"3,258.00"
+2018-06-21,TFSA,"Net Amount in Base from Forex Trade: 2,000 USD.CAD",Forex Trade Component,USD.CAD,"2,000.00",1.3319  CAD,-3.34,-2.66,-3.34
+2018-06-21,TFSA,IQIYI INC-ADR,Buy,IQ,50,38.7769  USD,"-2,581.77",-1.33,"-2,583.10"
+2018-06-20,TFSA,Electronic Fund Transfer (Regular Contribution),Deposit,-,-,-,"2,000.00",-,"2,000.00"
+2018-06-19,TFSA,Electronic Fund Transfer (Regular Contribution),Deposit,-,-,-,"2,000.00",-,"2,000.00"
+2018-06-14,TFSA,MSFT (US5949181045) Cash Dividend USD 0.42000000 (Ordinary Dividend),Dividend,MSFT,-,-,48.98,-,48.98
+2018-06-14,TFSA,MSFT (US5949181045) Cash Dividend USD 0.42000000 - US Tax,Foreign Tax Withholding,MSFT,-,-,-7.35,-,-7.35
+2018-06-14,TFSA,IQIYI INC-ADR,Buy,IQ,60,38.2085  USD,"-3,004.11",-1.31,"-3,005.42"
+2018-06-13,TFSA,Electronic Fund Transfer (Regular Contribution),Deposit,-,-,-,"3,000.00",-,"3,000.00"
+2018-06-13,TFSA,"Net Amount in Base from Forex Trade: 2,150 USD.CAD",Forex Trade Component,USD.CAD,"2,150.00",1.2999  CAD,-5.74,-2.6,-5.74
+2018-06-06,RRSP,Net Amount in Base from Forex Trade: -2 USD.CAD,Forex Trade Component,USD.CAD,-2,1.2942  CAD,0,-,0
+2018-06-06,RRSP,Net Amount in Base from Forex Trade: -1 USD.CAD,Forex Trade Component,USD.CAD,-1,1.2942  CAD,0,-,0
+2018-06-05,TFSA,APPLE INC,Buy,AAPL,65,192.9673  USD,"-16,265.60",-1.3,"-16,266.90"
+2018-06-05,RRSP,Balance of Monthly Minimum Fee for May 2018,Other Fee,-,-,-,-3.78,-,-3.78
+2018-06-01,RRSP,INTC (US4581401001) Cash Dividend USD 0.30000000 (Ordinary Dividend),Dividend,INTC,-,-,36.91,-,36.91
+2018-05-30,TFSA,JPMORGAN CHASE & CO,Buy,JPM,100,106.9573  USD,"-13,768.61",-1.29,"-13,769.90"
+2018-05-29,TFSA,MICRON TECHNOLOGY INC,Sell,MU,-100,63.2615  USD,"8,237.28",-1.42,"8,235.86"
+2018-05-29,TFSA,MICRON TECHNOLOGY INC,Sell,MU,-100,63.2600  USD,"8,237.08",-0.12,"8,236.96"
+2018-05-29,TFSA,MICRON TECHNOLOGY INC,Sell,MU,-50,63.2600  USD,"4,118.54",-0.39,"4,118.16"
+2018-05-29,TFSA,MICRON TECHNOLOGY INC,Sell,MU,-100,63.2600  USD,"8,237.08",-0.77,"8,236.31"
+2018-05-04,RRSP,Net Amount in Base from Forex Trade: -2 USD.CAD,Forex Trade Component,USD.CAD,-2,1.2841  CAD,0,-,0
+2018-05-04,RRSP,Net Amount in Base from Forex Trade: -1 USD.CAD,Forex Trade Component,USD.CAD,-1,1.2840  CAD,0,-,0
+2018-05-03,RRSP,Balance of Monthly Minimum Fee for Apr 2018,Other Fee,-,-,-,-3.85,-,-3.85
+2018-05-03,TFSA,Balance of Monthly Minimum Fee for Apr 2018,Other Fee,-,-,-,-1.34,-,-1.34
+2018-04-12,TFSA,"Net Amount in Base from Forex Trade: 1,150 USD.CAD",Forex Trade Component,USD.CAD,"1,150.00",1.2614  CAD,-5.6,-2.52,-5.6
+2018-04-02,RRSP,RRSP Quarterly Fee 2018 Q1,Other Fee,-,-,-,-12.5,-,-12.5
+2018-04-02,RRSP,GST-HST RRSP Quarterly Fee 2018 Q1,Sales Tax,-,-,-,-1.63,-,-1.63
+2018-03-29,TFSA,"Net Amount in Base from Forex Trade: 8,000 USD.CAD",Forex Trade Component,USD.CAD,"8,000.00",1.2900  CAD,-15.54,-2.58,-15.54
+2018-03-29,TFSA,MICROSOFT CORP,Buy,MSFT,89,90.2393  USD,"-10,347.52",-1.29,"-10,348.81"
+2018-03-16,TFSA,NVDA(US67066G1040) Cash Dividend 0.15000000 USD per Share (Ordinary Dividend),Dividend,NVDA,-,-,3.14,-,3.14
+2018-03-16,TFSA,NVDA(US67066G1040) Cash Dividend 0.15000000 USD per Share - US Tax,Foreign Tax Withholding,NVDA,-,-,-0.47,-,-0.47
+2018-03-16,RRSP,NVDA(US67066G1040) Cash Dividend 0.15000000 USD per Share (Ordinary Dividend),Dividend,NVDA,-,-,2.95,-,2.95
+2018-03-13,RRSP,NVIDIA CORP,Sell,NVDA,-15,252.4300  USD,"4,909.13",-1.41,"4,907.72"
+2018-03-13,TFSA,MICRON TECHNOLOGY INC,Buy,MU,270,62.3600  USD,"-21,829.43",-1.75,"-21,831.18"
+2018-03-13,TFSA,MICRON TECHNOLOGY INC,Buy,MU,80,62.3600  USD,"-6,467.98",-0.52,"-6,468.50"
+2018-03-13,RRSP,INTEL CORP,Buy,INTC,95,53.5300  USD,"-6,593.16",-1.3,"-6,594.45"
+2018-03-06,TFSA,V(US92826C8394) Cash Dividend 0.21000000 USD per Share (Ordinary Dividend),Dividend,V,-,-,18.93,-,18.93
+2018-03-06,TFSA,V(US92826C8394) Cash Dividend 0.21000000 USD per Share - US Tax,Foreign Tax Withholding,V,-,-,-2.83,-,-2.83
+2018-03-05,TFSA,NVIDIA CORP,Sell,NVDA,-1,234.0000  USD,303.33,-1.3,302.03
+2018-03-05,TFSA,NVIDIA CORP,Sell,NVDA,-10,234.0000  USD,"3,033.34",-0.07,"3,033.27"
+2018-03-05,TFSA,NVIDIA CORP,Sell,NVDA,-5,234.3200  USD,"1,518.75",-1.33,"1,517.41"
+2018-03-05,TFSA,SHOPIFY INC - CLASS A,Sell,SHOP,-2,176.4200  CAD,352.84,-1,351.84
+2018-02-27,TFSA,VISA INC-CLASS A SHARES,Sell,V,-70,124.5710  USD,"11,139.76",-1.55,"11,138.22"
+2018-02-27,TFSA,AMAZON.COM INC,Sell,AMZN,-1,1514.7000  USD,"1,935.03",-1.32,"1,933.71"
+2018-02-14,TFSA,SHOPIFY INC - CLASS A,Sell,SHOP,-50,168.2600  CAD,"8,413.00",-1,"8,412.00"
+2018-02-14,TFSA,SHOPIFY INC - CLASS A,Sell,SHOP,-18,171.7800  CAD,"3,092.04",-1,"3,091.04"
+2018-02-14,TFSA,ALPHABET INC-CL A,Sell,GOOGL,-7,1072.6100  USD,"9,378.58",-1.47,"9,377.11"
+2018-02-07,TFSA,ALPHABET INC-CL A,Buy,GOOGL,7,1074.0000  USD,"-9,447.87",-1.26,"-9,449.13"
+2018-02-07,TFSA,VISA INC-CLASS A SHARES,Buy,V,1,120.6200  USD,-151.58,-1.26,-152.84
+2018-02-07,TFSA,VISA INC-CLASS A SHARES,Buy,V,6,120.6200  USD,-909.5,-,-909.5
+2018-02-07,TFSA,VISA INC-CLASS A SHARES,Buy,V,63,120.6200  USD,"-9,549.74",-,"-9,549.74"
+2018-02-05,TFSA,FACEBOOK INC-A,Sell,FB,-27,188.8600  USD,"6,393.91",-1.41,"6,392.51"
+2018-01-30,TFSA,AMAZON.COM INC,Sell,AMZN,-8,1427.3111  USD,"14,088.13",-1.56,"14,086.57"
+2018-01-29,RRSP,"Net Amount in Base from Forex Trade: -2,818 USD.CAD",Forex Trade Component,USD.CAD,"-2,818.00",1.2341  CAD,-2.04,-2.46,-2.04
+2018-01-29,RRSP,HYDROPOTHECARY CORP/THE,Buy,THCX,300,4.4000  CAD,"-1,320.00",-3,"-1,323.00"
+2018-01-29,RRSP,HYDROPOTHECARY CORP/THE,Buy,THCX,70,4.4000  CAD,-308,-0.7,-308.7
+2018-01-29,RRSP,HYDROPOTHECARY CORP/THE,Buy,THCX,300,4.4000  CAD,"-1,320.00",-3,"-1,323.00"
+2018-01-29,RRSP,HYDROPOTHECARY CORP/THE,Buy,THCX,70,4.4000  CAD,-308,-0.7,-308.7
+2018-01-29,RRSP,HARVEST ONE CANNABIS INC,Buy,HVST,10,1.7900  CAD,-17.9,-1,-18.9
+2018-01-29,RRSP,HARVEST ONE CANNABIS INC,Buy,HVST,100,1.7900  CAD,-179,-,-179
+2018-01-26,RRSP,MICRON TECHNOLOGY INC,Sell,MU,-100,43.2900  USD,"5,331.16",-1.37,"5,329.79"
+2018-01-10,TFSA,Net Amount in Base from Forex Trade: -0.1939274 USD.CAD,Forex Trade Component,USD.CAD,-0.19,1.2462  CAD,0,-,0
+2018-01-08,RRSP,Net Amount in Base from Forex Trade: -9 USD.CAD,Forex Trade Component,USD.CAD,-9,1.2389  CAD,-0.03,-,-0.03
+2018-01-08,RRSP,Net Amount in Base from Forex Trade: -1 USD.CAD,Forex Trade Component,USD.CAD,-1,1.2389  CAD,0,-,0
+2018-01-08,RRSP,Net Amount in Base from Forex Trade: -36 USD.CAD,Forex Trade Component,USD.CAD,-36,1.2389  CAD,-0.11,-,-0.11
+2018-01-08,RRSP,NVIDIA CORP,Sell,NVDA,-10,223.1400  USD,"2,771.40",-1.31,"2,770.09"
+2018-01-08,TFSA,Disbursement Initiated by Rishi Sharma,Withdrawal,-,-,-,"-7,650.00",-,"-7,650.00"
+2018-01-08,RRSP,NVIDIA CORP,Buy,NVDA,10,221.3000  USD,"-2,748.55",-1.24,"-2,749.79"
+2018-01-05,TFSA,"Net Amount in Base from Forex Trade: -6,180 USD.CAD",Forex Trade Component,USD.CAD,"-6,180.00",1.2394  CAD,-13.68,-2.5,-13.68
+2018-01-05,RRSP,RRSP Withdrawal Fee 20180105,Other Fee,-,-,-,-50,-,-50
+2018-01-05,RRSP,GST-HST RRSP Withdrawal Fee 20180105,Sales Tax,-,-,-,-6.5,-,-6.5
+2018-01-04,RRSP,Disbursement Initiated by Rishi Sharma,Withdrawal,-,-,-,"-3,284.17",-,"-3,284.17"
+2018-01-04,RRSP,IRA Withholding,Withdrawal,-,-,-,-364.91,-,-364.91
+2018-01-04,TFSA,PROSHARES ULTRAPRO S&P 500,Sell,UPRO,-40,148.1300  USD,"7,398.20",-1.43,"7,396.78"
+2018-01-02,RRSP,"Net Amount in Base from Forex Trade: -2,800 USD.CAD",Forex Trade Component,USD.CAD,"-2,800.00",1.2572  CAD,14.56,-2.52,14.56
+2018-01-02,RRSP,RRSP Quarterly Fee 2017 Q4 (PRORATED),Other Fee,-,-,-,-6.66,-,-6.66
+2018-01-02,RRSP,GST-HST RRSP Quarterly Fee 2017 Q4 (PRORATED),Sales Tax,-,-,-,-0.87,-,-0.87
+2017-12-26,RRSP,BANK OF AMERICA CORP,Sell,BAC,-85,29.6300  USD,"3,195.28",-1.36,"3,193.93"
+2017-12-22,TFSA,Disbursement Initiated by Rishi Sharma,Withdrawal,-,-,-,"-5,178.00",-,"-5,178.00"
+2017-12-18,TFSA,VANGUARD US TOTAL MARKET IND,Sell,VUN,-5,48.4900  CAD,242.45,-1,241.45
+2017-12-18,TFSA,VANGUARD US TOTAL MARKET IND,Sell,VUN,-100,48.4900  CAD,"4,849.00",-0.05,"4,848.95"
+2017-12-18,TFSA,PROSHARES ULTRAPRO S&P 500,Buy,UPRO,25,142.8200  USD,"-4,592.02",-1.29,"-4,593.31"
+2017-12-18,TFSA,PROSHARES ULTRAPRO S&P 500,Buy,UPRO,15,142.7700  USD,"-2,754.25",-1.29,"-2,755.53"
+2017-12-15,TFSA,NVDA(US67066G1040) Cash Dividend 0.15000000 USD per Share (Ordinary Dividend),Dividend,NVDA,-,-,3.09,-,3.09
+2017-12-15,TFSA,NVDA(US67066G1040) Cash Dividend 0.15000000 USD per Share - US Tax,Foreign Tax Withholding,NVDA,-,-,-0.46,-,-0.46
+2017-12-13,TFSA,STARBUCKS CORP,Sell,SBUX,-55,59.7000  USD,"4,207.48",-1.39,"4,206.09"
+2017-12-13,TFSA,JD.COM INC-ADR,Sell,JD,-65,40.8607  USD,"3,403.33",-1.37,"3,401.96"
+2017-12-11,RRSP,"Net Amount in Base from Forex Trade: 6,000 USD.CAD",Forex Trade Component,USD.CAD,"6,000.00",1.2854  CAD,-1.37,-2.57,-1.37
+2017-12-11,RRSP,"Net Amount in Base from Forex Trade: 4,000 USD.CAD",Forex Trade Component,USD.CAD,"4,000.00",1.2848  CAD,0.63,-2.57,0.63
+2017-12-11,RRSP,NVIDIA CORP,Buy,NVDA,15,192.2800  USD,"-3,707.93",-1.29,"-3,709.21"
+2017-12-11,RRSP,MICRON TECHNOLOGY INC,Buy,MU,100,43.2500  USD,"-5,560.22",-1.29,"-5,561.51"
+2017-12-11,RRSP,"Net Amount in Base from Forex Trade: -2,000 USD.CAD",Forex Trade Component,USD.CAD,"-2,000.00",1.2852  CAD,-3.29,-2.57,-3.29
+2017-12-11,RRSP,"Net Amount in Base from Forex Trade: 2,000 USD.CAD",Forex Trade Component,USD.CAD,"2,000.00",1.2845  CAD,-0.29,-2.57,-0.29
+2017-12-11,RRSP,BANK OF AMERICA CORP,Buy,BAC,85,29.0400  USD,"-3,173.38",-1.29,"-3,174.66"
+2017-12-06,RRSP,Electronic Fund Transfer,Deposit,-,-,-,"13,000.00",-,"13,000.00"
+2017-12-05,TFSA,Balance of Monthly Minimum Fee for Nov 2017,Other Fee,-,-,-,-3.87,-,-3.87
+2017-12-01,TFSA,SBUX (US8552441094) Cash Dividend USD 0.30000000 (Ordinary Dividend),Dividend,SBUX,-,-,20.94,-,20.94
+2017-12-01,TFSA,SBUX (US8552441094) Cash Dividend USD 0.30000000 - US Tax,Foreign Tax Withholding,SBUX,-,-,-3.15,-,-3.15
+2017-11-02,TFSA,Balance of Monthly Minimum Fee for Oct 2017,Other Fee,-,-,-,-1.62,-,-1.62
+2017-10-04,TFSA,VANGUARD US TOTAL MARKET IND,Sell,VUN,-100,44.2800  CAD,"4,428.00",-1,"4,427.00"
+2017-10-04,TFSA,VANGUARD US TOTAL MARKET IND,Sell,VUN,-25,44.2800  CAD,"1,107.00",-0.25,"1,106.75"
+2017-10-04,TFSA,SHOPIFY INC - CLASS A,Buy,SHOP,40,137.0000  CAD,"-5,480.00",-1,"-5,481.00"
+2017-09-30,TFSA,VUN (CA92206D1006) Cash Dividend CAD 0.14591700 (Ordinary Dividend),Dividend,VUN,-,-,33.56,-,33.56
+2017-09-28,TFSA,"Net Amount in Base from Forex Trade: 2,400 USD.CAD",Forex Trade Component,USD.CAD,"2,400.00",1.2468  CAD,-12.34,-2.5,-12.34
+2017-09-28,TFSA,JD.COM INC-ADR,Buy,JD,65,38.5189  USD,"-3,111.38",-1.24,"-3,112.63"
+2017-09-27,TFSA,Electronic Fund Transfer,Deposit,-,-,-,"3,000.00",-,"3,000.00"
+2017-09-26,TFSA,FACEBOOK INC-A,Buy,FB,4,164.6000  USD,-812.79,-1.23,-814.03
+2017-09-18,TFSA,NVDA(US67066G1040) Cash Dividend 0.14000000 USD per Share (Ordinary Dividend),Dividend,NVDA,-,-,2.75,-,2.75
+2017-09-18,TFSA,NVDA(US67066G1040) Cash Dividend 0.14000000 USD per Share - US Tax,Foreign Tax Withholding,NVDA,-,-,-0.42,-,-0.42
+2017-08-30,TFSA,SHOPIFY INC - CLASS A,Buy,SHOP,30,136.6800  CAD,"-4,100.40",-1,"-4,101.40"
+2017-08-30,TFSA,"Net Amount in Base from Forex Trade: 2,470 USD.CAD",Forex Trade Component,USD.CAD,"2,470.00",1.2626  CAD,-3.99,-2.5,-3.99
+2017-08-30,TFSA,AMAZON.COM INC,Buy,AMZN,2,966.2700  USD,"-2,438.87",-1.26,"-2,440.13"
+2017-08-25,TFSA,SBUX (US8552441094) Cash Dividend USD 0.25000000 (Ordinary Dividend),Dividend,SBUX,-,-,17.16,-,17.16
+2017-08-25,TFSA,SBUX (US8552441094) Cash Dividend USD 0.25000000 - US Tax,Foreign Tax Withholding,SBUX,-,-,-2.57,-,-2.57
+2017-08-15,TFSA,"Net Amount in Base from Forex Trade: 4,000 USD.CAD",Forex Trade Component,USD.CAD,"4,000.00",1.2760  CAD,-4.18,-2.54,-4.18
+2017-08-15,TFSA,FACEBOOK INC-A,Buy,FB,23,170.8400  USD,"-5,012.24",-1.28,"-5,013.52"
+2017-08-13,TFSA,Electronic Fund Transfer,Deposit,-,-,-,"4,000.00",-,"4,000.00"
+2017-07-28,TFSA,"Net Amount in Base from Forex Trade: 3,000 USD.CAD",Forex Trade Component,USD.CAD,"3,000.00",1.2434  CAD,-2.51,-2.51,-2.51
+2017-07-28,TFSA,STARBUCKS CORP,Buy,SBUX,55,54.4000  USD,"-3,720.25",-1.24,"-3,721.50"
+2017-07-27,TFSA,CANOPY GROWTH CORP,Sell,WEED,-700,9.4000  CAD,"6,580.00",-7,"6,573.00"
+2017-07-27,TFSA,CANOPY GROWTH CORP,Sell,WEED,-50,9.4000  CAD,470,-0.5,469.5
+2017-07-25,TFSA,NVIDIA CORP,Buy,NVDA,16,165.0000  USD,"-3,302.11",-1.25,"-3,303.36"
+2017-07-12,TFSA,NETFLIX INC,Sell,NFLX,-6,158.2411  USD,"1,210.64",-1.3,"1,209.34"
+2017-07-12,TFSA,NETFLIX INC,Sell,NFLX,-7,157.5900  USD,"1,406.60",-1.31,"1,405.29"
+2017-07-05,TFSA,Electronic Fund Transfer,Deposit,-,-,-,"2,275.00",-,"2,275.00"
+2017-06-30,TFSA,VUN (CA92206D1006) Cash Dividend CAD 0.17748100 (Ordinary Dividend),Dividend,VUN,-,-,40.82,-,40.82
+2017-06-21,TFSA,AMD 21JUL17 13.0 C,Sell,AMD 170721C00013000,-1,1.1100  USD,147.99,-1.06,146.92
+2017-06-21,TFSA,AMD 21JUL17 13.0 C,Sell,AMD 170721C00013000,-4,1.0400  USD,554.61,-6.92,547.69
+2017-06-09,TFSA,AAPL 21JUL17 155.0 C,Buy,AAPL 170721C00155000,14,2.1500  USD,"-4,053.57",-24.38,"-4,077.95"
+2017-06-09,TFSA,AAPL 21JUL17 155.0 C,Buy,AAPL 170721C00155000,6,2.1500  USD,"-1,737.24",-10.45,"-1,747.69"
+2017-06-09,TFSA,AMD 21JUL17 13.0 C,Buy,AMD 170721C00013000,5,0.5900  USD,-397.28,-8.57,-405.85
+2017-06-02,TFSA,Balance of Monthly Minimum Fee for May 2017,Other Fee,-,-,-,-0.05,-,-0.05
+2017-06-01,TFSA,Electronic Fund Transfer,Deposit,-,-,-,"2,275.00",-,"2,275.00"
+2017-05-30,TFSA,CANOPY GROWTH CORP,Buy,WEED,50,7.6600  CAD,-383,-1,-384
+2017-05-30,TFSA,CANOPY GROWTH CORP,Buy,WEED,200,7.6600  CAD,"-1,532.00",-1.5,"-1,533.50"
+2017-05-10,TFSA,NVIDIA CORP,Sell,NVDA,-40,120.1300  USD,"6,561.98",-1.52,"6,560.47"
+2017-05-03,TFSA,Balance of Monthly Minimum Fee for Apr 2017,Other Fee,-,-,-,-0.07,-,-0.07
+2017-05-02,TFSA,Electronic Fund Transfer,Deposit,-,-,-,"2,275.00",-,"2,275.00"
+2017-04-12,TFSA,"Net Amount in Base from Forex Trade: 1,500 USD.CAD",Forex Trade Component,USD.CAD,"1,500.00",1.3267  CAD,-5.22,-2.67,-5.22
+2017-04-12,TFSA,NETFLIX INC,Buy,NFLX,13,145.4000  USD,"-2,504.51",-1.32,"-2,505.84"
+2017-04-04,TFSA,US Securities and Futures Value Bundle for Mar 2017,Other Fee,-,-,-,-13.32,-,-13.32
+2017-04-04,TFSA,GST-HST US Securities and Futures Value Bundle for Mar 2017,Sales Tax,-,-,-,-1.73,-,-1.73
+2017-03-31,TFSA,VUN (CA92206D1006) Cash Dividend CAD 0.16589600 (Ordinary Dividend),Dividend,VUN,-,-,38.16,-,38.16
+2017-03-30,TFSA,Electronic Fund Transfer,Deposit,-,-,-,"1,770.00",-,"1,770.00"
+2017-03-22,TFSA,CANOPY GROWTH CORP,Buy,WEED,500,9.7800  CAD,"-4,890.00",-5,"-4,895.00"
+2017-03-20,TFSA,NVIDIA CORP,Buy,NVDA,40,108.7086  USD,"-5,805.91",-1.34,"-5,807.24"
+2017-03-10,TFSA,Electronic Fund Transfer,Deposit,-,-,-,"3,000.00",-,"3,000.00"
+2017-03-02,TFSA,Electronic Fund Transfer,Deposit,-,-,-,"1,770.00",-,"1,770.00"
+2017-03-02,TFSA,US Securities and Futures Value Bundle for Feb 2017,Other Fee,-,-,-,-13.3,-,-13.3
+2017-03-02,TFSA,Balance of Monthly Minimum Fee for Feb 2017,Other Fee,-,-,-,-1.18,-,-1.18
+2017-03-02,TFSA,GST-HST US Securities and Futures Value Bundle for Feb 2017,Sales Tax,-,-,-,-1.73,-,-1.73
+2017-02-27,TFSA,AMAZON.COM INC,Buy,AMZN,7,844.9100  USD,"-7,795.14",-1.32,"-7,796.46"
+2017-02-16,TFSA,AMAZON.COM INC,Sell,AMZN,-6,841.3500  USD,"6,598.37",-1.45,"6,596.92"
+2017-02-03,TFSA,US Securities and Futures Value Bundle for Jan 2017,Other Fee,-,-,-,-13.03,-,-13.03
+2017-02-03,TFSA,GST-HST US Securities and Futures Value Bundle for Jan 2017,Sales Tax,-,-,-,-1.69,-,-1.69
+2017-01-24,TFSA,VANGUARD TOTAL STOCK MKT ETF,Sell,VTI,-89,117.5610  USD,"13,767.12",-1.63,"13,765.49"
+2017-01-24,TFSA,AMAZON.COM INC,Buy,AMZN,6,821.2000  USD,"-6,483.21",-1.32,"-6,484.53"
+2017-01-24,TFSA,VANGUARD US TOTAL MARKET IND,Buy,VUN,200,42.1000  CAD,"-8,420.00",-2,"-8,422.00"
+2017-01-24,TFSA,VANGUARD US TOTAL MARKET IND,Buy,VUN,30,42.1000  CAD,"-1,263.00",-0.3,"-1,263.30"
+2017-01-22,TFSA,Electronic Fund Transfer,Deposit,-,-,-,"5,000.00",-,"5,000.00"
+2017-01-19,TFSA,VANGUARD TOTAL STOCK MKT ETF,Buy,VTI,89,116.7200  USD,"-13,835.88",-1.33,"-13,837.22"
+2017-01-04,TFSA,US Securities and Futures Value Bundle for Dec 2016,Other Fee,-,-,-,-13.43,-,-13.43
+2017-01-04,TFSA,GST-HST US Securities and Futures Value Bundle for Dec 2016,Sales Tax,-,-,-,-1.75,-,-1.75
+2016-12-07,TFSA,ARDELYX INC,Sell,ARDX,-100,15.2000  USD,"2,011.57",-1.38,"2,010.18"
+2016-12-07,TFSA,ARDELYX INC,Sell,ARDX,-100,15.2000  USD,"2,011.57",-0.06,"2,011.51"
+2016-12-07,TFSA,ARDELYX INC,Sell,ARDX,-100,15.2000  USD,"2,011.57",-0.32,"2,011.24"
+2016-12-07,TFSA,ARDELYX INC,Sell,ARDX,-100,15.2000  USD,"2,011.57",-0.59,"2,010.98"
+2016-12-07,TFSA,ARDELYX INC,Sell,ARDX,-100,15.2000  USD,"2,011.57",-0.72,"2,010.85"
+2016-12-02,TFSA,US Securities and Futures Value Bundle for Nov 2016,Other Fee,-,-,-,-13.44,-,-13.44
+2016-12-02,TFSA,GST-HST US Securities and Futures Value Bundle for Nov 2016,Sales Tax,-,-,-,-1.75,-,-1.75
+2016-12-01,TFSA,INTC (US4581401001) Cash Dividend USD 0.26000000 (Ordinary Dividend),Dividend,INTC,-,-,17.32,-,17.32
+2016-12-01,TFSA,INTC(US4581401001) Choice Dividend 0.26000000 USD Distribution Value - US Tax,Foreign Tax Withholding,INTC,-,-,-2.6,-,-2.6
+2016-12-01,TFSA,ARDELYX INC,Buy,ARDX,88,14.2500  USD,"-1,670.33",-1.33,"-1,671.66"
+2016-12-01,TFSA,ARDELYX INC,Buy,ARDX,99,14.2500  USD,"-1,879.12",-,"-1,879.12"
+2016-12-01,TFSA,ARDELYX INC,Buy,ARDX,100,14.2500  USD,"-1,898.10",-0.58,"-1,898.68"
+2016-12-01,TFSA,ARDELYX INC,Buy,ARDX,2,14.2500  USD,-37.96,-0.01,-37.98
+2016-12-01,TFSA,ARDELYX INC,Buy,ARDX,100,14.2500  USD,"-1,898.10",-0.67,"-1,898.77"
+2016-12-01,TFSA,ARDELYX INC,Buy,ARDX,21,14.2500  USD,-398.6,-0.14,-398.74
+2016-12-01,TFSA,ARDELYX INC,Buy,ARDX,32,14.2500  USD,-607.39,-0.21,-607.61
+2016-12-01,TFSA,ARDELYX INC,Buy,ARDX,58,14.2500  USD,"-1,100.90",-0.39,"-1,101.28"
+2016-11-17,TFSA,FACEBOOK INC-A,Sell,FB,-50,116.8310  USD,"7,900.11",-1.53,"7,898.58"
+2016-11-16,TFSA,FACEBOOK INC-A,Buy,FB,35,115.0100  USD,"-5,412.49",-1.34,"-5,413.83"
+2016-11-16,TFSA,FACEBOOK INC-A,Buy,FB,15,115.0100  USD,"-2,319.64",-,"-2,319.64"
+2016-11-16,TFSA,"Net Amount in Base from Forex Trade: 3,000 USD.CAD",Forex Trade Component,USD.CAD,"3,000.00",1.3461  CAD,-7.19,-2.69,-7.19
+2016-11-16,TFSA,CANOPY GROWTH CORP,Buy,CGC,200,14.6600  CAD,"-2,932.00",-2,"-2,934.00"
+2016-11-16,TFSA,CANOPY GROWTH CORP,Sell,CGC,-100,15.9200  CAD,"1,592.00",-1,"1,591.00"
+2016-11-16,TFSA,CANOPY GROWTH CORP,Sell,CGC,-100,17.3000  CAD,"1,730.00",-1,"1,729.00"
+2016-11-09,TFSA,ARDELYX INC,Sell,ARDX,-5,14.3000  USD,95.97,-1.35,94.63
+2016-11-09,TFSA,ARDELYX INC,Sell,ARDX,-10,14.3000  USD,191.95,-0.01,191.94
+2016-11-09,TFSA,ARDELYX INC,Sell,ARDX,-5,14.3000  USD,95.97,0,95.97
+2016-11-09,TFSA,ARDELYX INC,Sell,ARDX,-5,14.3000  USD,95.97,0,95.97
+2016-11-09,TFSA,ARDELYX INC,Sell,ARDX,-15,14.3000  USD,287.92,-0.01,287.91
+2016-11-09,TFSA,ARDELYX INC,Sell,ARDX,-10,14.3000  USD,191.95,-0.01,191.94
+2016-11-09,TFSA,ARDELYX INC,Sell,ARDX,-5,14.3000  USD,95.97,0,95.97
+2016-11-09,TFSA,ARDELYX INC,Sell,ARDX,-5,14.3000  USD,95.97,0,95.97
+2016-11-09,TFSA,JETBLUE AIRWAYS CORP,Sell,JBLU,-30,18.3601  USD,739.34,-1.36,737.98
+2016-11-09,TFSA,ARDELYX INC,Sell,ARDX,-10,14.3000  USD,191.95,-0.01,191.94
+2016-11-09,TFSA,ARDELYX INC,Sell,ARDX,-15,14.3000  USD,287.92,-0.01,287.91
+2016-11-09,TFSA,ARDELYX INC,Sell,ARDX,-15,14.3000  USD,287.92,-0.01,287.91
+2016-11-09,TFSA,ARDELYX INC,Sell,ARDX,-5,14.3000  USD,95.97,0,95.97
+2016-11-09,TFSA,ARDELYX INC,Sell,ARDX,-5,14.3000  USD,95.97,0,95.97
+2016-11-09,TFSA,INTEL CORP,Sell,INTC,-50,34.5700  USD,"2,320.17",-1.4,"2,318.76"
+2016-11-09,TFSA,ARDELYX INC,Sell,ARDX,-30,14.3000  USD,575.85,-0.02,575.83
+2016-11-09,TFSA,ARDELYX INC,Sell,ARDX,-5,14.3000  USD,95.97,0,95.97
+2016-11-09,TFSA,ARDELYX INC,Sell,ARDX,-10,14.3000  USD,191.95,-0.01,191.94
+2016-11-09,TFSA,ARDELYX INC,Sell,ARDX,-5,14.3000  USD,95.97,0,95.97
+2016-11-09,TFSA,ARDELYX INC,Sell,ARDX,-5,14.3000  USD,95.97,0,95.97
+2016-11-09,TFSA,ARDELYX INC,Sell,ARDX,-5,14.3000  USD,95.97,0,95.97
+2016-11-09,TFSA,ARDELYX INC,Sell,ARDX,-10,14.3000  USD,191.95,-0.01,191.94
+2016-11-09,TFSA,ARDELYX INC,Sell,ARDX,-5,14.3000  USD,95.97,0,95.97
+2016-11-09,TFSA,ARDELYX INC,Sell,ARDX,-10,14.3000  USD,191.95,-0.01,191.94
+2016-11-09,TFSA,ARDELYX INC,Sell,ARDX,-15,14.3000  USD,287.92,-0.08,287.85
+2016-11-09,TFSA,ARDELYX INC,Sell,ARDX,-5,14.3000  USD,95.97,-0.04,95.94
+2016-11-09,TFSA,ARDELYX INC,Sell,ARDX,-35,14.3000  USD,671.82,-0.26,671.57
+2016-11-09,TFSA,ARDELYX INC,Sell,ARDX,-15,14.3000  USD,287.92,-0.11,287.81
+2016-11-09,TFSA,ARDELYX INC,Sell,ARDX,-10,14.3000  USD,191.95,-0.07,191.88
+2016-11-09,TFSA,ARDELYX INC,Sell,ARDX,-50,14.3000  USD,959.74,-0.36,959.38
+2016-11-03,TFSA,US Securities and Futures Value Bundle for Oct 2016,Other Fee,-,-,-,-13.41,-,-13.41
+2016-11-03,TFSA,GST-HST US Securities and Futures Value Bundle for Oct 2016,Sales Tax,-,-,-,-1.74,-,-1.74
+2016-10-19,TFSA,ARDELYX INC,Buy,ARDX,200,13.3500  USD,"-3,501.17",-1.31,"-3,502.48"
+2016-10-19,TFSA,ARDELYX INC,Buy,ARDX,125,13.3500  USD,"-2,188.23",-0.39,"-2,188.63"
+2016-10-19,TFSA,ISHARES JAPAN FUNDAMENTAL IN,Sell,CJP,-300,12.2400  CAD,"3,672.00",-3,"3,669.00"
+2016-10-19,TFSA,ISHARES JAPAN FUNDAMENTAL IN,Sell,CJP,-100,12.2500  CAD,"1,225.00",-1,"1,224.00"
+2016-10-19,TFSA,ISHARES JAPAN FUNDAMENTAL IN,Sell,CJP,-50,12.2400  CAD,612,-0.5,611.5
+2016-10-05,TFSA,US Securities and Futures Value Bundle for Sep 2016,Other Fee,-,-,-,-13.13,-,-13.13
+2016-10-05,TFSA,Balance of Monthly Minimum Fee for Sep 2016,Other Fee,-,-,-,-3.94,-,-3.94
+2016-10-05,TFSA,GST-HST US Securities and Futures Value Bundle for Sep 2016,Sales Tax,-,-,-,-1.71,-,-1.71
+2016-09-02,TFSA,US Securities and Futures Value Bundle for Aug 2016,Other Fee,-,-,-,-13.1,-,-13.1
+2016-09-02,TFSA,Balance of Monthly Minimum Fee for Aug 2016,Other Fee,-,-,-,-3.93,-,-3.93
+2016-09-02,TFSA,GST-HST US Securities and Futures Value Bundle for Aug 2016,Sales Tax,-,-,-,-1.7,-,-1.7
+2016-09-01,TFSA,INTC (US4581401001) Cash Dividend USD 0.26000000 (Ordinary Dividend),Dividend,INTC,-,-,17.03,-,17.03
+2016-09-01,TFSA,INTC(US4581401001) Choice Dividend 0.26000000 USD Distribution Value - US Tax,Foreign Tax Withholding,INTC,-,-,-2.55,-,-2.55
+2016-08-03,TFSA,US Securities and Futures Value Bundle for Jul 2016,Other Fee,-,-,-,-13.04,-,-13.04
+2016-08-03,TFSA,GST-HST US Securities and Futures Value Bundle for Jul 2016,Sales Tax,-,-,-,-1.7,-,-1.7
+2016-07-13,TFSA,ISHARES JAPAN FUNDAMENTAL IN,Buy,CJP,400,11.6000  CAD,"-4,640.00",-4,"-4,644.00"
+2016-07-13,TFSA,ISHARES JAPAN FUNDAMENTAL IN,Buy,CJP,50,11.6000  CAD,-580,-0.5,-580.5
+2016-07-13,TFSA,"Net Amount in Base from Forex Trade: 4,000 USD.CAD",Forex Trade Component,USD.CAD,"4,000.00",1.3074  CAD,-41.81,-2.61,-41.81
+2016-07-13,TFSA,JETBLUE AIRWAYS CORP,Buy,JBLU,30,18.6000  USD,-724.06,-1.3,-725.36
+2016-07-13,TFSA,INTEL CORP,Buy,INTC,50,34.9993  USD,"-2,270.75",-1.3,"-2,272.05"
+2016-07-06,TFSA,Balance of Monthly Minimum Fee for Jun 2016,Other Fee,-,-,-,-3.88,-,-3.88
+2016-06-03,TFSA,Toronto Stock Exchange Level I Non-Professional for May 2016,Other Fee,-,-,-,-9,-,-9
+2016-06-03,TFSA,OPRA (US Options Exchanges) Non-Professional Level I for May 2016,Other Fee,-,-,-,-1.96,-,-1.96
+2016-06-03,TFSA,NASDAQ Level I for May 2016,Other Fee,-,-,-,-1.96,-,-1.96
+2016-06-03,TFSA,NYSE Level I for May 2016,Other Fee,-,-,-,-1.96,-,-1.96
+2016-06-03,TFSA,Balance of Monthly Minimum Fee for May 2016,Other Fee,-,-,-,-3.93,-,-3.93
+2016-06-03,TFSA,GST-HST Toronto Stock Exchange Level I Non-Professional for May 2016,Sales Tax,-,-,-,-1.17,-,-1.17
+2016-06-03,TFSA,GST-HST OPRA (US Options Exchanges) Non-Professional Level I for May 2016,Sales Tax,-,-,-,-0.25,-,-0.25
+2016-06-03,TFSA,GST-HST NASDAQ Level I for May 2016,Sales Tax,-,-,-,-0.25,-,-0.25
+2016-06-03,TFSA,GST-HST NYSE Level I for May 2016,Sales Tax,-,-,-,-0.25,-,-0.25
+2016-05-04,TFSA,Toronto Stock Exchange Level I Non-Professional for Apr 2016,Other Fee,-,-,-,-9,-,-9
+2016-05-04,TFSA,OPRA (US Options Exchanges) Non-Professional Level I for Apr 2016,Other Fee,-,-,-,-1.88,-,-1.88
+2016-05-04,TFSA,NASDAQ Level I for Apr 2016,Other Fee,-,-,-,-1.88,-,-1.88
+2016-05-04,TFSA,NYSE Level I for Apr 2016,Other Fee,-,-,-,-1.88,-,-1.88
+2016-05-04,TFSA,Balance of Monthly Minimum Fee for Apr 2016,Other Fee,-,-,-,-3.77,-,-3.77
+2016-05-04,TFSA,GST-HST Toronto Stock Exchange Level I Non-Professional for Apr 2016,Sales Tax,-,-,-,-1.17,-,-1.17
+2016-05-04,TFSA,GST-HST OPRA (US Options Exchanges) Non-Professional Level I for Apr 2016,Sales Tax,-,-,-,-0.24,-,-0.24
+2016-05-04,TFSA,GST-HST NASDAQ Level I for Apr 2016,Sales Tax,-,-,-,-0.24,-,-0.24
+2016-05-04,TFSA,GST-HST NYSE Level I for Apr 2016,Sales Tax,-,-,-,-0.24,-,-0.24
+2016-04-04,TFSA,Toronto Stock Exchange Level I Non-Professional for Mar 2016,Other Fee,-,-,-,-6,-,-6
+2016-04-04,TFSA,US Options Level I Non-Professional for Mar 2016,Other Fee,-,-,-,-1.94,-,-1.94
+2016-04-04,TFSA,NASDAQ Level I for Mar 2016,Other Fee,-,-,-,-1.94,-,-1.94
+2016-04-04,TFSA,NYSE Level I for Mar 2016,Other Fee,-,-,-,-1.94,-,-1.94
+2016-04-04,TFSA,Balance of Monthly Minimum Fee for Mar 2016,Other Fee,-,-,-,-3.89,-,-3.89
+2016-04-04,TFSA,GST-HST Toronto Stock Exchange Level I Non-Professional for Mar 2016,Sales Tax,-,-,-,-0.78,-,-0.78
+2016-04-04,TFSA,GST-HST US Options Level I Non-Professional for Mar 2016,Sales Tax,-,-,-,-0.25,-,-0.25
+2016-04-04,TFSA,GST-HST NASDAQ Level I for Mar 2016,Sales Tax,-,-,-,-0.25,-,-0.25
+2016-04-04,TFSA,GST-HST NYSE Level I for Mar 2016,Sales Tax,-,-,-,-0.25,-,-0.25
+2016-03-03,TFSA,Toronto Stock Exchange Level I Non-Professional for Feb 2016,Other Fee,-,-,-,-6,-,-6
+2016-03-03,TFSA,US Options Level I Non-Professional for Feb 2016,Other Fee,-,-,-,-2.03,-,-2.03
+2016-03-03,TFSA,NASDAQ Level I for Feb 2016,Other Fee,-,-,-,-2.03,-,-2.03
+2016-03-03,TFSA,NYSE Level I for Feb 2016,Other Fee,-,-,-,-2.03,-,-2.03
+2016-03-03,TFSA,Balance of Monthly Minimum Fee for Feb 2016,Other Fee,-,-,-,-4.06,-,-4.06
+2016-03-03,TFSA,GST-HST Toronto Stock Exchange Level I Non-Professional for Feb 2016,Sales Tax,-,-,-,-0.78,-,-0.78
+2016-03-03,TFSA,GST-HST US Options Level I Non-Professional for Feb 2016,Sales Tax,-,-,-,-0.26,-,-0.26
+2016-03-03,TFSA,GST-HST NASDAQ Level I for Feb 2016,Sales Tax,-,-,-,-0.26,-,-0.26
+2016-03-03,TFSA,GST-HST NYSE Level I for Feb 2016,Sales Tax,-,-,-,-0.26,-,-0.26
+2016-02-03,TFSA,Toronto Stock Exchange Level I Non-Professional for Jan 2016,Other Fee,-,-,-,-6,-,-6
+2016-02-03,TFSA,US Options Level I Non-Professional for Jan 2016,Other Fee,-,-,-,-2.1,-,-2.1
+2016-02-03,TFSA,NASDAQ Level I for Jan 2016,Other Fee,-,-,-,-2.1,-,-2.1
+2016-02-03,TFSA,NYSE Level I for Jan 2016,Other Fee,-,-,-,-2.1,-,-2.1
+2016-02-03,TFSA,Balance of Monthly Minimum Fee for Jan 2016,Other Fee,-,-,-,-4.19,-,-4.19
+2016-02-03,TFSA,GST-HST Toronto Stock Exchange Level I Non-Professional for Jan 2016,Sales Tax,-,-,-,-0.78,-,-0.78
+2016-02-03,TFSA,GST-HST US Options Level I Non-Professional for Jan 2016,Sales Tax,-,-,-,-0.27,-,-0.27
+2016-02-03,TFSA,GST-HST NASDAQ Level I for Jan 2016,Sales Tax,-,-,-,-0.27,-,-0.27
+2016-02-03,TFSA,GST-HST NYSE Level I for Jan 2016,Sales Tax,-,-,-,-0.27,-,-0.27
+2016-01-06,TFSA,Toronto Stock Exchange Level I Non-Professional for Dec 2015,Other Fee,-,-,-,-6,-,-6
+2016-01-06,TFSA,US Options Level I Non-Professional for Dec 2015,Other Fee,-,-,-,-2.08,-,-2.08
+2016-01-06,TFSA,NASDAQ Level I for Dec 2015,Other Fee,-,-,-,-2.08,-,-2.08
+2016-01-06,TFSA,NYSE Level I for Dec 2015,Other Fee,-,-,-,-2.08,-,-2.08
+2016-01-06,TFSA,Balance of Monthly Minimum Fee for Dec 2015,Other Fee,-,-,-,-4.15,-,-4.15
+2016-01-06,TFSA,GST-HST Toronto Stock Exchange Level I Non-Professional for Dec 2015,Sales Tax,-,-,-,-0.78,-,-0.78
+2016-01-06,TFSA,GST-HST US Options Level I Non-Professional for Dec 2015,Sales Tax,-,-,-,-0.27,-,-0.27
+2016-01-06,TFSA,GST-HST NASDAQ Level I for Dec 2015,Sales Tax,-,-,-,-0.27,-,-0.27
+2016-01-06,TFSA,GST-HST NYSE Level I for Dec 2015,Sales Tax,-,-,-,-0.27,-,-0.27
+2015-12-03,TFSA,Toronto Stock Exchange Level I Non-Professional for Nov 2015,Other Fee,-,-,-,-6,-,-6
+2015-12-03,TFSA,US Options Level I Non-Professional for Nov 2015,Other Fee,-,-,-,-2,-,-2
+2015-12-03,TFSA,NASDAQ Level I for Nov 2015,Other Fee,-,-,-,-2,-,-2
+2015-12-03,TFSA,NYSE Level I for Nov 2015,Other Fee,-,-,-,-2,-,-2
+2015-12-03,TFSA,Balance of Monthly Minimum Fee for Nov 2015,Other Fee,-,-,-,-4.01,-,-4.01
+2015-12-03,TFSA,GST-HST Toronto Stock Exchange Level I Non-Professional for Nov 2015,Sales Tax,-,-,-,-0.78,-,-0.78
+2015-12-03,TFSA,GST-HST US Options Level I Non-Professional for Nov 2015,Sales Tax,-,-,-,-0.26,-,-0.26
+2015-12-03,TFSA,GST-HST NASDAQ Level I for Nov 2015,Sales Tax,-,-,-,-0.26,-,-0.26
+2015-12-03,TFSA,GST-HST NYSE Level I for Nov 2015,Sales Tax,-,-,-,-0.26,-,-0.26
+2015-11-03,TFSA,Toronto Stock Exchange Level I Non-Professional for Oct 2015,Other Fee,-,-,-,-6,-,-6
+2015-11-03,TFSA,US Options Level I Non-Professional for Oct 2015,Other Fee,-,-,-,-1.96,-,-1.96
+2015-11-03,TFSA,NASDAQ Level I for Oct 2015,Other Fee,-,-,-,-1.96,-,-1.96
+2015-11-03,TFSA,NYSE Level I for Oct 2015,Other Fee,-,-,-,-1.96,-,-1.96
+2015-11-03,TFSA,GST-HST Toronto Stock Exchange Level I Non-Professional for Oct 2015,Sales Tax,-,-,-,-0.78,-,-0.78
+2015-11-03,TFSA,GST-HST US Options Level I Non-Professional for Oct 2015,Sales Tax,-,-,-,-0.25,-,-0.25
+2015-11-03,TFSA,GST-HST NASDAQ Level I for Oct 2015,Sales Tax,-,-,-,-0.25,-,-0.25
+2015-11-03,TFSA,GST-HST NYSE Level I for Oct 2015,Sales Tax,-,-,-,-0.25,-,-0.25
+2015-10-29,TFSA,SOLARCITY CORP,Sell,SCTY,-80,31.7700  USD,"3,347.80",-1.38,"3,346.42"
+2015-10-21,TFSA,SOLARCITY CORP,Buy,SCTY,80,39.9600  USD,"-4,200.28",-1.31,"-4,201.59"
+2015-10-02,TFSA,Toronto Stock Exchange Level I Non-Professional for Sep 2015,Other Fee,-,-,-,-6,-,-6
+2015-10-02,TFSA,US Options Level I Non-Professional for Sep 2015,Other Fee,-,-,-,-2,-,-2
+2015-10-02,TFSA,NASDAQ Level I for Sep 2015,Other Fee,-,-,-,-2,-,-2
+2015-10-02,TFSA,NYSE Level I for Sep 2015,Other Fee,-,-,-,-2,-,-2
+2015-10-02,TFSA,GST-HST Toronto Stock Exchange Level I Non-Professional for Sep 2015,Sales Tax,-,-,-,-0.78,-,-0.78
+2015-10-02,TFSA,GST-HST US Options Level I Non-Professional for Sep 2015,Sales Tax,-,-,-,-0.26,-,-0.26
+2015-10-02,TFSA,GST-HST NASDAQ Level I for Sep 2015,Sales Tax,-,-,-,-0.26,-,-0.26
+2015-10-02,TFSA,GST-HST NYSE Level I for Sep 2015,Sales Tax,-,-,-,-0.26,-,-0.26
+2015-09-04,TFSA,Toronto Stock Exchange Level I Non-Professional for Aug 2015,Other Fee,-,-,-,-6,-,-6
+2015-09-04,TFSA,US Options Level I Non-Professional for Aug 2015,Other Fee,-,-,-,-1.97,-,-1.97
+2015-09-04,TFSA,US Options Level I Non-Professional for Aug 2015,Other Fee,-,-,-,1.97,-,1.97
+2015-09-04,TFSA,NASDAQ Level I for Aug 2015,Other Fee,-,-,-,-1.97,-,-1.97
+2015-09-04,TFSA,NYSE Level I for Aug 2015,Other Fee,-,-,-,-1.97,-,-1.97
+2015-09-04,TFSA,GST-HST Toronto Stock Exchange Level I Non-Professional for Aug 2015,Sales Tax,-,-,-,-0.78,-,-0.78
+2015-09-04,TFSA,GST-HST US Options Level I Non-Professional for Aug 2015,Sales Tax,-,-,-,-0.26,-,-0.26
+2015-09-04,TFSA,GST-HST Cancel US Options Level I Non-Professional for Aug 2015,Sales Tax,-,-,-,0.26,-,0.26
+2015-09-04,TFSA,GST-HST NASDAQ Level I for Aug 2015,Sales Tax,-,-,-,-0.26,-,-0.26
+2015-09-04,TFSA,GST-HST NYSE Level I for Aug 2015,Sales Tax,-,-,-,-0.26,-,-0.26
+2015-08-28,TFSA,VELOCITYSHARES 3X LONG CRUDE,Sell,UWTI,"-2,800.00",1.1600  USD,"4,287.68",-18.56,"4,269.12"
+2015-08-28,TFSA,VELOCITYSHARES 3X LONG CRUDE,Sell,UWTI,-50,1.1600  USD,76.57,-0.33,76.23
+2015-08-06,TFSA,VELOCITYSHARES 3X LONG CRUDE,Buy,UWTI,200,1.2800  USD,-335.59,-1.31,-336.9
+2015-08-06,TFSA,VELOCITYSHARES 3X LONG CRUDE,Buy,UWTI,300,1.2790  USD,-502.99,-1.57,-504.57
+2015-08-06,TFSA,VELOCITYSHARES 3X LONG CRUDE,Buy,UWTI,150,1.2800  USD,-251.69,-0.98,-252.68
+2015-08-06,TFSA,VELOCITYSHARES 3X LONG CRUDE,Buy,UWTI,800,1.2800  USD,"-1,342.36",-5.24,"-1,347.61"
+2015-08-06,TFSA,VELOCITYSHARES 3X LONG CRUDE,Buy,UWTI,500,1.2800  USD,-838.98,-3.28,-842.25
+2015-08-06,TFSA,VELOCITYSHARES 3X LONG CRUDE,Buy,UWTI,200,1.2800  USD,-335.59,-1.05,-336.64
+2015-08-06,TFSA,VELOCITYSHARES 3X LONG CRUDE,Buy,UWTI,500,1.2800  USD,-838.98,-2.62,-841.6
+2015-08-06,TFSA,VELOCITYSHARES 3X LONG CRUDE,Buy,UWTI,200,1.2800  USD,-335.59,-1.05,-336.64
+2015-08-05,TFSA,CAD Credit Interest for Jul-2015,Credit Interest,-,-,-,0.48,-,0.48
+2015-08-05,TFSA,Toronto Stock Exchange Level I Non-Professional for Jul 2015,Other Fee,-,-,-,-6,-,-6
+2015-08-05,TFSA,US Options Level I Non-Professional for Jul 2015,Other Fee,-,-,-,-1.96,-,-1.96
+2015-08-05,TFSA,NASDAQ Level I for Jul 2015,Other Fee,-,-,-,-1.96,-,-1.96
+2015-08-05,TFSA,NYSE Level I for Jul 2015,Other Fee,-,-,-,-1.96,-,-1.96
+2015-08-05,TFSA,GST-HST Toronto Stock Exchange Level I Non-Professional for Jul 2015,Sales Tax,-,-,-,-0.78,-,-0.78
+2015-08-05,TFSA,GST-HST US Options Level I Non-Professional for Jul 2015,Sales Tax,-,-,-,-0.25,-,-0.25
+2015-08-05,TFSA,GST-HST NASDAQ Level I for Jul 2015,Sales Tax,-,-,-,-0.25,-,-0.25
+2015-08-05,TFSA,GST-HST NYSE Level I for Jul 2015,Sales Tax,-,-,-,-0.25,-,-0.25
+2015-08-04,TFSA,"Net Amount in Base from Forex Trade: 3,808 USD.CAD",Forex Trade Component,USD.CAD,"3,808.00",1.3134  CAD,18.69,-2.63,18.69
+2015-08-04,TFSA,WALT DISNEY CO/THE,Buy,DIS,31,121.2000  USD,"-4,955.75",-1.32,"-4,957.07"
+2015-08-04,TFSA,WALT DISNEY CO/THE,Sell,DIS,-31,117.2500  USD,"4,794.24",-1.41,"4,792.83"
+2015-07-28,TFSA,HORIZONS BETA NYMEX CRUDE BU,Sell,HOU,-200,5.8500  CAD,"1,170.00",-2,"1,168.00"
+2015-07-27,TFSA,HORIZONS BETA NYMEX CRUDE BU,Buy,HOU,200,5.7900  CAD,"-1,158.00",-2,"-1,160.00"
+2015-07-07,TFSA,Cash Transfer,Deposit,-,-,-,"19,000.00",-,"19,000.00"
+2015-07-07,TFSA,Cash Transfer,Withdrawal,-,-,-,"-19,000.00",-,"-19,000.00"
+2015-07-07,TFSA,Cash Transfer,Deposit,-,-,-,"19,000.00",-,"19,000.00"

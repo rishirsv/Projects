@@ -31,9 +31,11 @@
 - **Output**:
 ```
 🍽️ Meal Components:
-- Grilled chicken breast
-- Brown rice
-- Steamed broccoli
+- Grilled chicken breast [x]C | [x]P | [x]F
+- Brown rice [x]C | [x]P | [x]F
+- Grilled chicken breast [x]C | [x]P | [x]F
+- Brown rice [x]C | [x]P | [x]F
+- Steamed broccoli [x]C | [x]P | [x]F
 
 📊 Macro breakdown:
 ~420 Calories; 35g Carbs, 38g Protein, 12g Fat
@@ -44,8 +46,8 @@
 - **Output**:
 ```
 🍽️ Meal Components:
-- Beef cheeseburger (bun, patty, cheese, ketchup)
-- French fries
+- Beef cheeseburger (bun, patty, cheese, ketchup) [x]C | [x]P | [x]F
+- French fries [x]C | [x]P | [x]F
 
 📊 Macro breakdown:
 ~780 Calories; 62g Carbs, 32g Protein, 45g Fat
