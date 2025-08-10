@@ -71,7 +71,7 @@
   <div class="upload-area" id="uploadArea">
     <p>Drag and drop CSV files here, or click to select</p>
     <input type="file" id="fileInput" multiple accept=".csv" style="display: none;">
-    <button class="btn btn-secondary" onclick="document.getElementById('fileInput').click()">
+    <button class="btn btn-secondary" onclick="event.stopPropagation(); document.getElementById('fileInput').click()">
       Choose Files
     </button>
   </div>
