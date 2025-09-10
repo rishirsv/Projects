@@ -1,62 +1,74 @@
-purpose: deep research prompts
-triggers: ["deep research", "research"]
-defaults:
-  reasoning: high
-  verbosity: balanced
-  ask_vs_assume: "assume-and-proceed; ask ≤1 only if failure risk"
-  stop: ["findings + references complete", "conflicts addressed", "validation passed"]
---
+> The block-quoted text provides guidance for filling out the template sections. Do not include the block quotes in the final output prompt. The output prompt template begins after "# Deep Research Prompt Template".
+> **When to use**
+> The task requires external browsing, citations, or synthesis of information from multiple sources.
+> Use for requests involving recency ("latest," "as of"), comparisons ("compare laws," "regulatory differences"), or when source credibility is critical.
 
-# Role and Objective 
-- [Define the research role and scope] 
-- To produce a comprehensive research report on [Research Target].
+---
 
-# Agentic Calibration 
-- Reasoning effort: high
-- Verbosity: low | medium (default) | high 
+# Deep Research Prompt Template
 
-# Plan Preamble 
-- [Begin with a concise 3–7 bullets: scope & questions → search strategy → source quality bar → data capture fields → synthesis & conflict handling → validation]
+# Role and Objective
+
+> Define the expert research role, the scope of the research, and the primary objective.
+
+# Agentic Calibration
+
+> Include this section **only** when non-default settings are required; otherwise omit. Reasoning is `high` by default for this template.
+>
+> - Reasoning effort: high (default)
+> - Verbosity: low | medium (default) | high
+
+# Plan
+
+> Begin with a concise 3–7 bullet plan: scope & questions → search strategy → source quality bar → data capture fields → synthesis & conflict handling → validation.
 
 # Context
-- **Research Target**: [Research Target]
-- **Primary Goal**: [Primary Goal]
-- **Target Audience**: [Target Audience]
-- **Geographic Scope**: [Geographic Scope]
-- **Sector**: [Relevant Sector]
-- **Key Sources**: [Types of sources to be used]
-- **End Deliverable**: [Final deliverable description]
 
-# Research Instructions 
-- [Concise 3-7 bullets to create a research plan: scope and questions, search strategy, define source quality, data capture, synthesis and conflict handling, validation]
-- [Set source standards: credibility tiers, recency thresholds, jurisdiction/region relevance]
-- Perform initial research on sources. 
-- Synthesize research by theme, remove redundancy. 
-- [Handle contradictions explicitly: state conflict, reason through, resolve or mark unresolved]
-- [Cite or reference sources]
+> Define the key parameters for the research.
 
-# Report Structure
-## Descriptive table of contents
-## [Suggest Section Title 1]
-- **Detail**: [Describe content for this section]
-- **Output**: [Describe specific output for this section]
+- **Research Target**: [The specific topic, company, or question]
+- **Primary Goal**: [What the research should achieve]
+- **Target Audience**: [Who the report is for]
+- **Geographic Scope**: [Relevant regions or jurisdictions]
+- **Time Window / “As of” Date**: [e.g., “as of Sep 2025”; "sources in the last 2 years"]
+- **Sector**: [Industry or field]
+- **Key Sources**: [Preferred types of sources, e.g., academic papers, government reports]
+- **End Deliverable**: [Description of the final output, e.g., "A 5-page report in Markdown"]
 
-## [Suggest Section Title 2]
-- **Detail**: [Describe content for this section]
-- **Output**: [Describe specific output for this section]
+# Research Instructions
 
-## [Suggest Section Title 3]
-- **Detail**: [Describe content for this section]
-- **Output**: [Describe specific output for this section]
+> Provide a clear, step-by-step research process:
+>
+> 1. **Define Standards:** Set rules for source quality (e.g., prefer primary sources) and recency (e.g., last 18 months).
+> 2. **Gather & Document:** Capture key data for each source (URL, date, publisher, key finding).
+> 3. **Synthesize & Cite:** Group findings by theme, cite all claims inline, and explicitly address any conflicting information.
+
+# Output Format
+
+> Specify the structure and formatting requirements for the final report.
+
+## Report Structure
+
+> Use this skeleton unless the user mandates another format:
+>
+> - **Executive Summary** — answer first (Pyramid Principle), then **3–5 support bullets** that map 1:1 to distinct, comprehensive themes.
+> - **Findings by Theme**
+> - **Limitations & Open Questions** — bullets.
+> - **References** — link list with publisher, publication date, and access date.
 
 ## Output Requirements
-- **Format**: [e.g., PDF via Markdown]
-- **Length**: [e.g., 15-20 pages]
-- **Citation Style**: [e.g., APA 7th Edition]
-- **Tone**: [e.g., Objective and analytical]
 
-## Validation 
-- [Coverage complete vs. stated scope; gaps listed]
-- [All findings have traceable sources with dates]
-- [Conflicts addressed or flagged; no redundancy]
-- [Formatting and sections complete; quality self-check passed]
+> **Format**: [e.g. "Markdown, PDF"] > **Length**: [e.g., "8–12 pages"] > **Citations**: Inline web citations with URL + publisher + publication date + access date (use APA/Bluebook **only** if the user requests it).
+> **Tone**: [e.g. "Objective and analytical"]
+
+# Validation & Stop Conditions
+
+> Define the criteria for a successful and complete response.
+> Coverage is complete vs. stated scope; any gaps are listed.
+> All findings include **dated inline citations** (publisher, publication date, access date, URL).
+> Conflicts are addressed or flagged with rationale; no redundancy.
+> Formatting and sections match the declared structure; quality self-check passed.
+> If a critical input is missing, add one **“Needs Input”** bullet and stop.
+> Conflicts are addressed or flagged with rationale; no redundancy.
+> Formatting and sections match the declared structure; quality self-check passed.
+> If a critical input is missing, add one **“Needs Input”** bullet.
