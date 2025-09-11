@@ -15,7 +15,7 @@
 > Include helpful context such as scope, success conditions, and key constraints.
 > For a longer list of constraints or success criteria, consider adding a separate **# Context** section.
 
-# Planning
+# Plan
 
 > 3–7 conceptual bullets describing how you will approach the task (plan before doing; no implementation detail)
 > Suggested pattern: identify components → sequence chronologically → allocate constraints/budget → validate & flag issues

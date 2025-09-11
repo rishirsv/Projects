@@ -39,9 +39,13 @@
 
 > Provide a clear, step-by-step research process:
 >
-> 1. **Define Standards:** Set rules for source quality (e.g., prefer primary sources) and recency (e.g., last 18 months).
-> 2. **Gather & Document:** Capture key data for each source (URL, date, publisher, key finding).
-> 3. **Synthesize & Cite:** Group findings by theme, cite all claims inline, and explicitly address any conflicting information.
+> 1. **Define Standards:** Set rules for source quality (e.g., prefer primary sources) and recency (e.g., last 18 months). Require explicit publication dates; record an access date for web pages.
+> 2. **Gather & Document:** For each source, capture: URL, publisher, document title, **publication date**, **access date**, (author if available), and a 1–2 line finding (optionally add a confidence tag).
+> 3. **Synthesize & Cite:** Group findings by theme, **cite factual claims inline**, and explicitly address conflicting information.
+>    - Cite **factual claims** (numbers, dates, named entities, specific events/quotes) at the end of the relevant paragraph.
+>    - **Interpretive synthesis lines** (summaries, transitions) may be uncited **if their support appears in the same section or table**.
+>    - Place citations at the **end of the paragraph/section**;
+>    - In tables, cite below the table.
 
 # Output Format
 
@@ -58,8 +62,7 @@
 
 ## Output Requirements
 
-> **Format**: [e.g. "Markdown, PDF"] > **Length**: [e.g., "8–12 pages"] > **Citations**: Inline web citations with URL + publisher + publication date + access date (use APA/Bluebook **only** if the user requests it).
-> **Tone**: [e.g. "Objective and analytical"]
+> **Format**: [e.g. "Markdown, PDF"] > **Length**: [e.g., "8–12 pages"] > **Citations** > **Tone**: [e.g. "Objective and analytical"]
 
 # Validation & Stop Conditions
 
