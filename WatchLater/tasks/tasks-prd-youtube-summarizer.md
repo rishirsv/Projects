@@ -7,9 +7,8 @@
 - `src/App.tsx` - Main React component with UI and state management
 - `src/api.ts` - YouTube transcript fetching and Gemini API integration
 - `src/utils.ts` - URL parsing and file handling utilities
-- `src/types.ts` - TypeScript type definitions
-- `.env` - Environment variables (GEMINI_API_KEY)
-- `public/index.html` - HTML template
+- `.env` - Environment variables (`VITE_GEMINI_API_KEY`, `SUPADATA_API_KEY`)
+- `index.html` - Vite HTML template
 - `.gitignore` - Git ignore configuration
 
 ### Notes
@@ -17,7 +16,7 @@
 - **ARCHITECTURE UPDATED**: Node.js backend + React frontend (hybrid approach) now uses Supadata API
 - Backend handles transcript fetching via Supadata API (replaced youtube-transcript package)
 - Frontend connects to backend API for transcript processing (no changes to frontend code)
-- Gemini API integration ready but needs testing
+- Gemini API integration complete (browser-side via @google/generative-ai)
 - The `/exports/` directory should be git-ignored as it contains generated content
 - **BENEFIT**: More reliable transcript fetching with better error handling and language support
 
@@ -38,20 +37,20 @@
   - [x] 2.6 Add transcript saving with localStorage + download functionality
   - [x] 2.7 **COMPLETED**: Create test interface in App.tsx for API validation (tested with Rick Roll video)
 
-- [x] 3.0 React UI Components **PARTIALLY COMPLETE**
+- [x] 3.0 React UI Components **COMPLETE**
   - [x] 3.1 Create test UI in `src/App.tsx` with input field, button, and output area
   - [x] 3.2 Implement React state for: URL input, loading state, transcript output, errors
   - [x] 3.3 Add "Test Transcript Fetch" button that calls backend API
   - [x] 3.4 Display transcript preview with download functionality
-  - [ ] 3.5 **TODO**: Replace test UI with production summarizer UI
-  - [ ] 3.6 **TODO**: Integrate `react-markdown` for summary display
-  - [ ] 3.7 **TODO**: Add full summarization workflow (transcript → AI → markdown)
+  - [x] 3.5 Replace test UI with production summarizer UI
+  - [x] 3.6 Integrate `react-markdown` for summary display
+  - [x] 3.7 Add full summarization workflow (transcript → AI → markdown)
 
-- [x] 4.0 File System Integration **PARTIALLY COMPLETE**
+- [x] 4.0 File System Integration **COMPLETE**
   - [x] 4.1 Implement transcript download using blob URLs with `{videoId}-transcript.txt` format
   - [x] 4.2 Add localStorage persistence for transcripts
-  - [ ] 4.3 **TODO**: Add summary file download as `{videoId}.md`
-  - [ ] 4.4 **TODO**: Implement full summarization → file save workflow
+  - [x] 4.3 Add summary file download as `{videoId}.md`
+  - [x] 4.4 Implement full summarization → file save workflow
 
 - [x] 5.0 **RESOLVED**: Supadata API Integration & Frontend Access
   - [x] 5.1 Backend server working (port 3001) with Supadata API

@@ -57,6 +57,15 @@ repo-root/
 * **AI**: Gemini 2.5 Flash via `@google/generative-ai` directly from the browser (uses `VITE_GEMINI_API_KEY`).
 * **Storage**: Filesystem writes to `exports/`, filenames prefixed with `videoId__title` for stable lookups.
 
+### Server Endpoints
+- GET `/health` – server status
+- GET `/api/video-metadata/:videoId` – oEmbed title/author/thumbnail
+- POST `/api/transcript` – fetch transcript via Supadata `{ videoId }`
+- GET `/api/prompt` – load prompt template from `prompts/`
+- POST `/api/save-transcript` – write transcript to `exports/transcripts/`
+- POST `/api/save-summary` – write summary to `exports/summaries/`
+- GET `/api/summaries` – list saved summaries; GET `/api/summary-file/:videoId` – read latest
+
 ## Phase 3 UI Recap
 - Gradient hero with pill input and trust badges (see `docs/ui-phase3-redesign.md`).
 - Pipeline card shows four animated stages with live status icons.
@@ -82,6 +91,11 @@ ENV
 - `npm run start` mirrors `./start.sh`
 - Express listens on `3001`; Vite on `5173`
 - Health check: `curl http://localhost:3001/health`
+
+### Security Model
+- Gemini key stays in the browser; prompts and AI calls never hit the server.
+- Transcript fetching happens on the server using your Supadata key.
+- All files are written locally under `exports/` and never uploaded.
 
 ## Reference Material
 - `docs/prd-youtube-summarizer.md` – original product requirements document

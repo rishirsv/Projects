@@ -32,9 +32,9 @@ This is a **YouTube transcript summarizer** with a hybrid client-server architec
 
 ### Key Data Flow
 1. **URL Input** → Extract video ID → Backend transcript fetch (Supadata API)
-2. **Transcript Storage** → Save to `exports/transcripts/{videoId}-transcript-{timestamp}.txt`
+2. **Transcript Storage** → Save to `exports/transcripts/{videoId}__{sanitizedTitle}-transcript-{timestamp}.txt`
 3. **AI Processing** → Load prompt from `prompts/Youtube transcripts.md` → Gemini API
-4. **Summary Storage** → Save to `exports/summaries/{videoId}-summary-{timestamp}.md`
+4. **Summary Storage** → Save to `exports/summaries/{videoId}__{sanitizedTitle}-summary-{timestamp}.md`
 
 ### Critical Components
 
@@ -94,9 +94,10 @@ Common test URLs in codebase:
 ## Key Implementation Details
 
 ### File Naming Convention
-- **Transcripts**: `{videoId}-transcript-{timestamp}.txt`
-- **Summaries**: `{videoId}-summary-{timestamp}.md`
+- **Transcripts**: `{videoId}__{sanitizedTitle}-transcript-{timestamp}.txt`
+- **Summaries**: `{videoId}__{sanitizedTitle}-summary-{timestamp}.md`
 - **Timestamps**: ISO format with colons/periods replaced by hyphens
+- **Sanitization**: Remove invalid filesystem chars; trim and limit length
 
 ### API Architecture
 - **Frontend → Backend**: All transcript fetching goes through backend proxy
@@ -110,8 +111,8 @@ Common test URLs in codebase:
 
 ### Current Development Status
 - ✅ **Core Features**: Complete (transcript fetch + AI summary + file management)
-- ⚠️ **Video Title Integration**: In progress (tests failing, needs YouTube Data API v3)
-- 🔄 **UI Polish**: Functional but could use visual improvements
+- ✅ **Video Title Integration**: Complete (oEmbed-based titles + filename sanitization; tests passing)
+- ✅ **Production UI**: Phase 3 interface shipped (progress, history, glass cards)
 
 ### Known Technical Debt
 - Single-component architecture in `App.tsx` (could be split)

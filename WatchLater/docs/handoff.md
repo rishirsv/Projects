@@ -10,15 +10,15 @@ Build a local React app that converts YouTube URLs into structured AI-generated 
 ### **1. Backend API (server.js)**
 - ✅ Express server running on port 3001
 - ✅ CORS configured for frontend communication
-- ✅ YouTube transcript fetching via `youtube-transcript` package
+- ✅ Transcript fetching via Supadata API (server-side proxy)
 - ✅ Health check endpoint: `http://localhost:3001/health`
-- ✅ Transcript API: `POST /api/transcript` with `{videoId}` payload
+- ✅ Endpoints: transcript, prompt, metadata, save/read transcripts, save/read summaries
 
 ### **2. Core Functionality**
 - ✅ YouTube URL parsing (multiple formats supported)
-- ✅ Gemini API integration ready (API key configured)
-- ✅ Comprehensive prompt template embedded
-- ✅ Transcript download & localStorage persistence
+- ✅ Gemini API integration (browser) with dynamic prompt loading
+- ✅ Title-aware filenames via YouTube oEmbed metadata
+- ✅ File I/O to `exports/` (transcripts and summaries)
 - ✅ Build process working (TypeScript compilation successful)
 
 ### **3. Project Structure**
@@ -36,63 +36,33 @@ Build a local React app that converts YouTube URLs into structured AI-generated 
 
 ---
 
-## 🚨 **Current Blocking Issue**
-
-### **Frontend Accessibility Problem**
-- **Issue**: Vite development server starts but frontend not accessible in browser
-- **Symptoms**: 
-  - Server logs show "ready in X ms" 
-  - Ports 3000, 4000, 5173 all attempted
-  - Build process works fine
-  - Backend accessible (port 3001 working)
-  - Browser shows "site cannot be reached" or connection refused
-
-### **Attempted Solutions**
-- ✅ Killed all processes and restarted clean
-- ✅ Tried multiple ports (3000, 4000, 5173)
-- ✅ Used `--host 0.0.0.0` flag
-- ✅ Verified Vite version and configuration
-- ✅ Confirmed no TypeScript/build errors
-- ⚠️ **Still unable to access frontend in browser**
+## ✅ **Frontend Access Resolved**
+The Vite dev server is accessible at `http://localhost:5173`. Use `./start.sh` (or `npm run start`) to launch both backend and frontend. See Troubleshooting in README for common causes if access regresses.
 
 ---
 
 ## 📐 **Architecture Change Made**
 
-### **Original Plan**: Browser-only with direct youtube-transcript
+### **Original Plan**: Browser-only
 ### **Current Implementation**: Hybrid Node.js + React
 
 **Why Changed**: 
-- `youtube-transcript` package has CORS restrictions in browsers
-- Server-side transcript fetching is more reliable
-- Maintains local-only requirement (no external services)
+- Browser-only transcript packages run into CORS and reliability limits
+- Server-side Supadata proxy is robust and private
+- Retains local-first workflow with simple UX
 
 **Current Flow**:
 ```
-Browser → React (Vite) → Express API → youtube-transcript → YouTube
+Browser → React (Vite) → Express API → Supadata (transcript), oEmbed (metadata) → Filesystem (exports/)
 ```
 
 ---
 
 ## 🎯 **Immediate Next Steps**
-
-### **Priority 1: Fix Frontend Access**
-1. **Diagnose connectivity issue**
-   - Check firewall/security software blocking localhost
-   - Try different browsers (Chrome, Firefox, Safari)
-   - Test with different network interfaces
-   - Consider proxy/VPN interference
-
-2. **Alternative approaches if needed**
-   - Try `npm run preview` (production build)
-   - Use different dev server (webpack-dev-server)
-   - Serve from different directory
-
-### **Priority 2: Complete Core Features** (once frontend accessible)
-1. **Test transcript fetching end-to-end**
-2. **Add Gemini summarization workflow**
-3. **Replace test UI with production interface**
-4. **Implement summary → markdown file saving**
+Minor follow-ups only:
+1. Accessibility pass (contrast, focus outlines)
+2. Cross-browser QA
+3. Optional: split monolithic `App.tsx` into smaller components
 
 ---
 
@@ -100,16 +70,12 @@ Browser → React (Vite) → Express API → youtube-transcript → YouTube
 
 ### **Startup Commands**
 ```bash
-# Backend (always works)
-npm run server
+# Start both servers
+./start.sh
+# or: npm run start
 
-# Frontend (currently blocked)
-npm run dev
-# OR try: npx vite --port 4000 --host
-
-# Combined (when working)
-npm start
-# OR: ./start.sh
+# Health check
+curl http://localhost:3001/health
 ```
 
 ### **Testing Backend Only**
@@ -131,29 +97,25 @@ curl -X POST http://localhost:3001/api/transcript \
 
 ---
 
-## 🔍 **Debugging Frontend Issue**
+## 🔍 **Debugging**
 
 ### **Check These**
-1. **Browser console** (F12) for errors
-2. **Network connectivity** to localhost
-3. **Firewall settings** blocking local ports  
-4. **Browser security** blocking local content
-5. **Process conflicts** with other local servers
+1. **Backend health**: `/health`, Supadata key present
+2. **Environment**: `.env` contains `VITE_GEMINI_API_KEY` and `SUPADATA_API_KEY`
+3. **File permissions**: `exports/` writable
+4. **Network**: VPN/proxy/firewall not blocking localhost
 
 ### **Alternative Test Methods**
-1. **Try production build**: `npm run build && npm run preview`
-2. **Use different port**: `npx vite --port 8080`
-3. **Check with curl**: `curl http://localhost:4000`
-4. **Try different browser/incognito mode**
+1. **Production build**: `npm run build && npm run preview`
+2. **Different port**: `npx vite --port 8080`
+3. **Curl** API endpoints to isolate backend issues
 
 ---
 
 ## 📊 **Progress Summary**
 
-- **Setup & Backend**: ✅ 100% Complete
-- **API Integration**: ✅ 90% Complete (needs end-to-end testing)
-- **Frontend Development**: ⚠️ 70% Complete (blocked by access issue)
-- **File System**: ✅ 80% Complete (transcript saving works)
-- **Overall Progress**: **~80% Complete** (pending frontend resolution)
-
-**The core functionality is built and ready to test once the frontend accessibility issue is resolved.**
+- **Setup & Backend**: ✅ Complete
+- **API Integration**: ✅ Complete (Supadata + oEmbed + Gemini)
+- **Frontend Development**: ✅ Phase 3 UI complete
+- **File System**: ✅ Transcripts + summaries with title-based filenames
+- **Overall**: ✅ Production ready (see README for screenshots and UI notes)

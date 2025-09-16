@@ -1,13 +1,13 @@
-# PRD — YouTube Watch-Later Summarizer (Direct API MVP)
+# PRD — YouTube Watch-Later Summarizer (Hybrid Client–Server MVP)
 
 ## 1. Overview
-Build a minimal React app that directly processes YouTube URLs using youtube-transcript and Gemini API. The app fetches transcripts, sends them to Gemini for summarization, displays results in markdown, and saves summaries locally. This browser-based architecture requires no backend server while providing instant video summarization.
+Build a fast local-first app that converts YouTube URLs into structured markdown summaries. The app uses a hybrid architecture: a lightweight Express backend fetches transcripts via Supadata, serves prompt templates, and writes files to `exports/`, while the React frontend orchestrates UI and calls Gemini 2.5 Flash directly in the browser.
 
 ## 2. Goals
-- Paste a YouTube URL and get a readable summary within 10 seconds via direct API calls.
-- Frontend stays minimal (≈ 100 LOC) with all processing in browser.
-- Automatically save the summary to a local markdown file named after the video ID.
-- Use direct API integration to eliminate server dependencies.
+- Paste a YouTube URL and get a readable summary within ~10 seconds.
+- Use a local backend to reliably fetch transcripts (Supadata) and manage files.
+- Save transcripts and summaries with title-aware filenames for easy recall.
+- Keep AI key in the browser; keep transcript fetching and file I/O on the server for privacy and reliability.
 
 ## 3. User Stories
 | ID   | As a…      | I want to…                                   | So that…                            |
@@ -15,33 +15,40 @@ Build a minimal React app that directly processes YouTube URLs using youtube-tra
 | US-1 | solo user  | paste a YouTube link and click "Summarize"   | I get the main takeaways instantly. |
 | US-2 | solo user  | have the summary saved locally as markdown   | I can grep, sync, or version it.    |
 | US-3 | solo user  | get error feedback if transcript fails       | I understand why it didn't work.    |
+| US-4 | solo user  | see proper titles in filenames               | I can find files quickly by name.   |
 
 ## 4. Architecture Components
 
 ### Frontend (React App)
-- **Input**: URL field + "Summarize" button
-- **API Layer**: `src/api.ts` handles youtube-transcript + Gemini calls
-- **Display**: `react-markdown` renders returned summary
-- **Storage**: Save response to `/exports/summaries/{videoId}.md` via File System Access API
+- **Input**: URL field with paste-detect, CTA
+- **Client Bridge**: `src/api.ts` calls local server for transcripts, files, and prompt; calls Gemini in-browser
+- **Display**: `react-markdown` for summaries; history panel lists saved files
+
+### Backend (Express Server)
+- **Transcript Source**: Supadata API via server proxy (`/api/transcript`)
+- **Video Metadata**: YouTube oEmbed (`/api/video-metadata/:videoId`) for title/author/thumb
+- **File I/O**: Save/read transcripts and summaries in `exports/`
+- **Prompt Template**: Serve `prompts/Youtube transcripts.md`
 
 ### Processing Pipeline
-- **URL Parsing**: Extract video ID from YouTube URL
-- **Transcript Fetch**: Use `youtube-transcript` package directly
-- **AI Processing**: Send transcript + prompt template to Gemini 2.5 Flash
-- **File Storage**: Save markdown summary to local filesystem
+- **URL Parsing**: Extract video ID
+- **Metadata Fetch**: Get title via oEmbed; sanitize for filenames
+- **Transcript Fetch**: Server calls Supadata; save to `exports/transcripts/`
+- **AI Processing**: Frontend loads prompt from server and uses Gemini 2.5 Flash
+- **Summary Save**: Server writes to `exports/summaries/`
 
 ## 5. Functional Requirements
 
 ### Core Features
 1. Accept standard YouTube URL input
 2. Extract video ID from URL patterns
-3. Fetch transcript using `youtube-transcript` package
-4. Display loading state during processing
-5. Inject transcript into prompt template from `/prompts/youtube-transcripts.md`
-6. Send to Gemini 2.5 Flash API
+3. Fetch video metadata (title) using oEmbed via server
+4. Fetch transcript using Supadata via server
+5. Display progress/loading states for each stage
+6. Load prompt template from server and send to Gemini 2.5 Flash
 7. Render returned markdown summary
-8. Save summary to `/exports/summaries/{videoId}.md`
-9. Handle errors (no transcript, API failures, etc.)
+8. Save transcript and summary to `exports/` with title-aware filenames (`{videoId}__{sanitizedTitle}-…`)
+9. Handle errors (invalid URL, missing transcript, API failures, rate limits)
 
 ### Error Handling
 - Show user-friendly messages for common failures
@@ -53,35 +60,39 @@ Build a minimal React app that directly processes YouTube URLs using youtube-tra
 
 ### Frontend Stack
 - **Framework**: Vite + React + TypeScript
-- **Dependencies**: 
-  - `youtube-transcript` for caption extraction
-  - `@google/generative-ai` for Gemini API
+- **Dependencies**:
+  - `@google/generative-ai` for Gemini API (browser)
   - `react-markdown` for rendering
-- **Files**: `src/App.tsx` (UI), `src/api.ts` (processing logic)
-- **Environment**: `.env` with `GEMINI_API_KEY`
+- **Files**: `src/App.tsx` (UI), `src/api.ts` (client bridge), `src/utils.ts` (URL/title helpers)
+- **Environment**: `.env` with `VITE_GEMINI_API_KEY`
+
+### Backend Stack
+- **Framework**: Express 5 + Node
+- **Responsibilities**: Transcript proxy (Supadata), file I/O, prompt serving, metadata lookup (oEmbed)
+- **Environment**: `.env` with `SUPADATA_API_KEY`
 
 ### API Integration
-- **youtube-transcript**: Direct package usage for transcript fetching
-- **Gemini API**: HTTP requests to Google's generative AI endpoint
-- **File System**: Browser File System Access API for local saves
-- **Error boundaries**: Comprehensive error handling throughout pipeline
+- **Supadata**: Server-side transcript fetching (CORS-safe and reliable)
+- **oEmbed**: Server-side video metadata (no API key)
+- **Gemini**: Browser calls using `@google/generative-ai`
+- **File System**: Server writes to `exports/` (transcripts and summaries)
 
 ## 7. File Structure
 ```
 repo-root/
 ├── docs/
-│   ├── README.md
 │   └── prd-youtube-summarizer.md
 ├── prompts/
-│   └── youtube-transcripts.md     # AI prompt template
+│   └── Youtube transcripts.md     # AI prompt template
 ├── exports/
-│   ├── summaries/                 # Auto-generated summaries (git-ignored)
-│   └── transcripts/               # Auto-generated transcripts (git-ignored)
+│   ├── summaries/                 # Generated summaries (git-ignored)
+│   └── transcripts/               # Generated transcripts (git-ignored)
 ├── src/
 │   ├── App.tsx                    # Main React component
-│   ├── api.ts                     # YouTube + Gemini integration
-│   └── utils.ts                   # URL parsing, file handling
-├── .env                           # GEMINI_API_KEY
+│   ├── api.ts                     # Client ↔ server + Gemini
+│   └── utils.ts                   # URL parsing, filename helpers
+├── server.js                       # Express API (Supadata, oEmbed, files)
+├── .env                            # VITE_GEMINI_API_KEY, SUPADATA_API_KEY
 └── package.json
 ```
 
@@ -92,6 +103,7 @@ repo-root/
 | Frontend bundle size           | ≤ 200kb     |
 | Setup time (clone to running)  | ≤ 3 minutes |
 | Transcript fetch success rate  | ≥ 85%       |
+| Save + history refresh         | ≤ 2 seconds |
 
 ## 9. Implementation Steps
 1. **Project Setup**: Initialize Vite + React + TypeScript
