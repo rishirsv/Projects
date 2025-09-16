@@ -23,6 +23,12 @@
 
 ## Tasks
 
+- [ ] Fix concept map rendering in markdown summaries
+  - [ ] Add `mermaid`, `remark-gfm`, and `remark-mermaidjs` dependencies.
+  - [ ] Render summaries with `ReactMarkdown`, wiring the mermaid plugin and a custom renderer for `mermaid` code fences.
+  - [ ] Update the prompt to wrap concept maps in fenced code blocks labeled `mermaid`.
+  - [ ] Verify the summary view displays mermaid diagrams instead of raw text.
+
 - [x] 1.0 Project Setup and Configuration
   - [x] 1.1 Initialize Vite + React + TypeScript project
   - [x] 1.2 **COMPLETED**: Install core dependencies: `@google/generative-ai react-markdown express cors dotenv` (replaced youtube-transcript with Supadata API)
