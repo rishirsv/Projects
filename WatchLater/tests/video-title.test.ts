@@ -10,25 +10,26 @@ describe('Video Title Processing', () => {
     
     // When implemented, should check:
     // 1. Extract video title from YouTube API
-    // 2. Use title to generate consistent filenames
-    // 3. Transcript file: `${title}-transcript-${timestamp}.txt`
-    // 4. Summary file: `${title}-summary-${timestamp}.md`
-    // 5. Both files should have matching base names
+    // 2. Prefix filenames with the videoId for lookup stability
+    // 3. Transcript file: `${videoId}__${title}-transcript-${timestamp}.txt`
+    // 4. Summary file: `${videoId}__${title}-summary-${timestamp}.md`
+    // 5. Both files should share the same `${videoId}__${title}` base
   });
   
   it('should generate matching transcript and summary filenames', () => {
+    const videoId = 'dQw4w9WgXcQ';
     const videoTitle = 'Test Video Title';
     const timestamp = '2025-07-22T01-51-19';
+    const expectedBase = `${videoId}__${videoTitle}`;
     
-    const transcriptName = generateTranscriptFilename(videoTitle, timestamp);
-    const summaryName = generateSummaryFilename(videoTitle, timestamp);
+    const transcriptName = generateTranscriptFilename(videoId, videoTitle, timestamp);
+    const summaryName = generateSummaryFilename(videoId, videoTitle, timestamp);
     
-    expect(transcriptName).toBe(`${videoTitle}-transcript-${timestamp}.txt`);
-    expect(summaryName).toBe(`${videoTitle}-summary-${timestamp}.md`);
+    expect(transcriptName).toBe(`${expectedBase}-transcript-${timestamp}.txt`);
+    expect(summaryName).toBe(`${expectedBase}-summary-${timestamp}.md`);
     
-    // Extract base names (without extensions and suffixes)
-    const transcriptBase = transcriptName.replace('-transcript-' + timestamp + '.txt', '');
-    const summaryBase = summaryName.replace('-summary-' + timestamp + '.md', '');
+    const transcriptBase = transcriptName.replace(`-transcript-${timestamp}.txt`, '');
+    const summaryBase = summaryName.replace(`-summary-${timestamp}.md`, '');
     
     expect(transcriptBase).toBe(summaryBase);
   });

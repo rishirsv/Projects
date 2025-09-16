@@ -4,6 +4,32 @@ import { fetchTranscript, saveTranscript, generateSummaryFromFile, getSavedSumma
 import { extractVideoId } from './utils';
 import './App.css';
 
+function extractKeyTakeaways(summaryText: string) {
+  const lines = summaryText.split('\n');
+  const takeaways: string[] = [];
+  let inTakeawaysSection = false;
+
+  for (const line of lines) {
+    if (line.toLowerCase().includes('key') || line.toLowerCase().includes('takeaway') || line.toLowerCase().includes('important')) {
+      inTakeawaysSection = true;
+      continue;
+    }
+    if (inTakeawaysSection && (line.trim().startsWith('-') || line.trim().startsWith('•') || line.trim().match(/^\d+[.]/))) {
+      takeaways.push(line.trim().replace(/^[-•\d.]\s*/, ''));
+    }
+    if (inTakeawaysSection && line.trim() === '') {
+      if (takeaways.length > 0) break;
+    }
+  }
+
+  return takeaways.slice(0, 4);
+}
+
+function extractHashtags(summaryText: string) {
+  const hashtagMatches = summaryText.match(/#[\w-]+/g);
+  return hashtagMatches ? hashtagMatches.slice(0, 3) : [];
+}
+
 const WatchLater = () => {
   const [url, setUrl] = useState('');
   const [status, setStatus] = useState('idle'); // idle, processing, complete, error
@@ -18,30 +44,7 @@ const WatchLater = () => {
   const [loadingSummaries, setLoadingSummaries] = useState(false);
   const inputRef = useRef(null);
 
-  useEffect(() => {
-    // Load saved summaries count
-    loadSavedSummaries();
-    inputRef.current?.focus();
-  }, []);
-
-  useEffect(() => {
-    // Auto-detect paste and trigger summarize
-    const handlePaste = (e) => {
-      setTimeout(() => {
-        const pastedText = e.target.value;
-        if (isYouTubeUrl(pastedText) && status === 'idle') {
-          // Create a small delay to ensure state is updated
-          setTimeout(() => handleSummarize(pastedText), 50);
-        }
-      }, 10);
-    };
-    
-    const input = inputRef.current;
-    input?.addEventListener('paste', handlePaste);
-    return () => input?.removeEventListener('paste', handlePaste);
-  }, [status, handleSummarize]);
-
-  const loadSavedSummaries = async () => {
+  const loadSavedSummaries = useCallback(async () => {
     setLoadingSummaries(true);
     try {
       const summaries = await getSavedSummaries();
@@ -52,11 +55,16 @@ const WatchLater = () => {
     } finally {
       setLoadingSummaries(false);
     }
-  };
+  }, []);
 
-  const isYouTubeUrl = (text) => {
+  useEffect(() => {
+    loadSavedSummaries();
+    inputRef.current?.focus();
+  }, [loadSavedSummaries]);
+
+  const isYouTubeUrl = useCallback((text: string) => {
     return /(?:youtube\.com\/watch\?v=|youtu\.be\/)([^&\n?]+)/.test(text);
-  };
+  }, []);
 
   const handleSummarize = useCallback(async (urlToProcess = url) => {
     if (!isYouTubeUrl(urlToProcess) || status === 'processing') return;
@@ -118,40 +126,31 @@ const WatchLater = () => {
       
       // Refresh summaries list
       await loadSavedSummaries();
-      
+    
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Unknown error');
       setStatus('error');
       console.error('Summarization error:', err);
     }
-  }, [url, status]);
+  }, [isYouTubeUrl, loadSavedSummaries, status, url]);
 
-  const extractKeyTakeaways = (summaryText) => {
-    // Simple extraction of bullet points or numbered lists
-    const lines = summaryText.split('\n');
-    const takeaways = [];
-    let inTakeawaysSection = false;
-    
-    for (const line of lines) {
-      if (line.toLowerCase().includes('key') || line.toLowerCase().includes('takeaway') || line.toLowerCase().includes('important')) {
-        inTakeawaysSection = true;
-        continue;
-      }
-      if (inTakeawaysSection && (line.trim().startsWith('-') || line.trim().startsWith('•') || line.trim().match(/^\d+[.]/))) {
-        takeaways.push(line.trim().replace(/^[-•\d.]\s*/, ''));
-      }
-      if (inTakeawaysSection && line.trim() === '') {
-        if (takeaways.length > 0) break;
-      }
-    }
-    
-    return takeaways.slice(0, 4); // Max 4 takeaways
-  };
+  useEffect(() => {
+    const handlePaste = (e: Event) => {
+      const target = e.target as HTMLInputElement | null;
+      if (!target) return;
 
-  const extractHashtags = (summaryText) => {
-    const hashtagMatches = summaryText.match(/#[\w-]+/g);
-    return hashtagMatches ? hashtagMatches.slice(0, 3) : [];
-  };
+      setTimeout(() => {
+        const pastedText = target.value;
+        if (isYouTubeUrl(pastedText) && status === 'idle') {
+          setTimeout(() => handleSummarize(pastedText), 50);
+        }
+      }, 10);
+    };
+
+    const input = inputRef.current;
+    input?.addEventListener('paste', handlePaste);
+    return () => input?.removeEventListener('paste', handlePaste);
+  }, [handleSummarize, isYouTubeUrl, status]);
 
   const handleCancel = () => {
     setStatus('idle');
@@ -186,9 +185,12 @@ const WatchLater = () => {
   const handleHistoryItemClick = async (savedSummary) => {
     try {
       const summaryData = await readSavedSummary(savedSummary.videoId);
+      const baseName = summaryData.filename.replace(/-summary-.*\.md$/, '');
+      const [, titlePart] = baseName.split('__');
+      const derivedTitle = (savedSummary.title ?? titlePart ?? savedSummary.videoId).trim();
       const displayData = {
         videoId: savedSummary.videoId,
-        title: summaryData.filename.replace(/-summary-.*\.md$/, '').replace(/-/g, ' '),
+        title: derivedTitle,
         content: summaryData.summary,
         savedFile: summaryData.filename,
         keyTakeaways: extractKeyTakeaways(summaryData.summary),
@@ -287,10 +289,9 @@ const WatchLater = () => {
             </div>
             <div className="space-y-2">
               {savedSummaries.slice(0, 10).map((saved, index) => {
-                const displayTitle = saved.filename
-                  .replace(/-summary-.*\.md$/, '')
-                  .replace(/-/g, ' ')
-                  .replace(/^\w/, c => c.toUpperCase());
+                const baseName = saved.filename.replace(/-summary-.*\.md$/, '');
+                const [, titlePart] = baseName.split('__');
+                const displayTitle = (saved.title ?? titlePart ?? saved.videoId).trim();
                 const timeAgo = new Date(saved.modified).toLocaleDateString();
                 
                 return (

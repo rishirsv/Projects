@@ -269,16 +269,9 @@ app.post('/api/save-transcript', (req, res) => {
 
   try {
     const timestamp = new Date().toISOString().replace(/[:.]/g, '-').slice(0, 19);
-    
-    // Use title-based filename if available, fallback to videoId
-    let baseFilename;
-    if (title) {
-      const sanitizedTitle = sanitizeTitle(title);
-      baseFilename = sanitizedTitle || videoId;
-    } else {
-      baseFilename = videoId;
-    }
-    
+    const sanitizedTitle = title ? sanitizeTitle(title) : null;
+    const baseFilename = sanitizedTitle ? `${videoId}__${sanitizedTitle}` : videoId;
+
     const filename = `${baseFilename}-transcript-${timestamp}.txt`;
     const filePath = path.join(transcriptsDir, filename);
     
@@ -322,14 +315,14 @@ app.get('/api/transcripts', (req, res) => {
       .map(file => {
         const filePath = path.join(transcriptsDir, file);
         const stats = fs.statSync(filePath);
-        
-        // Extract videoId from filename
-        const videoIdMatch = file.match(/^([^-]+)-transcript/);
-        const videoId = videoIdMatch ? videoIdMatch[1] : 'unknown';
+        const [prefix] = file.split('-transcript-');
+        const [videoIdPart, titlePart] = prefix.split('__');
+        const videoId = videoIdPart || 'unknown';
         
         return {
           filename: file,
           videoId,
+          title: titlePart || null,
           created: stats.ctime,
           modified: stats.mtime,
           size: stats.size
@@ -357,7 +350,9 @@ app.get('/api/transcript-file/:videoId', (req, res) => {
     // Find the most recent transcript file for this videoId
     const files = fs.readdirSync(transcriptsDir);
     const transcriptFile = files
-      .filter(file => file.startsWith(`${videoId}-transcript`) && file.endsWith('.txt'))
+      .filter(file => file.endsWith('.txt'))
+      .filter(file => file.includes('-transcript-'))
+      .filter(file => file.startsWith(`${videoId}__`) || file.startsWith(`${videoId}-`))
       .sort()
       .pop(); // Get the most recent
     
@@ -443,16 +438,9 @@ app.post('/api/save-summary', (req, res) => {
 
   try {
     const timestamp = new Date().toISOString().replace(/[:.]/g, '-').slice(0, 19);
-    
-    // Use title-based filename if available, fallback to videoId
-    let baseFilename;
-    if (title) {
-      const sanitizedTitle = sanitizeTitle(title);
-      baseFilename = sanitizedTitle || videoId;
-    } else {
-      baseFilename = videoId;
-    }
-    
+    const sanitizedTitle = title ? sanitizeTitle(title) : null;
+    const baseFilename = sanitizedTitle ? `${videoId}__${sanitizedTitle}` : videoId;
+
     const filename = `${baseFilename}-summary-${timestamp}.md`;
     const filePath = path.join(summariesDir, filename);
     
@@ -497,14 +485,14 @@ app.get('/api/summaries', (req, res) => {
       .map(file => {
         const filePath = path.join(summariesDir, file);
         const stats = fs.statSync(filePath);
-        
-        // Extract videoId from filename
-        const videoIdMatch = file.match(/^([^-]+)-summary/);
-        const videoId = videoIdMatch ? videoIdMatch[1] : 'unknown';
+        const [prefix] = file.split('-summary-');
+        const [videoIdPart, titlePart] = prefix.split('__');
+        const videoId = videoIdPart || 'unknown';
         
         return {
           filename: file,
           videoId,
+          title: titlePart || null,
           created: stats.ctime,
           modified: stats.mtime,
           size: stats.size
@@ -532,7 +520,9 @@ app.get('/api/summary-file/:videoId', (req, res) => {
     // Find the most recent summary file for this videoId
     const files = fs.readdirSync(summariesDir);
     const summaryFile = files
-      .filter(file => file.startsWith(`${videoId}-summary`) && file.endsWith('.md'))
+      .filter(file => file.endsWith('.md'))
+      .filter(file => file.includes('-summary-'))
+      .filter(file => file.startsWith(`${videoId}__`) || file.startsWith(`${videoId}-`))
       .sort()
       .pop(); // Get the most recent
     
@@ -573,7 +563,9 @@ app.post('/api/generate-summary/:videoId', async (req, res) => {
     // Read the transcript file
     const files = fs.readdirSync(transcriptsDir);
     const transcriptFile = files
-      .filter(file => file.startsWith(`${videoId}-transcript`) && file.endsWith('.txt'))
+      .filter(file => file.endsWith('.txt'))
+      .filter(file => file.includes('-transcript-'))
+      .filter(file => file.startsWith(`${videoId}__`) || file.startsWith(`${videoId}-`))
       .sort()
       .pop();
     
