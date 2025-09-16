@@ -1,6 +1,6 @@
-# Phase 3 — Tactiq-Inspired UI Redesign
+# Phase 3 — Tactiq‑Inspired UI (Shipped)
 
-This note captures the discovery insights and implementation direction for the Phase 3 visual refresh. It mirrors the structure of the project task list so the team can trace each checkbox back to supporting evidence.
+This document summarizes the discovery, visual language, and the shipped Phase 3 UI. It reflects the current implementation in `src/App.tsx`, `src/App.css`, and `src/index.css`.
 
 ## 10.0 Discovery & Experience Brief
 
@@ -13,29 +13,36 @@ This note captures the discovery insights and implementation direction for the P
 
 ### 10.2 WatchLater Inventory
 - Catalogued screens: landing hero, processing state, success summary, history drawer.
-- Preserved functional requirements: instant paste detection, four-stage progress indicator, transcript accordion, summary history.
-- Identified debt: Tailwind-like classes without utility engine, lack of design tokens, inconsistent spacing scale.
+- Preserved functional requirements: paste detection, four-stage progress indicator, transcript accordion, summary history.
+- Addressed debt: Introduced design tokens (CSS variables) and consistent spacing scale.
 
 ### 10.3 UI Brief & Brand Guide
-- **Typography**: Adopt `Space Grotesk` for headings, `Inter` for body; define scale (42/32/24/18/16/14).
-- **Color Tokens**: `--surface-base: #0B0614`, `--surface-contrast: rgba(255,255,255,0.02)`, gradients `--gradient-primary: linear-gradient(135deg, #7F5BFF 0%, #42E3AE 100%)`.
-- **Assets**: Require SVG logomark, animated dot glyph, screenshot placeholders.
-- **Approval**: Circulate this brief plus mockups for sign-off prior to build (Figma link placeholder: `TODO : add figma share url`).
+- **Typography**: `Space Grotesk` for headings, `Inter` for body (shipped via Google Fonts).
+- **Color & Gradients**: `--gradient-primary: linear-gradient(135deg, #7f5bff 0%, #46e0b1 100%)`; surface colors use deep violet base with glass overlays.
+- **Assets**: Inline SVG signal glyph in header; README screenshots kept in `docs/assets/`.
+- **Status**: Approved and implemented in Phase 3 build.
 
-## 11.0 Visual System & Design Tokens
+## 11.0 Visual System & Design Tokens (Implemented)
 
 ### 11.1 Global Style Primitives
-- Define CSS custom properties in `src/index.css` for fonts, spacing scale (`4, 8, 12, 16, 24, 32`), radii (`8px`, `16px`, pill `999px`), and shadows (`0 20px 40px -20px rgba(124, 108, 255, 0.35)`).
-- Map these tokens to utility classes or inline styles for the interim while Tailwind adoption is evaluated.
+Defined in `src/index.css`:
+- Fonts: `--font-display` = Space Grotesk, `--font-body` = Inter
+- Surface: `--color-surface`, `--color-surface-elevated`, `--color-surface-border`
+- Text: `--color-text-primary`, `--color-text-secondary`, `--color-text-muted`
+- Accent: `--color-success`, `--gradient-primary`, `--gradient-surface`
+- Spacing: `--space-1..7` = 4, 8, 12, 16, 24, 36, 48px
+- Radii: `--radius-sm` = 8px, `--radius-lg` = 16px, `--radius-pill` = 999px
+- Shadow: `--shadow-soft` = soft violet drop shadow
 
 ### 11.2 Background & Container System
-- Implement root gradient macro: `background: radial-gradient(120% 120% at 20% 20%, rgba(127,91,255,0.45), transparent), radial-gradient(140% 140% at 80% 0%, rgba(66,227,174,0.35), transparent), #08040F`.
-- Create `.glass-card` class: `background: rgba(15, 10, 26, 0.75); border: 1px solid rgba(166, 142, 255, 0.2); backdrop-filter: blur(18px); padding tokens applied.`
+- Root gradient: `--gradient-surface` combines violet/teal radial glows over `#08040f`.
+- Glass containers (implemented): `.app-header`, `.hero-card`, `.progress-card`, `.summary-card`, `.history-panel` use translucent backgrounds, subtle borders, and blur.
 
 ### 11.3 CTA & Typography Treatments
-- Primary button: pill radius, gradient background, white text, drop shadow; hover intensifies gradient and adds outer glow.
-- Secondary button: transparent fill, gradient stroke, text in gradient via `background-clip: text`.
-- Headline gradient text using `-webkit-text-fill-color: transparent; background-clip: text;`. Body copy stays high-contrast neutral (#E6E1F5).
+- Primary CTA `.hero-submit`: pill radius, gradient fill, subtle lift on hover.
+- Input wrapper focus: glow ring using success accent and inner stroke.
+- Headline gradient text via `background-clip: text` on `.hero-title span`.
+- Secondary actions (icon buttons): circular, glass background with hover lift.
 
 ## UI Mockups (Textual)
 
@@ -76,7 +83,22 @@ This note captures the discovery insights and implementation direction for the P
 
 *Mockups depict layout, spacing, and component hierarchy; gradients/typography follow the tokens above.*
 
-## Next Steps
-- Share this document with stakeholders for visual alignment.
-- Translate tokens into actual CSS/Tailwind utilities in implementation phase (Phase 3 build tasks 12+).
-- Update README and marketing collateral once redesign ships.
+## Implemented Components
+- Hero section with pill input, CTA, and trust badges.
+- Four-stage progress card: Metadata → Transcript → AI Processing → Save (with live state and icons).
+- Summary surface: title, key takeaways, markdown rendering, tags, transcript toggle.
+- History drawer: saved summaries with timestamp and size.
+- Error banner: fixed bottom, glass style; empty-state visuals.
+
+## Responsive Behavior
+- Base grid is single column; at `min-width: 1024px` the workspace splits into main + 320px history panel.
+- Touch targets and spacing scale adapt via CSS variables.
+
+## Motion
+- Loading spinners use `.spin` keyframe rotation.
+- Subtle hover lifts and active step shadows on progress items.
+
+## Follow‑ups
+- Accessibility audit (contrast, focus outlines, reduced motion).
+- Cross‑browser QA (Chromium, Firefox, Safari).
+- Post‑launch cleanup: retire any legacy utility classes after decision on utility framework.
