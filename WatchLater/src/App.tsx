@@ -1,55 +1,80 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
-import { Download, Copy, RefreshCw, ChevronRight, Circle, CheckCircle, ChevronLeft, History } from 'lucide-react';
-import { fetchTranscript, saveTranscript, generateSummaryFromFile, getSavedSummaries, readSavedSummary, fetchVideoMetadata } from './api';
+import ReactMarkdown from 'react-markdown';
+import {
+  Download,
+  Copy,
+  RefreshCw,
+  ChevronRight,
+  Circle,
+  CheckCircle,
+  History,
+  Search,
+  ArrowRight,
+  Sparkles,
+  Clock,
+  ShieldCheck,
+  Loader2
+} from 'lucide-react';
+import {
+  fetchTranscript,
+  saveTranscript,
+  generateSummaryFromFile,
+  getSavedSummaries,
+  readSavedSummary,
+  fetchVideoMetadata
+} from './api';
 import { extractVideoId } from './utils';
 import './App.css';
 
-function extractKeyTakeaways(summaryText: string) {
-  const lines = summaryText.split('\n');
-  const takeaways: string[] = [];
-  let inTakeawaysSection = false;
+type SummaryData = {
+  videoId: string;
+  title: string;
+  author: string;
+  content: string;
+  transcript: string;
+  savedFile: string;
+  keyTakeaways: string[];
+  tags: string[];
+};
 
-  for (const line of lines) {
-    if (line.toLowerCase().includes('key') || line.toLowerCase().includes('takeaway') || line.toLowerCase().includes('important')) {
-      inTakeawaysSection = true;
-      continue;
-    }
-    if (inTakeawaysSection && (line.trim().startsWith('-') || line.trim().startsWith('•') || line.trim().match(/^\d+[.]/))) {
-      takeaways.push(line.trim().replace(/^[-•\d.]\s*/, ''));
-    }
-    if (inTakeawaysSection && line.trim() === '') {
-      if (takeaways.length > 0) break;
-    }
-  }
+type SavedSummary = {
+  filename: string;
+  videoId: string;
+  title?: string | null;
+  created?: string;
+  modified?: string;
+  size?: number;
+};
 
-  return takeaways.slice(0, 4);
-}
+type Stage = {
+  id: number;
+  title: string;
+  description: string;
+};
 
-function extractHashtags(summaryText: string) {
-  const hashtagMatches = summaryText.match(/#[\w-]+/g);
-  return hashtagMatches ? hashtagMatches.slice(0, 3) : [];
-}
+const STAGES: Stage[] = [
+  { id: 1, title: 'Metadata', description: 'Video title & channel info' },
+  { id: 2, title: 'Transcript', description: 'Supadata fetch & storage' },
+  { id: 3, title: 'AI Processing', description: 'Gemini prompt orchestration' },
+  { id: 4, title: 'Save', description: 'Markdown summary archived locally' }
+];
 
 const WatchLater = () => {
   const [url, setUrl] = useState('');
-  const [status, setStatus] = useState('idle'); // idle, processing, complete, error
-  const [summary, setSummary] = useState(null);
+  const [status, setStatus] = useState<'idle' | 'processing' | 'complete' | 'error'>('idle');
+  const [summary, setSummary] = useState<SummaryData | null>(null);
   const [showTranscript, setShowTranscript] = useState(false);
-  const [summaryCount, setSummaryCount] = useState(0);
-  const [showHistory, setShowHistory] = useState(false);
-  const [currentStage, setCurrentStage] = useState(0); // 0: idle, 1: metadata, 2: transcript, 3: ai-processing, 4: file-saving
-  const [showPulse, setShowPulse] = useState(false);
+  const [currentStage, setCurrentStage] = useState(0);
   const [error, setError] = useState('');
-  const [savedSummaries, setSavedSummaries] = useState([]);
+  const [savedSummaries, setSavedSummaries] = useState<SavedSummary[]>([]);
   const [loadingSummaries, setLoadingSummaries] = useState(false);
-  const inputRef = useRef(null);
+  const inputRef = useRef<HTMLInputElement | null>(null);
 
   const loadSavedSummaries = useCallback(async () => {
     setLoadingSummaries(true);
     try {
       const summaries = await getSavedSummaries();
       setSavedSummaries(summaries);
-      setSummaryCount(summaries.length);
     } catch (err) {
       console.error('Error loading saved summaries:', err);
     } finally {
@@ -66,82 +91,73 @@ const WatchLater = () => {
     return /(?:youtube\.com\/watch\?v=|youtu\.be\/)([^&\n?]+)/.test(text);
   }, []);
 
-  const handleSummarize = useCallback(async (urlToProcess = url) => {
-    if (!isYouTubeUrl(urlToProcess) || status === 'processing') return;
-    
-    setStatus('processing');
-    setCurrentStage(1);
-    setError('');
-    setSummary(null);
-    
-    try {
-      // Stage 1: Extract video ID and fetch metadata
-      const extractedVideoId = extractVideoId(urlToProcess);
-      if (!extractedVideoId) {
-        throw new Error('Invalid YouTube URL');
-      }
-      
-      // Try to get metadata (non-blocking)
-      let metadata = null;
+  const handleSummarize = useCallback(
+    async (urlToProcess = url) => {
+      if (!isYouTubeUrl(urlToProcess) || status === 'processing') return;
+
+      setStatus('processing');
+      setCurrentStage(1);
+      setError('');
+      setSummary(null);
+      setShowTranscript(false);
+
       try {
-        metadata = await fetchVideoMetadata(extractedVideoId);
-        console.log('Video metadata fetched:', metadata.title);
-      } catch (metadataError) {
-        console.warn('Failed to fetch video metadata, continuing without title:', metadataError);
+        const extractedVideoId = extractVideoId(urlToProcess);
+        if (!extractedVideoId) {
+          throw new Error('Invalid YouTube URL');
+        }
+
+        let metadata: Awaited<ReturnType<typeof fetchVideoMetadata>> | null = null;
+        try {
+          metadata = await fetchVideoMetadata(extractedVideoId);
+        } catch (metadataError) {
+          console.warn('Failed to fetch video metadata, continuing without title:', metadataError);
+        }
+
+        setCurrentStage(2);
+
+        const transcriptText = await fetchTranscript(extractedVideoId);
+        await saveTranscript(extractedVideoId, transcriptText, false, metadata?.title);
+
+        setCurrentStage(3);
+
+        const result = await generateSummaryFromFile(extractedVideoId);
+
+        setCurrentStage(4);
+
+        const summaryData: SummaryData = {
+          videoId: extractedVideoId,
+          title: metadata?.title || `Video ${extractedVideoId}`,
+          author: metadata?.author || 'Unknown creator',
+          content: result.summary,
+          transcript: transcriptText,
+          savedFile: result.savedFile.filename,
+          keyTakeaways: extractKeyTakeaways(result.summary),
+          tags: extractHashtags(result.summary)
+        };
+
+        setSummary(summaryData);
+        setStatus('complete');
+        await loadSavedSummaries();
+      } catch (err) {
+        setError(err instanceof Error ? err.message : 'Unknown error');
+        setStatus('error');
+        setCurrentStage(0);
+        console.error('Summarization error:', err);
       }
-      
-      setCurrentStage(2);
-      
-      // Stage 2: Fetch transcript
-      const transcriptText = await fetchTranscript(extractedVideoId);
-      
-      // Save transcript with title if available
-      await saveTranscript(extractedVideoId, transcriptText, false, metadata?.title);
-      
-      setCurrentStage(3);
-      
-      // Stage 3: AI Processing - Generate summary from file
-      const result = await generateSummaryFromFile(extractedVideoId);
-      
-      setCurrentStage(4);
-      
-      // Stage 4: File saving is already done in generateSummaryFromFile
-      // Parse the summary for display
-      const summaryData = {
-        videoId: extractedVideoId,
-        title: metadata?.title || `Video ${extractedVideoId}`,
-        author: metadata?.author || 'Unknown',
-        content: result.summary,
-        transcript: transcriptText,
-        savedFile: result.savedFile.filename,
-        // Extract key takeaways from summary (simple parsing)
-        keyTakeaways: extractKeyTakeaways(result.summary),
-        tags: extractHashtags(result.summary)
-      };
-      
-      setSummary(summaryData);
-      setStatus('complete');
-      setShowPulse(true);
-      setTimeout(() => setShowPulse(false), 500);
-      
-      // Refresh summaries list
-      await loadSavedSummaries();
-    
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Unknown error');
-      setStatus('error');
-      console.error('Summarization error:', err);
-    }
-  }, [isYouTubeUrl, loadSavedSummaries, status, url]);
+    },
+    [isYouTubeUrl, loadSavedSummaries, status, url]
+  );
 
   useEffect(() => {
-    const handlePaste = (e: Event) => {
-      const target = e.target as HTMLInputElement | null;
+    const handlePaste = (event: Event) => {
+      const target = event.target as HTMLInputElement | null;
       if (!target) return;
 
       setTimeout(() => {
         const pastedText = target.value;
         if (isYouTubeUrl(pastedText) && status === 'idle') {
+          setUrl(pastedText);
           setTimeout(() => handleSummarize(pastedText), 50);
         }
       }, 10);
@@ -160,333 +176,333 @@ const WatchLater = () => {
 
   const handleDownload = () => {
     if (!summary) return;
-    
+
     const blob = new Blob([summary.content], { type: 'text/markdown' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `${summary.title.replace(/[^a-z0-9]/gi, '-').toLowerCase()}.md`;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
+    const link = document.createElement('a');
+    const downloadUrl = URL.createObjectURL(blob);
+    link.href = downloadUrl;
+    link.download = `${summary.title.replace(/[^a-z0-9]/gi, '-').toLowerCase()}.md`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(downloadUrl);
   };
 
   const handleCopy = () => {
     if (!summary) return;
-    navigator.clipboard.writeText(summary.content);
+    navigator.clipboard.writeText(summary.content).catch(err => {
+      console.error('Copy failed:', err);
+    });
   };
 
   const handleOpenFolder = () => {
-    // Show user where files are saved
-    alert(`Files are saved in: exports/summaries/\n\nLatest file: ${summary?.savedFile || 'No file saved yet'}`);
+    alert(`Summaries are saved locally in exports/summaries/\nLatest file: ${summary?.savedFile || 'Not generated yet'}`);
   };
 
-  const handleHistoryItemClick = async (savedSummary) => {
+  const handleHistoryItemClick = async (savedSummary: SavedSummary) => {
     try {
       const summaryData = await readSavedSummary(savedSummary.videoId);
       const baseName = summaryData.filename.replace(/-summary-.*\.md$/, '');
       const [, titlePart] = baseName.split('__');
       const derivedTitle = (savedSummary.title ?? titlePart ?? savedSummary.videoId).trim();
-      const displayData = {
+
+      const displayData: SummaryData = {
         videoId: savedSummary.videoId,
         title: derivedTitle,
+        author: 'Saved summary',
         content: summaryData.summary,
+        transcript: '',
         savedFile: summaryData.filename,
         keyTakeaways: extractKeyTakeaways(summaryData.summary),
         tags: extractHashtags(summaryData.summary)
       };
+
       setSummary(displayData);
       setStatus('complete');
-      setShowHistory(false);
+      setShowTranscript(false);
     } catch (err) {
-      setError(`Failed to load summary: ${err.message}`);
+      setError(`Failed to load summary: ${err instanceof Error ? err.message : 'Unknown error'}`);
+      setStatus('error');
     }
   };
 
-  const SignalGlyph = () => (
-    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" className={showPulse ? 'animate-pulse-custom' : ''}>
-      <rect x="4" y="8" width="3" height="8" rx="1.5" fill="currentColor" opacity="0.4"/>
-      <rect x="10.5" y="6" width="3" height="12" rx="1.5" fill="currentColor" opacity="0.6"/>
-      <rect x="17" y="4" width="3" height="16" rx="1.5" fill="currentColor" opacity="0.8"/>
-      <circle cx="12" cy="20" r="2" fill="#03D5A3" className={showPulse ? 'animate-pulse-dot' : ''}/>
-    </svg>
-  );
-
-  const ProgressIndicator = ({ stage }) => (
-    <div className="flex items-center gap-2 text-sm">
-      <div className="flex items-center gap-1">
-        {stage >= 1 ? <CheckCircle className="w-4 h-4 text-[#03D5A3]" /> : <Circle className="w-4 h-4 text-[#666]" />}
-        <span className={stage >= 1 ? "text-[#03D5A3]" : "text-[#666]"}>Metadata</span>
-      </div>
-      <span className="text-[#666]">•</span>
-      <div className="flex items-center gap-1">
-        {stage >= 2 ? <CheckCircle className="w-4 h-4 text-[#03D5A3]" /> : <Circle className="w-4 h-4 text-[#666]" />}
-        <span className={stage >= 2 ? "text-[#03D5A3]" : "text-[#666]"}>Transcript</span>
-      </div>
-      <span className="text-[#666]">•</span>
-      <div className="flex items-center gap-1">
-        {stage >= 3 ? <CheckCircle className="w-4 h-4 text-[#03D5A3]" /> : <Circle className="w-4 h-4 text-[#666]" />}
-        <span className={stage >= 3 ? "text-[#03D5A3]" : "text-[#666]"}>AI Processing</span>
-      </div>
-      <span className="text-[#666]">•</span>
-      <div className="flex items-center gap-1">
-        {stage >= 4 ? <CheckCircle className="w-4 h-4 text-[#03D5A3]" /> : <Circle className="w-4 h-4 text-[#666]" />}
-        <span className={stage >= 4 ? "text-[#03D5A3]" : "text-[#666]"}>Save</span>
-      </div>
-    </div>
-  );
-
+  const summaryCount = savedSummaries.length;
+  const isProcessing = status === 'processing';
   const isReturningUser = summaryCount > 0;
 
+  const handleSubmit = (event: React.FormEvent) => {
+    event.preventDefault();
+    handleSummarize(url);
+  };
+
   return (
-    <div className="min-h-screen bg-[#0A0A0A] text-[#EDEDED] flex flex-col">
-      {/* Header */}
-      <header className="sticky top-0 z-10 bg-[#0A0A0A]/90 backdrop-blur-md border-b border-[#1a1a1a]">
-        <div className="max-w-4xl mx-auto px-4 py-3 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            {isReturningUser && (
-              <button 
-                onClick={() => setShowHistory(!showHistory)}
-                className="p-1 hover:bg-[#1a1a1a] rounded transition-colors"
-              >
-                <ChevronLeft className="w-5 h-5" />
-              </button>
-            )}
-            <div className="flex items-center gap-2">
-              <SignalGlyph />
-              <span className="font-medium text-lg">Watch Later</span>
-              <span className="text-xs text-[#666] bg-[#1a1a1a] px-1.5 py-0.5 rounded">β</span>
-            </div>
-          </div>
-          {isReturningUser && (
-            <div className="flex items-center gap-4">
-              <div className="flex gap-1">
-                {[...Array(Math.min(summaryCount, 5))].map((_, i) => (
-                  <div key={i} className={`w-2 h-2 rounded-full bg-[#03D5A3] ${i === summaryCount - 1 && showPulse ? 'animate-pulse-dot' : ''}`} />
-                ))}
-              </div>
-              <button 
-                onClick={loadSavedSummaries}
-                className="p-2 hover:bg-[#1a1a1a] rounded transition-colors"
-                title="Refresh"
-              >
-                <RefreshCw className="w-4 h-4" />
-              </button>
-            </div>
-          )}
+    <div className="app-shell">
+      <header className="app-header">
+        <div className="header-brand">
+          <SignalGlyph animated={isProcessing} />
+          <span>WatchLater</span>
+          <span className="header-badge">Phase 3</span>
+        </div>
+        <div className="header-actions">
+          <span className="header-badge">Saved · {summaryCount}</span>
+          <button className="action-icon-button" onClick={loadSavedSummaries} title="Refresh history">
+            {loadingSummaries ? <Loader2 className="spin" size={18} /> : <RefreshCw size={18} />}
+          </button>
         </div>
       </header>
 
-      <div className="flex flex-1">
-        {/* History Drawer */}
-        {isReturningUser && showHistory && (
-          <aside className="w-64 bg-[#0A0A0A] border-r border-[#1a1a1a] p-4">
-            <div className="flex items-center gap-2 mb-4">
-              <History className="w-4 h-4" />
-              <h2 className="font-medium">History</h2>
-              {loadingSummaries && <RefreshCw className="w-3 h-3 animate-spin" />}
+      <section className="hero-card">
+        <div className="hero-topline">
+          <Sparkles size={16} /> Instant AI summaries without uploads
+        </div>
+        <h1 className="hero-title">
+          Learn faster with <span>Gemini-powered</span> recaps.
+        </h1>
+        <p className="hero-description">
+          Paste any YouTube link and receive a richly formatted markdown summary in seconds. Your transcript stays on your machine—perfect for deep work and research workflows.
+        </p>
+        <form className="hero-form" onSubmit={handleSubmit}>
+          <label className="hero-input-wrapper">
+            <Search size={18} className="hero-input-icon" />
+            <input
+              ref={inputRef}
+              type="text"
+              value={url}
+              onChange={(event) => setUrl(event.target.value)}
+              placeholder="https://www.youtube.com/watch?v=…"
+              className="hero-input"
+              disabled={isProcessing}
+            />
+            {isProcessing && (
+              <button type="button" onClick={handleCancel} className="hero-cancel">
+                Cancel
+              </button>
+            )}
+          </label>
+          <button type="submit" className="hero-submit" disabled={!isYouTubeUrl(url) || isProcessing}>
+            {isProcessing ? <Loader2 className="spin" size={18} /> : <ArrowRight size={18} />}
+            {isProcessing ? 'Working…' : 'Summarize video'}
+          </button>
+        </form>
+        <div className="hero-proof-points">
+          <span>
+            <ShieldCheck size={16} color="#46e0b1" /> Private, local-first pipeline
+          </span>
+          <span>
+            <Clock size={16} color="#7f5bff" /> Under 10 seconds per recap
+          </span>
+          <span>
+            <Sparkles size={16} color="#46e0b1" /> {summaryCount} summaries saved
+          </span>
+        </div>
+      </section>
+
+      <div className="workspace">
+        <div className="workspace-primary">
+          <section className="progress-card">
+            <div className="progress-header">
+              <div className="progress-title">
+                {isProcessing ? <Loader2 className="spin" size={18} /> : <Sparkles size={18} color="#46e0b1" />}
+                <span>Processing pipeline</span>
+              </div>
+              {status === 'complete' && <span className="status-pill">✓ Summary saved</span>}
             </div>
-            <div className="space-y-2">
-              {savedSummaries.slice(0, 10).map((saved, index) => {
-                const baseName = saved.filename.replace(/-summary-.*\.md$/, '');
-                const [, titlePart] = baseName.split('__');
-                const displayTitle = (saved.title ?? titlePart ?? saved.videoId).trim();
-                const timeAgo = new Date(saved.modified).toLocaleDateString();
-                
+            <div className="progress-grid">
+              {STAGES.map((stage) => {
+                const stepClass =
+                  currentStage === stage.id
+                    ? 'progress-step active'
+                    : currentStage > stage.id
+                      ? 'progress-step complete'
+                      : 'progress-step';
+
                 return (
-                  <div 
-                    key={index} 
-                    className="p-3 bg-[#1a1a1a] rounded-lg cursor-pointer hover:bg-[#252525] transition-colors"
-                    onClick={() => handleHistoryItemClick(saved)}
-                  >
-                    <div className="text-sm font-medium truncate">{displayTitle}</div>
-                    <div className="text-xs text-[#666]">{timeAgo} • {Math.round(saved.size / 1024)}KB</div>
+                  <div key={stage.id} className={stepClass}>
+                    <div>
+                      {currentStage > stage.id ? (
+                        <CheckCircle size={18} color="#46e0b1" />
+                      ) : currentStage === stage.id ? (
+                        <Loader2 className="spin" size={18} color="#46e0b1" />
+                      ) : (
+                        <Circle size={18} color="#524a6f" />
+                      )}
+                    </div>
+                    <h4>{stage.title}</h4>
+                    <p>{stage.description}</p>
                   </div>
                 );
               })}
             </div>
-            {savedSummaries.length > 10 && (
-              <button className="mt-4 text-sm text-[#03D5A3] hover:underline">
-                View all {summaryCount} summaries →
-              </button>
-            )}
-          </aside>
-        )}
+          </section>
 
-        {/* Main Content */}
-        <main className="flex-1 max-w-3xl mx-auto w-full p-6">
-          <div className="space-y-4">
-            {/* Input Section */}
-            <div className="relative">
-              <input
-                ref={inputRef}
-                type="text"
-                value={url}
-                onChange={(e) => setUrl(e.target.value)}
-                placeholder="Paste YouTube link here"
-                disabled={status === 'processing'}
-                className="w-full px-4 py-3 bg-[#1a1a1a] border border-[#333] rounded-lg text-base placeholder-[#666] focus:outline-none focus:border-[#03D5A3] transition-colors font-mono"
-              />
-              {status === 'processing' && (
-                <button
-                  onClick={handleCancel}
-                  className="absolute right-2 top-1/2 -translate-y-1/2 px-3 py-1 text-sm bg-[#333] hover:bg-[#444] rounded transition-colors"
-                >
-                  Cancel
-                </button>
-              )}
-            </div>
-
-            {/* Progress Indicator */}
-            {status === 'processing' && (
-              <div className="flex justify-center py-2">
-                <ProgressIndicator stage={currentStage} />
-              </div>
-            )}
-
-            {/* Error State */}
-            {status === 'error' && (
-              <div className="bg-red-900/20 border border-red-500/30 rounded-lg p-4 text-red-300">
-                <div className="font-medium">Error</div>
-                <div className="text-sm mt-1">{error}</div>
-                <button 
-                  onClick={() => setStatus('idle')}
-                  className="text-sm text-red-400 hover:underline mt-2"
-                >
-                  Try again
-                </button>
-              </div>
-            )}
-
-            {/* Success State */}
-            {status === 'complete' && summary && (
+          <section className="summary-card">
+            {status === 'complete' && summary ? (
               <>
-                <div className="flex items-center justify-center gap-3 text-sm animate-fadeIn">
-                  <span className="text-[#03D5A3]">✓</span>
-                  <span>Saved to: {summary.savedFile}</span>
-                  <button
-                    onClick={handleOpenFolder}
-                    className="flex items-center gap-1 text-[#03D5A3] hover:underline"
-                  >
-                    Open folder
-                    <ChevronRight className="w-3 h-3" />
-                  </button>
-                  <div className="flex items-center gap-2 ml-auto">
-                    <button
-                      onClick={handleDownload}
-                      className="p-2 hover:bg-[#1a1a1a] rounded transition-colors"
-                      title="Download"
-                    >
-                      <Download className="w-4 h-4" />
+                <div className="summary-card-header">
+                  <h2 className="summary-title">{summary.title}</h2>
+                  <div className="summary-actions">
+                    <button className="action-icon-button" onClick={handleDownload} title="Download markdown">
+                      <Download size={18} />
                     </button>
-                    <button
-                      onClick={handleCopy}
-                      className="p-2 hover:bg-[#1a1a1a] rounded transition-colors"
-                      title="Copy"
-                    >
-                      <Copy className="w-4 h-4" />
+                    <button className="action-icon-button" onClick={handleCopy} title="Copy to clipboard">
+                      <Copy size={18} />
                     </button>
-                    <button
-                      onClick={() => handleSummarize(url)}
-                      className="p-2 hover:bg-[#1a1a1a] rounded transition-colors"
-                      title="Regenerate"
-                    >
-                      <RefreshCw className="w-4 h-4" />
+                    <button className="action-icon-button" onClick={() => handleSummarize(url)} title="Regenerate summary">
+                      <RefreshCw size={18} />
+                    </button>
+                    <button className="action-icon-button" onClick={handleOpenFolder} title="Open local folder">
+                      <ChevronRight size={18} />
                     </button>
                   </div>
                 </div>
 
-                {/* Key Takeaways Card */}
-                {summary.keyTakeaways && summary.keyTakeaways.length > 0 && (
-                  <div className="border-l-4 border-[#03D5A3] bg-[#1a1a1a] rounded-r-lg p-4 animate-fadeIn">
-                    <h3 className="font-medium mb-2 text-[#03D5A3]">Key Takeaways</h3>
-                    <ul className="space-y-1 text-sm">
+                <div className="summary-meta">
+                  <span>Video ID · {summary.videoId}</span>
+                  <span>Author · {summary.author}</span>
+                  <span>Saved file · {summary.savedFile}</span>
+                </div>
+
+                {summary.keyTakeaways.length > 0 && (
+                  <div className="key-takeaways">
+                    <h3>Key takeaways</h3>
+                    <ul>
                       {summary.keyTakeaways.map((takeaway, idx) => (
-                        <li key={idx}>• {takeaway}</li>
+                        <li key={idx}>{takeaway}</li>
                       ))}
                     </ul>
                   </div>
                 )}
 
-                {/* Summary Content */}
-                <div className="prose prose-invert max-w-none animate-fadeIn">
-                  <h1 className="text-2xl font-bold mb-4">{summary.title}</h1>
-                  {summary.author && (
-                    <p className="text-[#666] text-sm mb-4">by {summary.author}</p>
-                  )}
-                  
-                  <div className="text-[#CCCCCC] leading-relaxed whitespace-pre-wrap">
-                    {summary.content}
-                  </div>
+                <div className="summary-markdown">
+                  <ReactMarkdown>{summary.content}</ReactMarkdown>
                 </div>
 
-                {/* Tags */}
-                {isReturningUser && summary.tags && summary.tags.length > 0 && (
-                  <div className="flex gap-2 mt-6">
+                {summary.tags.length > 0 && (
+                  <div className="summary-tags">
                     {summary.tags.map((tag, idx) => (
-                      <span key={idx} className="px-3 py-1 bg-[#1a1a1a] text-[#03D5A3] text-sm rounded-full cursor-pointer hover:bg-[#252525] transition-colors">
+                      <span key={idx} className="tag-chip">
                         {tag}
                       </span>
                     ))}
                   </div>
                 )}
 
-                {/* Transcript Accordion */}
                 {summary.transcript && (
-                  <details className="mt-6 border border-[#333] rounded-lg">
-                    <summary 
-                      className="px-4 py-3 cursor-pointer hover:bg-[#1a1a1a] transition-colors flex items-center justify-between"
-                      onClick={(e) => {
-                        e.preventDefault();
-                        setShowTranscript(!showTranscript);
-                      }}
-                    >
-                      <span className="text-sm">Show transcript</span>
-                      <ChevronRight className={`w-4 h-4 transition-transform ${showTranscript ? 'rotate-90' : ''}`} />
+                  <details
+                    className="transcript-toggle"
+                    open={showTranscript}
+                    onToggle={(event) => setShowTranscript((event.target as HTMLDetailsElement).open)}
+                  >
+                    <summary>
+                      View transcript
+                      <ChevronRight size={16} />
                     </summary>
-                    {showTranscript && (
-                      <div className="px-4 py-3 border-t border-[#333] text-sm text-[#999] font-mono whitespace-pre-wrap max-h-96 overflow-y-auto">
-                        {summary.transcript}
-                      </div>
-                    )}
+                    {showTranscript && <div className="transcript-content">{summary.transcript}</div>}
                   </details>
                 )}
               </>
+            ) : (
+              <div className="empty-state">
+                Paste a YouTube URL above to generate your first Gemini summary. You can revisit any saved recap from the history panel.
+              </div>
             )}
+          </section>
+        </div>
+
+        <aside className="history-panel">
+          <div className="history-header">
+            <div className="hero-topline" style={{ letterSpacing: 0 }}>
+              <History size={18} /> Saved summaries
+            </div>
+            <button className="action-icon-button" onClick={loadSavedSummaries} title="Refresh list">
+              {loadingSummaries ? <Loader2 className="spin" size={18} /> : <RefreshCw size={18} />}
+            </button>
           </div>
-        </main>
+          <div className="history-list">
+            {loadingSummaries && <div className="empty-state">Refreshing history…</div>}
+            {!loadingSummaries && savedSummaries.length === 0 && <div className="empty-state">Summaries will appear here after your first run.</div>}
+            {!loadingSummaries &&
+              savedSummaries.map((saved) => {
+                const baseName = saved.filename.replace(/-summary-.*\.md$/, '');
+                const [, titlePart] = baseName.split('__');
+                const displayTitle = (saved.title ?? titlePart ?? saved.videoId).trim();
+                const timestamp = saved.modified ? new Date(saved.modified).toLocaleString() : 'Unknown time';
+                const size = saved.size ? formatKilobytes(saved.size) : '';
+
+                return (
+                  <div key={saved.filename} className="history-item" onClick={() => handleHistoryItemClick(saved)}>
+                    <div className="history-item-title">{displayTitle}</div>
+                    <div className="history-item-meta">
+                      {timestamp} {size && `· ${size}`}
+                    </div>
+                  </div>
+                );
+              })}
+          </div>
+        </aside>
       </div>
 
-      <style jsx>{`
-        @keyframes fadeIn {
-          from { opacity: 0; transform: translateY(4px); }
-          to { opacity: 1; transform: translateY(0); }
-        }
-        .animate-fadeIn {
-          animation: fadeIn 0.3s ease-out;
-        }
-        
-        @keyframes pulse-custom {
-          0% { transform: scale(1); }
-          50% { transform: scale(1.1); }
-          100% { transform: scale(1); }
-        }
-        .animate-pulse-custom {
-          animation: pulse-custom 0.5s ease-out;
-        }
-        
-        @keyframes pulse-dot {
-          0% { transform: scale(1); opacity: 1; }
-          50% { transform: scale(1.5); opacity: 0.8; }
-          100% { transform: scale(1); opacity: 1; }
-        }
-        .animate-pulse-dot {
-          animation: pulse-dot 0.5s ease-out;
-        }
-      `}</style>
+      {status === 'error' && (
+        <div className="error-banner">
+          <div><strong>Something went wrong.</strong> {error}</div>
+          <button onClick={() => setStatus('idle')} style={{ marginTop: '12px', color: 'inherit', opacity: 0.8 }}>
+            Dismiss
+          </button>
+        </div>
+      )}
     </div>
   );
 };
+
+const SignalGlyph = ({ animated }: { animated: boolean }) => (
+  <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <linearGradient id="signalGradient" x1="4" y1="28" x2="28" y2="4" gradientUnits="userSpaceOnUse">
+        <stop stopColor="#7f5bff" />
+        <stop offset="1" stopColor="#46e0b1" />
+      </linearGradient>
+    </defs>
+    <rect x="6" y="10" width="5" height="12" rx="2" fill="url(#signalGradient)" opacity="0.45" />
+    <rect x="13.5" y="7" width="5" height="18" rx="2" fill="url(#signalGradient)" opacity="0.7" />
+    <rect x="21" y="4" width="5" height="24" rx="2" fill="url(#signalGradient)" opacity="0.95" />
+    <circle
+      cx="16"
+      cy="27"
+      r="3"
+      fill="#46e0b1"
+      style={animated ? { filter: 'drop-shadow(0 0 8px rgba(70, 224, 177, 0.8))' } : undefined}
+    />
+  </svg>
+);
+
+function extractKeyTakeaways(summaryText: string) {
+  const lines = summaryText.split('\n');
+  const takeaways: string[] = [];
+  let inTakeawaysSection = false;
+
+  for (const line of lines) {
+    if (line.toLowerCase().includes('key takeaways') || line.toLowerCase().includes('key takeaway') || line.toLowerCase().includes('key points')) {
+      inTakeawaysSection = true;
+      continue;
+    }
+    if (inTakeawaysSection && (line.trim().startsWith('-') || line.trim().startsWith('•') || /^\d+[.)]/.test(line.trim()))) {
+      takeaways.push(line.trim().replace(/^[-•\d.)\s]+/, ''));
+    }
+    if (inTakeawaysSection && line.trim() === '' && takeaways.length > 0) {
+      break;
+    }
+  }
+
+  return takeaways.slice(0, 4);
+}
+
+function extractHashtags(summaryText: string) {
+  const hashtagMatches = summaryText.match(/#[\w-]+/g);
+  return hashtagMatches ? hashtagMatches.slice(0, 3) : [];
+}
+
+function formatKilobytes(bytes: number) {
+  return `${Math.max(1, Math.round(bytes / 1024))} KB`;
+}
 
 export default WatchLater;

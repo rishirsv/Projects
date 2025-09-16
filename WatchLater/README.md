@@ -1,69 +1,69 @@
-# React + TypeScript + Vite
+# WatchLater — YouTube summaries in seconds
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+![Tactiq-inspired hero](docs/assets/watchlater-hero.png)
+![Summary workspace](docs/assets/watchlater-summary.png)
 
-Currently, two official plugins are available:
+WatchLater turns any YouTube URL into a polished markdown brief using Gemini 2.5 Flash. Phase 3 delivers a Tactiq-inspired interface with glassmorphic cards, animated progress, and instant history recall—all running locally through a lightweight Node + React stack.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Highlights
+- ✨ **New UI system** – gradient hero, pill input, neon progress stages, refreshed history drawer
+- ⚡ **End-to-end automation** – paste a URL, fetch transcript via Supadata, summarize with Gemini, auto-save markdown
+- 💾 **Local-first storage** – transcripts and summaries land in `exports/` with title-aware filenames
+- 🛡️ **Private by design** – transcripts are fetched server-side with your Supadata key; Gemini key stays in the browser
 
-## Expanding the ESLint configuration
+## Quick Start
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+```bash
+# 1. Install dependencies
+npm install
 
-```js
-export default tseslint.config([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+# 2. Configure environment variables
+cat <<'ENV' > .env
+VITE_GEMINI_API_KEY=your_gemini_key
+SUPADATA_API_KEY=your_supadata_key
+ENV
 
-      // Remove tseslint.configs.recommended and replace with this
-      ...tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      ...tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      ...tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+# 3. Launch both servers (Express + Vite)
+./start.sh            # or: npm run start
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+- Frontend: http://localhost:5173
+- Backend: http://localhost:3001 (health check at `/health`)
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+### Useful scripts
+- `npm run dev` – Vite dev server only
+- `npm run server` – Express transcript proxy
+- `npm run build` – Type-check + production build
+- `npm test` – Jest + ts-jest suite (`tests/`)
 
-export default tseslint.config([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+## Architecture
 ```
+repo-root/
+├── docs/                  # PRD, design notes, UI assets
+├── exports/               # Generated transcripts + summaries (gitignored)
+├── prompts/               # Prompt templates consumed by the app
+├── src/                   # React UI + client orchestration
+│   ├── App.tsx            # Phase 3 hero/workspace UI
+│   ├── api.ts             # Client ↔ Express helpers
+│   ├── index.css          # Global tokens & gradients
+│   └── App.css            # Component-level styling
+├── server.js              # Express server (Supadata proxy + file persistence)
+├── start.sh               # Convenience launcher for dev
+└── tests/                 # Jest specs (naming, utilities)
+```
+
+## Phase 3 UI Snapshot (Sept 2025)
+- Hero copy now highlights the Gemini pipeline and privacy benefits
+- Processing grid walks through Metadata → Transcript → AI → Save with animated status icons
+- Summary pane renders markdown via `react-markdown` and surfaces key takeaways, tags, and transcript toggle
+- History drawer lists locally cached summaries with timestamps and quick actions
+
+> 📸 Drop updated PNG exports into `docs/assets/` to keep the screenshots in this README fresh (`watchlater-hero.png`, `watchlater-summary.png`).
+
+## Troubleshooting
+- **Blank page / console errors**: ensure both `npm run server` and `npm run dev` are running; missing APIs will halt the pipeline.
+- **Supadata 401**: confirm `SUPADATA_API_KEY` in `.env`. Requests fail fast if the key is placeholder.
+- **Gemini quota**: summaries depend on `VITE_GEMINI_API_KEY`; monitor Google AI Studio quotas for rate limiting.
+
+## License
+Internal project – do not distribute without permission.

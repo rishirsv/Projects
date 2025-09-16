@@ -220,30 +220,28 @@ exports/
 
 ## 🆕 **PHASE 3: Tactiq-Inspired UI Overhaul**
 
-- [x] 10.0 Discovery & Experience Brief *(see docs/ui-phase3-redesign.md)*
-  - [x] 10.1 Capture detailed requirements from the Tactiq landing page (layout, copy hierarchy, gradients, typography, interaction states)
-  - [x] 10.2 Inventory the current WatchLater screens and flows to preserve existing functionality while redesigning the shell
-  - [x] 10.3 Translate brand decisions into a UI brief (Figma references, asset list, color tokens, typography scale) for team sign-off
+- [ ] 10.0 Discovery & Experience Brief
+  - [ ] 10.1 Capture detailed requirements from the Tactiq landing page (layout, copy hierarchy, gradients, typography, interaction states)
+  - [ ] 10.2 Inventory the current WatchLater screens and flows to preserve existing functionality while redesigning the shell
+  
 
-- [x] 11.0 Visual System & Design Tokens *(see docs/ui-phase3-redesign.md)*
-  - [x] 11.1 Establish global style primitives (fonts, shadows, radii, spacing) that mirror the Tactiq aesthetic via CSS variables or Tailwind config
-  - [x] 11.2 Implement background gradient system (dark plum base + radial highlights) and reusable containers for consistent padding
-  - [x] 11.3 Define gradient text and button treatments (primary CTA, secondary ghost) with hover/focus states
+- [ ] 11.0 Visual System & Design Tokens
+  - [ ] 11.1 Establish global style primitives (fonts, shadows, radii, spacing) that mirror the Tactiq aesthetic via CSS variables or Tailwind config. Also reference the ios 26 aesthetic as the primary.
+  - [ ] 11.2 Implement background gradient system (dark plum base + radial highlights) and reusable containers for consistent padding
+  - [ ] 11.3 Define gradient text and button treatments (primary CTA, secondary ghost) with hover/focus states
 
-- [ ] 12.0 Landing Experience Rebuild
-  - [ ] 12.1 Reconstruct hero layout with centered headline/subheadline copy and gradient-highlighted keywords
-  - [ ] 12.2 Replace URL input + CTA with pill-shaped field and gradient-stroked button that mirrors Tactiq’s form styling
-  - [ ] 12.3 Add supporting microcopy ("Instantly, without uploading video files", trust badges) and restructure spacing for mobile-first responsiveness
-  - [ ] 12.4 Create responsive layout rules (sm/md/lg breakpoints) to maintain alignment and vertical rhythm on all screen sizes
+- [x] 12.0 Landing Experience Rebuild *(implemented in src/App.tsx & src/App.css)*
+  - [x] 12.1 Reconstruct hero layout with centered headline/subheadline copy and gradient-highlighted keywords
+  - [x] 12.2 Replace URL input + CTA with pill-shaped field and gradient-stroked button that mirrors Tactiq’s form styling
+  - [x] 12.3 Add supporting microcopy ("Instantly, without uploading video files", trust badges) and restructure spacing for mobile-first responsiveness
+  - [x] 12.4 Create responsive layout rules (sm/md/lg breakpoints) to maintain alignment and vertical rhythm on all screen sizes
 
-- [ ] 13.0 Application Surface Harmonization
-  - [ ] 13.1 Update transcript/summary modules to use new card glassmorphism styling and typography scale
-  - [ ] 13.2 Redesign status indicators (progress, success, error) with neon accents and subtle motion consistent with Tactiq
-  - [ ] 13.3 Refresh history drawer/list interactions using new button styles, icons, and transition timing
-  - [ ] 13.4 Audit modals, alerts, and notifications for parity; retire legacy CSS classes that conflict with the new system
+- [x] 13.0 Application Surface Harmonization *(implemented in src/App.tsx & src/App.css)*
+  - [x] 13.1 Update transcript/summary modules to use new card glassmorphism styling and typography scale
+  - [x] 13.2 Redesign status indicators (progress, success, error) with neon accents and subtle motion consistent with Tactiq
+  - [x] 13.3 Refresh history drawer/list interactions using new button styles, icons, and transition timing
+  - [x] 13.4 Audit modals, alerts, and notifications for parity; retire legacy CSS classes that conflict with the new system
 
 - [ ] 14.0 QA & Launch Readiness
-  - [ ] 14.1 Perform accessibility review (contrast ratios, focus outlines, keyboard navigation) across the redesigned UI
-  - [ ] 14.2 Cross-browser regression (Chromium, Safari, Firefox) and device responsiveness verification
-  - [ ] 14.3 Update documentation/screenshots (README, marketing assets) to reflect the new experience
+  - [x] 14.3 Update documentation/screenshots (README, marketing assets) to reflect the new experience *(README.md, docs/README.md, docs/assets/)*
   - [ ] 14.4 Remove unused assets/styles and log post-launch polish follow-ups in tasks backlog
