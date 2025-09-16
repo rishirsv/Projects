@@ -415,6 +415,7 @@
   backdrop-filter: blur(20px);
   display: grid;
   gap: var(--space-4);
+  align-content: start;
 }
 
 .history-header {
@@ -425,7 +426,8 @@
 }
 
 .history-list {
-  display: grid;
+  display: flex;
+  flex-direction: column;
   gap: var(--space-3);
 }
 

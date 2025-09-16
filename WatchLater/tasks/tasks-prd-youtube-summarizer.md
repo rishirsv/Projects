@@ -243,5 +243,5 @@ exports/
   - [x] 13.4 Audit modals, alerts, and notifications for parity; retire legacy CSS classes that conflict with the new system
 
 - [ ] 14.0 QA & Launch Readiness
-  - [x] 14.3 Update documentation/screenshots (README, marketing assets) to reflect the new experience *(README.md, docs/README.md, docs/assets/)*
+  - [x] 14.3 Update documentation/screenshots (README, marketing assets) to reflect the new experience *(README.md, README.md, docs/assets/)*
   - [ ] 14.4 Remove unused assets/styles and log post-launch polish follow-ups in tasks backlog
