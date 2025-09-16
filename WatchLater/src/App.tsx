@@ -1,489 +1,631 @@
-import React, { useState, useEffect, useRef, useCallback } from 'react';
-import { Download, Copy, RefreshCw, ChevronRight, Circle, CheckCircle, ChevronLeft, History } from 'lucide-react';
-import { fetchTranscript, saveTranscript, generateSummaryFromFile, getSavedSummaries, readSavedSummary, fetchVideoMetadata } from './api';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import {
+  downloadSavedSummary,
+  fetchTranscript,
+  fetchVideoMetadata,
+  generateSummaryFromFile,
+  getSavedSummaries,
+  readSavedSummary,
+  saveTranscript,
+} from './api';
 import { extractVideoId } from './utils';
-import './App.css';
+import type { SavedSummaryMeta, SummaryData } from './types';
+import { AppHeader } from './components/AppHeader';
+import { PrimaryCTA } from './components/PrimaryCTA';
+import { GlassCard } from './components/GlassCard';
+import { PipelineStepper } from './components/PipelineStepper';
+import { SummaryListItem } from './components/SummaryListItem';
+import { SegmentedControl } from './components/SegmentedControl';
+import { Toast } from './components/Toast';
+import { Icon } from './components/Icon';
+import { mountScrollHeader } from './lib/scroll-header';
+import './styles/app.css';
+
+const pipelineSteps = [
+  {
+    id: 'metadata',
+    label: 'Metadata',
+    description: 'Validate the YouTube URL and capture the title.',
+  },
+  {
+    id: 'transcript',
+    label: 'Transcript',
+    description: 'Request captions via the Supadata bridge and store them locally.',
+  },
+  {
+    id: 'processing',
+    label: 'AI Processing',
+    description: 'Send the transcript to Gemini 2.5 Flash with the structured prompt.',
+  },
+  {
+    id: 'save',
+    label: 'Save',
+    description: 'Persist the Markdown summary and refresh the history list.',
+  },
+] as const;
+
+type SegmentId = 'summaries' | 'pipeline' | 'settings';
+
+const THEME_STORAGE_KEY = 'watchlater:theme';
+type ThemeMode = 'light' | 'dark';
+
+type ToastState = { type: 'success' | 'error' | 'info'; title: string; message?: string } | null;
+
+type StatusState = 'idle' | 'processing' | 'complete' | 'error';
+
+const isYouTubeUrl = (text: string) => /(?:youtube\.com\/watch\?v=|youtu\.be\/)([^&\n?]+)/i.test(text.trim());
+
+const getInitialTheme = (): ThemeMode => {
+  if (typeof window === 'undefined') {
+    return 'dark';
+  }
+  const stored = window.localStorage?.getItem(THEME_STORAGE_KEY);
+  if (stored === 'light' || stored === 'dark') {
+    return stored;
+  }
+  const prefersLight = window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches;
+  return prefersLight ? 'light' : 'dark';
+};
+
+const getInitialIsMobile = () => {
+  if (typeof window === 'undefined') return false;
+  return window.matchMedia('(max-width: 768px)').matches;
+};
+
+function extractKeyTakeaways(summaryText: string): string[] {
+  const lines = summaryText.split('\n');
+  const takeaways: string[] = [];
+  let inSection = false;
+
+  for (const line of lines) {
+    const trimmed = line.trim();
+    if (/key|takeaway|important/i.test(trimmed)) {
+      inSection = true;
+      continue;
+    }
+    if (inSection && (trimmed.startsWith('-') || trimmed.startsWith('•') || /^\d+[.]/.test(trimmed))) {
+      takeaways.push(trimmed.replace(/^[-•\d.\s]+/, ''));
+    }
+    if (inSection && trimmed === '') {
+      if (takeaways.length > 0) break;
+    }
+  }
+
+  return takeaways.slice(0, 4);
+}
+
+function extractHashtags(summaryText: string): string[] {
+  const matches = summaryText.match(/#[\w-]+/g);
+  return matches ? matches.slice(0, 3) : [];
+}
+
+function formatSummaryTitle(filename: string, fallbackId: string) {
+  const withoutExt = filename.replace(/\.md$/i, '');
+  const cleaned = withoutExt.replace(/-summary-.*/i, '').replace(/[-_]+/g, ' ').trim();
+  if (!cleaned) return `Video ${fallbackId}`;
+  return cleaned.replace(/\b\w/g, (char) => char.toUpperCase());
+}
+
+const vibrate = (duration: number) => {
+  if (typeof navigator !== 'undefined' && 'vibrate' in navigator) {
+    navigator.vibrate?.(duration);
+  }
+};
 
 const WatchLater = () => {
+  const [theme, setTheme] = useState<ThemeMode>(getInitialTheme);
   const [url, setUrl] = useState('');
-  const [status, setStatus] = useState('idle'); // idle, processing, complete, error
-  const [summary, setSummary] = useState(null);
-  const [showTranscript, setShowTranscript] = useState(false);
-  const [summaryCount, setSummaryCount] = useState(0);
-  const [showHistory, setShowHistory] = useState(false);
-  const [currentStage, setCurrentStage] = useState(0); // 0: idle, 1: metadata, 2: transcript, 3: ai-processing, 4: file-saving
-  const [showPulse, setShowPulse] = useState(false);
-  const [error, setError] = useState('');
-  const [savedSummaries, setSavedSummaries] = useState([]);
+  const [status, setStatus] = useState<StatusState>('idle');
+  const [currentStage, setCurrentStage] = useState(0);
+  const [errorStage, setErrorStage] = useState<number | null>(null);
+  const [error, setError] = useState<string | null>(null);
+  const [summary, setSummary] = useState<SummaryData | null>(null);
+  const [savedSummaries, setSavedSummaries] = useState<SavedSummaryMeta[]>([]);
   const [loadingSummaries, setLoadingSummaries] = useState(false);
-  const inputRef = useRef(null);
+  const [toast, setToast] = useState<ToastState>(null);
+  const [activeTab, setActiveTab] = useState<SegmentId>('summaries');
+  const [liveMessage, setLiveMessage] = useState('');
+  const [showTranscript, setShowTranscript] = useState(false);
+  const [isMobile, setIsMobile] = useState(getInitialIsMobile);
+
+  const inputRef = useRef<HTMLInputElement | null>(null);
+  const headerRef = useRef<HTMLElement | null>(null);
 
   useEffect(() => {
-    // Load saved summaries count
-    loadSavedSummaries();
-    inputRef.current?.focus();
+    document.documentElement.dataset.theme = theme;
+    try {
+      window.localStorage?.setItem(THEME_STORAGE_KEY, theme);
+    } catch (err) {
+      console.warn('Unable to persist theme preference', err);
+    }
+  }, [theme]);
+
+  useEffect(() => {
+    if (!headerRef.current) return;
+    return mountScrollHeader(headerRef.current);
   }, []);
 
   useEffect(() => {
-    // Auto-detect paste and trigger summarize
-    const handlePaste = (e) => {
-      setTimeout(() => {
-        const pastedText = e.target.value;
-        if (isYouTubeUrl(pastedText) && status === 'idle') {
-          // Create a small delay to ensure state is updated
-          setTimeout(() => handleSummarize(pastedText), 50);
-        }
-      }, 10);
+    const mediaQuery = window.matchMedia('(max-width: 768px)');
+    const handleChange = (event: MediaQueryListEvent | MediaQueryList) => {
+      setIsMobile(event.matches);
     };
-    
-    const input = inputRef.current;
-    input?.addEventListener('paste', handlePaste);
-    return () => input?.removeEventListener('paste', handlePaste);
-  }, [status, handleSummarize]);
+    handleChange(mediaQuery);
+    if (typeof mediaQuery.addEventListener === 'function') {
+      mediaQuery.addEventListener('change', handleChange);
+      return () => mediaQuery.removeEventListener('change', handleChange);
+    }
+    mediaQuery.addListener(handleChange as unknown as (this: MediaQueryList, ev: MediaQueryListEvent) => void);
+    return () => mediaQuery.removeListener(handleChange as unknown as (this: MediaQueryList, ev: MediaQueryListEvent) => void);
+  }, []);
 
-  const loadSavedSummaries = async () => {
+  const loadSavedSummaries = useCallback(async () => {
     setLoadingSummaries(true);
     try {
       const summaries = await getSavedSummaries();
+      summaries.sort((a, b) => new Date(b.modified).getTime() - new Date(a.modified).getTime());
       setSavedSummaries(summaries);
-      setSummaryCount(summaries.length);
     } catch (err) {
       console.error('Error loading saved summaries:', err);
+      const message = err instanceof Error ? err.message : 'Unknown error';
+      setToast({ type: 'error', title: 'Unable to load summaries', message });
     } finally {
       setLoadingSummaries(false);
     }
-  };
+  }, []);
 
-  const isYouTubeUrl = (text) => {
-    return /(?:youtube\.com\/watch\?v=|youtu\.be\/)([^&\n?]+)/.test(text);
-  };
+  useEffect(() => {
+    loadSavedSummaries();
+    inputRef.current?.focus();
+  }, [loadSavedSummaries]);
 
-  const handleSummarize = useCallback(async (urlToProcess = url) => {
-    if (!isYouTubeUrl(urlToProcess) || status === 'processing') return;
-    
-    setStatus('processing');
-    setCurrentStage(1);
-    setError('');
-    setSummary(null);
-    
-    try {
-      // Stage 1: Extract video ID and fetch metadata
-      const extractedVideoId = extractVideoId(urlToProcess);
-      if (!extractedVideoId) {
-        throw new Error('Invalid YouTube URL');
+  useEffect(() => {
+    const input = inputRef.current;
+    if (!input) return;
+
+    const handlePaste = (event: ClipboardEvent) => {
+      const pastedText = event.clipboardData?.getData('text') ?? '';
+      if (isYouTubeUrl(pastedText)) {
+        setUrl(pastedText);
+        if (status === 'idle') {
+          setTimeout(() => handleSummarize(pastedText), 50);
+        }
       }
-      
-      // Try to get metadata (non-blocking)
-      let metadata = null;
+    };
+
+    input.addEventListener('paste', handlePaste);
+    return () => input.removeEventListener('paste', handlePaste);
+  }, [status]);
+
+  useEffect(() => {
+    if (!toast) return;
+    const timeout = window.setTimeout(() => setToast(null), 4200);
+    return () => window.clearTimeout(timeout);
+  }, [toast]);
+
+  const handleSummarize = useCallback(
+    async (initialUrl?: string) => {
+      const targetUrl = (initialUrl ?? url).trim();
+      if (!targetUrl) return;
+
+      if (status === 'processing') {
+        return;
+      }
+
+      if (!isYouTubeUrl(targetUrl)) {
+        setError('Please enter a valid YouTube URL.');
+        setStatus('error');
+        setActiveTab('pipeline');
+        setErrorStage(1);
+        setLiveMessage('Invalid link. Provide a YouTube URL.');
+        return;
+      }
+
+      setStatus('processing');
+      setActiveTab('pipeline');
+      setError(null);
+      setErrorStage(null);
+      setShowTranscript(false);
+
+      let stage = 1;
+      setCurrentStage(stage);
+      setLiveMessage('Checking video metadata…');
+
       try {
-        metadata = await fetchVideoMetadata(extractedVideoId);
-        console.log('Video metadata fetched:', metadata.title);
-      } catch (metadataError) {
-        console.warn('Failed to fetch video metadata, continuing without title:', metadataError);
-      }
-      
-      setCurrentStage(2);
-      
-      // Stage 2: Fetch transcript
-      const transcriptText = await fetchTranscript(extractedVideoId);
-      
-      // Save transcript with title if available
-      await saveTranscript(extractedVideoId, transcriptText, false, metadata?.title);
-      
-      setCurrentStage(3);
-      
-      // Stage 3: AI Processing - Generate summary from file
-      const result = await generateSummaryFromFile(extractedVideoId);
-      
-      setCurrentStage(4);
-      
-      // Stage 4: File saving is already done in generateSummaryFromFile
-      // Parse the summary for display
-      const summaryData = {
-        videoId: extractedVideoId,
-        title: metadata?.title || `Video ${extractedVideoId}`,
-        author: metadata?.author || 'Unknown',
-        content: result.summary,
-        transcript: transcriptText,
-        savedFile: result.savedFile.filename,
-        // Extract key takeaways from summary (simple parsing)
-        keyTakeaways: extractKeyTakeaways(result.summary),
-        tags: extractHashtags(result.summary)
-      };
-      
-      setSummary(summaryData);
-      setStatus('complete');
-      setShowPulse(true);
-      setTimeout(() => setShowPulse(false), 500);
-      
-      // Refresh summaries list
-      await loadSavedSummaries();
-      
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Unknown error');
-      setStatus('error');
-      console.error('Summarization error:', err);
-    }
-  }, [url, status]);
+        const videoId = extractVideoId(targetUrl);
+        if (!videoId) {
+          throw new Error('We could not extract a video ID from that link.');
+        }
 
-  const extractKeyTakeaways = (summaryText) => {
-    // Simple extraction of bullet points or numbered lists
-    const lines = summaryText.split('\n');
-    const takeaways = [];
-    let inTakeawaysSection = false;
-    
-    for (const line of lines) {
-      if (line.toLowerCase().includes('key') || line.toLowerCase().includes('takeaway') || line.toLowerCase().includes('important')) {
-        inTakeawaysSection = true;
-        continue;
-      }
-      if (inTakeawaysSection && (line.trim().startsWith('-') || line.trim().startsWith('•') || line.trim().match(/^\d+[.]/))) {
-        takeaways.push(line.trim().replace(/^[-•\d.]\s*/, ''));
-      }
-      if (inTakeawaysSection && line.trim() === '') {
-        if (takeaways.length > 0) break;
-      }
-    }
-    
-    return takeaways.slice(0, 4); // Max 4 takeaways
-  };
+        let metadata: { title?: string; author?: string } = {};
+        try {
+          const data = await fetchVideoMetadata(videoId);
+          metadata = { title: data.title, author: data.author };
+        } catch (metadataError) {
+          console.warn('Metadata lookup failed, continuing without title', metadataError);
+        }
 
-  const extractHashtags = (summaryText) => {
-    const hashtagMatches = summaryText.match(/#[\w-]+/g);
-    return hashtagMatches ? hashtagMatches.slice(0, 3) : [];
-  };
+        stage = 2;
+        setCurrentStage(stage);
+        setLiveMessage('Fetching transcript…');
 
-  const handleCancel = () => {
+        const transcriptText = await fetchTranscript(videoId);
+        await saveTranscript(videoId, transcriptText, false, metadata.title);
+
+        stage = 3;
+        setCurrentStage(stage);
+        setLiveMessage('Generating AI summary…');
+
+        const result = await generateSummaryFromFile(videoId);
+
+        stage = 4;
+        setCurrentStage(stage);
+        setLiveMessage('Saving summary…');
+
+        const summaryData: SummaryData = {
+          videoId,
+          title: metadata.title || `Video ${videoId}`,
+          author: metadata.author,
+          content: result.summary,
+          transcript: transcriptText,
+          savedFile: result.savedFile.filename,
+          keyTakeaways: extractKeyTakeaways(result.summary),
+          tags: extractHashtags(result.summary),
+        };
+
+        setSummary(summaryData);
+        setStatus('complete');
+        setActiveTab('summaries');
+        setToast({ type: 'success', title: 'Summary ready', message: result.savedFile.filename });
+        vibrate(10);
+        await loadSavedSummaries();
+        setLiveMessage('Summary ready to review.');
+      } catch (err) {
+        console.error('Summarization error:', err);
+        const message = err instanceof Error ? err.message : 'Unknown error';
+        setError(message);
+        setStatus('error');
+        setErrorStage(stage);
+        setActiveTab('pipeline');
+        setToast({ type: 'error', title: 'Unable to finish summary', message });
+        setLiveMessage(message);
+      }
+    },
+    [url, status, loadSavedSummaries],
+  );
+
+  const handleReset = () => {
     setStatus('idle');
+    setError(null);
+    setErrorStage(null);
     setCurrentStage(0);
-    setError('');
+    setLiveMessage('Ready for a new video.');
   };
 
-  const handleDownload = () => {
-    if (!summary) return;
-    
-    const blob = new Blob([summary.content], { type: 'text/markdown' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `${summary.title.replace(/[^a-z0-9]/gi, '-').toLowerCase()}.md`;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
-  };
+  const handleSummaryOpen = useCallback(
+    async (meta: SavedSummaryMeta) => {
+      try {
+        const data = await readSavedSummary(meta.videoId);
+        const title = formatSummaryTitle(data.filename, meta.videoId);
+        const summaryData: SummaryData = {
+          videoId: meta.videoId,
+          title,
+          content: data.summary,
+          savedFile: data.filename,
+          keyTakeaways: extractKeyTakeaways(data.summary),
+          tags: extractHashtags(data.summary),
+        };
+        setSummary(summaryData);
+        setStatus('complete');
+        setActiveTab('summaries');
+        setShowTranscript(false);
+        setLiveMessage(`Loaded saved summary for ${title}.`);
+      } catch (err) {
+        console.error('Failed to load summary', err);
+        const message = err instanceof Error ? err.message : 'Unknown error';
+        setToast({ type: 'error', title: 'Unable to open summary', message });
+      }
+    },
+    [],
+  );
 
-  const handleCopy = () => {
-    if (!summary) return;
-    navigator.clipboard.writeText(summary.content);
-  };
-
-  const handleOpenFolder = () => {
-    // Show user where files are saved
-    alert(`Files are saved in: exports/summaries/\n\nLatest file: ${summary?.savedFile || 'No file saved yet'}`);
-  };
-
-  const handleHistoryItemClick = async (savedSummary) => {
+  const handleSummaryCopy = useCallback(async (meta: SavedSummaryMeta) => {
     try {
-      const summaryData = await readSavedSummary(savedSummary.videoId);
-      const displayData = {
-        videoId: savedSummary.videoId,
-        title: summaryData.filename.replace(/-summary-.*\.md$/, '').replace(/-/g, ' '),
-        content: summaryData.summary,
-        savedFile: summaryData.filename,
-        keyTakeaways: extractKeyTakeaways(summaryData.summary),
-        tags: extractHashtags(summaryData.summary)
-      };
-      setSummary(displayData);
-      setStatus('complete');
-      setShowHistory(false);
+      const data = await readSavedSummary(meta.videoId);
+      if (!navigator.clipboard) {
+        throw new Error('Clipboard access is not available in this browser.');
+      }
+      await navigator.clipboard.writeText(data.summary);
+      setToast({ type: 'success', title: 'Summary copied', message: meta.filename });
     } catch (err) {
-      setError(`Failed to load summary: ${err.message}`);
+      console.error('Failed to copy summary', err);
+      const message = err instanceof Error ? err.message : 'Unknown error';
+      setToast({ type: 'error', title: 'Copy failed', message });
     }
+  }, []);
+
+  const handleSummaryDownload = useCallback(async (meta: SavedSummaryMeta) => {
+    try {
+      await downloadSavedSummary(meta.videoId);
+      setToast({ type: 'success', title: 'Download started', message: meta.filename });
+    } catch (err) {
+      console.error('Failed to download summary', err);
+      const message = err instanceof Error ? err.message : 'Unknown error';
+      setToast({ type: 'error', title: 'Download failed', message });
+    }
+  }, []);
+
+  const summaryCount = savedSummaries.length;
+
+  const segments = useMemo(
+    () => [
+      { id: 'summaries' as const, label: 'Summaries', badge: summaryCount ? String(summaryCount) : undefined },
+      { id: 'pipeline' as const, label: 'Pipeline' },
+      { id: 'settings' as const, label: 'Settings' },
+    ],
+    [summaryCount],
+  );
+
+  const themeToggle = () => {
+    setTheme((prev) => (prev === 'light' ? 'dark' : 'light'));
   };
 
-  const SignalGlyph = () => (
-    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" className={showPulse ? 'animate-pulse-custom' : ''}>
-      <rect x="4" y="8" width="3" height="8" rx="1.5" fill="currentColor" opacity="0.4"/>
-      <rect x="10.5" y="6" width="3" height="12" rx="1.5" fill="currentColor" opacity="0.6"/>
-      <rect x="17" y="4" width="3" height="16" rx="1.5" fill="currentColor" opacity="0.8"/>
-      <circle cx="12" cy="20" r="2" fill="#03D5A3" className={showPulse ? 'animate-pulse-dot' : ''}/>
-    </svg>
+  const settingsCard = (
+    <GlassCard title="Display & accessibility" description="Tune how WatchLater adapts to your environment." as="section">
+      <div className="summary-list">
+        <div className="summary-item">
+          <div className="summary-item__title">Theme</div>
+          <div className="summary-item__meta">Switch between light and dark appearance.</div>
+          <div className="summary-item__actions">
+            <button
+              type="button"
+              className="button button-quiet"
+              onClick={() => setTheme('light')}
+              aria-pressed={theme === 'light'}
+            >
+              <Icon name="sun" size={16} /> Light
+            </button>
+            <button
+              type="button"
+              className="button button-quiet"
+              onClick={() => setTheme('dark')}
+              aria-pressed={theme === 'dark'}
+            >
+              <Icon name="moon" size={16} /> Dark
+            </button>
+          </div>
+        </div>
+        <div className="summary-item">
+          <div className="summary-item__title">Keyboard shortcuts</div>
+          <div className="summary-item__meta">Press ⌘/Ctrl + V to paste a link and Enter to summarise.</div>
+        </div>
+        <div className="summary-item">
+          <div className="summary-item__title">Accessibility support</div>
+          <div className="summary-item__meta">
+            Respects prefers-reduced-motion, prefers-contrast, and reduced-transparency settings automatically.
+          </div>
+        </div>
+      </div>
+    </GlassCard>
   );
 
-  const ProgressIndicator = ({ stage }) => (
-    <div className="flex items-center gap-2 text-sm">
-      <div className="flex items-center gap-1">
-        {stage >= 1 ? <CheckCircle className="w-4 h-4 text-[#03D5A3]" /> : <Circle className="w-4 h-4 text-[#666]" />}
-        <span className={stage >= 1 ? "text-[#03D5A3]" : "text-[#666]"}>Metadata</span>
-      </div>
-      <span className="text-[#666]">•</span>
-      <div className="flex items-center gap-1">
-        {stage >= 2 ? <CheckCircle className="w-4 h-4 text-[#03D5A3]" /> : <Circle className="w-4 h-4 text-[#666]" />}
-        <span className={stage >= 2 ? "text-[#03D5A3]" : "text-[#666]"}>Transcript</span>
-      </div>
-      <span className="text-[#666]">•</span>
-      <div className="flex items-center gap-1">
-        {stage >= 3 ? <CheckCircle className="w-4 h-4 text-[#03D5A3]" /> : <Circle className="w-4 h-4 text-[#666]" />}
-        <span className={stage >= 3 ? "text-[#03D5A3]" : "text-[#666]"}>AI Processing</span>
-      </div>
-      <span className="text-[#666]">•</span>
-      <div className="flex items-center gap-1">
-        {stage >= 4 ? <CheckCircle className="w-4 h-4 text-[#03D5A3]" /> : <Circle className="w-4 h-4 text-[#666]" />}
-        <span className={stage >= 4 ? "text-[#03D5A3]" : "text-[#666]"}>Save</span>
-      </div>
-    </div>
+  const pipelineCard = (
+    <GlassCard
+      key="pipeline"
+      title="Processing pipeline"
+      description="Follow each stage of the summarisation workflow."
+      as="section"
+      id="pipeline-card"
+      className="pipeline-card"
+    >
+      <PipelineStepper
+        steps={pipelineSteps}
+        currentStage={currentStage}
+        status={status}
+        errorStage={errorStage}
+        busy={status === 'processing'}
+      />
+      {status === 'processing' ? (
+        <p className="small">Hang tight — we are working through the steps above.</p>
+      ) : null}
+      {status === 'error' && error ? (
+        <div className="alert alert--error" role="alert">
+          <div className="alert__title">
+            <Icon name="exclamationmark.triangle" size={18} /> Something went wrong
+          </div>
+          <p className="small">{error}</p>
+          <div className="alert__actions">
+            <button type="button" className="button button-quiet" onClick={handleReset}>
+              Try again
+            </button>
+          </div>
+        </div>
+      ) : null}
+      {status === 'complete' && summary ? (
+        <div className="alert alert--success" role="status">
+          <div className="alert__title">
+            <Icon name="checkmark.circle" size={18} /> Saved to {summary.savedFile}
+          </div>
+          <p className="small">Find it under exports/summaries on your machine.</p>
+        </div>
+      ) : null}
+    </GlassCard>
   );
 
-  const isReturningUser = summaryCount > 0;
+  const summariesCard = (
+    <GlassCard
+      key="summaries"
+      title="Saved summaries"
+      description="Open, copy, or download the Markdown files generated previously."
+      as="aside"
+      id="saved-summaries"
+      actions={
+        <div className="summary-item__actions">
+          <span className="small" aria-live="polite">
+            {loadingSummaries ? 'Refreshing…' : `${summaryCount} total`}
+          </span>
+          <button type="button" className="icon-button" onClick={loadSavedSummaries} aria-label="Refresh summaries list">
+            <Icon name="refresh" size={18} />
+          </button>
+        </div>
+      }
+      className="summary-card"
+    >
+      {summaryCount === 0 && !loadingSummaries ? (
+        <div className="summary-empty">
+          <p className="p-body">Summaries you create will appear here for quick access.</p>
+        </div>
+      ) : null}
+      <div className="summary-list" role="list">
+        {savedSummaries.map((item) => (
+          <SummaryListItem
+            key={item.filename}
+            title={formatSummaryTitle(item.filename, item.videoId)}
+            subtitle={<span>Video ID • {item.videoId}</span>}
+            videoId={item.videoId}
+            modified={item.modified}
+            sizeInBytes={item.size}
+            onOpen={() => handleSummaryOpen(item)}
+            onDownload={() => handleSummaryDownload(item)}
+            onCopy={() => handleSummaryCopy(item)}
+            isActive={summary?.videoId === item.videoId}
+          />
+        ))}
+      </div>
+    </GlassCard>
+  );
+
+  const summaryDetailCard = summary ? (
+    <GlassCard
+      key="summary-detail"
+      title={summary.title}
+      description={summary.author ? `Published by ${summary.author}` : undefined}
+      headingLevel={2}
+      as="article"
+      className="summary-detail"
+    >
+      {summary.keyTakeaways && summary.keyTakeaways.length > 0 ? (
+        <div>
+          <div className="summary-item__title">Key takeaways</div>
+          <ul>
+            {summary.keyTakeaways.map((item, index) => (
+              <li key={index} className="p-body">
+                {item}
+              </li>
+            ))}
+          </ul>
+        </div>
+      ) : null}
+      <div className="summary-detail__content">{summary.content}</div>
+      {summary.tags && summary.tags.length > 0 ? (
+        <div className="summary-tags" aria-label="Suggested tags">
+          {summary.tags.map((tag) => (
+            <span key={tag} className="summary-tag">
+              {tag}
+            </span>
+          ))}
+        </div>
+      ) : null}
+      {summary.transcript ? (
+        <div>
+          <button
+            type="button"
+            className="button button-quiet"
+            onClick={() => setShowTranscript((prev) => !prev)}
+            aria-expanded={showTranscript}
+            aria-controls="summary-transcript"
+          >
+            <Icon name="chevron.down" size={16} /> {showTranscript ? 'Hide transcript' : 'Show transcript'}
+          </button>
+          {showTranscript ? (
+            <div id="summary-transcript" className="summary-transcript">
+              {summary.transcript}
+            </div>
+          ) : null}
+        </div>
+      ) : null}
+    </GlassCard>
+  ) : null;
+
+  const showPipeline = activeTab === 'pipeline' || activeTab === 'summaries';
+  const showSummaries = activeTab === 'summaries';
+  const showSettings = activeTab === 'settings';
 
   return (
-    <div className="min-h-screen bg-[#0A0A0A] text-[#EDEDED] flex flex-col">
-      {/* Header */}
-      <header className="sticky top-0 z-10 bg-[#0A0A0A]/90 backdrop-blur-md border-b border-[#1a1a1a]">
-        <div className="max-w-4xl mx-auto px-4 py-3 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            {isReturningUser && (
-              <button 
-                onClick={() => setShowHistory(!showHistory)}
-                className="p-1 hover:bg-[#1a1a1a] rounded transition-colors"
-              >
-                <ChevronLeft className="w-5 h-5" />
-              </button>
-            )}
-            <div className="flex items-center gap-2">
-              <SignalGlyph />
-              <span className="font-medium text-lg">Watch Later</span>
-              <span className="text-xs text-[#666] bg-[#1a1a1a] px-1.5 py-0.5 rounded">β</span>
-            </div>
-          </div>
-          {isReturningUser && (
-            <div className="flex items-center gap-4">
-              <div className="flex gap-1">
-                {[...Array(Math.min(summaryCount, 5))].map((_, i) => (
-                  <div key={i} className={`w-2 h-2 rounded-full bg-[#03D5A3] ${i === summaryCount - 1 && showPulse ? 'animate-pulse-dot' : ''}`} />
-                ))}
-              </div>
-              <button 
-                onClick={loadSavedSummaries}
-                className="p-2 hover:bg-[#1a1a1a] rounded transition-colors"
-                title="Refresh"
-              >
-                <RefreshCw className="w-4 h-4" />
-              </button>
-            </div>
-          )}
+    <div className="app-shell">
+      <AppHeader
+        ref={headerRef}
+        summaryCount={summaryCount}
+        onRefresh={loadSavedSummaries}
+        onOpenSettings={() => setActiveTab('settings')}
+        onToggleTheme={themeToggle}
+        theme={theme}
+        hasProcessing={status === 'processing'}
+      >
+        <SegmentedControl
+          segments={segments}
+          value={activeTab}
+          onChange={(id) => setActiveTab(id as SegmentId)}
+          ariaLabel="Primary sections"
+        />
+      </AppHeader>
+      <main className="app-main" role="main">
+        <div className="visually-hidden" aria-live="polite">
+          {liveMessage}
         </div>
-      </header>
-
-      <div className="flex flex-1">
-        {/* History Drawer */}
-        {isReturningUser && showHistory && (
-          <aside className="w-64 bg-[#0A0A0A] border-r border-[#1a1a1a] p-4">
-            <div className="flex items-center gap-2 mb-4">
-              <History className="w-4 h-4" />
-              <h2 className="font-medium">History</h2>
-              {loadingSummaries && <RefreshCw className="w-3 h-3 animate-spin" />}
-            </div>
-            <div className="space-y-2">
-              {savedSummaries.slice(0, 10).map((saved, index) => {
-                const displayTitle = saved.filename
-                  .replace(/-summary-.*\.md$/, '')
-                  .replace(/-/g, ' ')
-                  .replace(/^\w/, c => c.toUpperCase());
-                const timeAgo = new Date(saved.modified).toLocaleDateString();
-                
-                return (
-                  <div 
-                    key={index} 
-                    className="p-3 bg-[#1a1a1a] rounded-lg cursor-pointer hover:bg-[#252525] transition-colors"
-                    onClick={() => handleHistoryItemClick(saved)}
-                  >
-                    <div className="text-sm font-medium truncate">{displayTitle}</div>
-                    <div className="text-xs text-[#666]">{timeAgo} • {Math.round(saved.size / 1024)}KB</div>
-                  </div>
-                );
-              })}
-            </div>
-            {savedSummaries.length > 10 && (
-              <button className="mt-4 text-sm text-[#03D5A3] hover:underline">
-                View all {summaryCount} summaries →
-              </button>
-            )}
-          </aside>
-        )}
-
-        {/* Main Content */}
-        <main className="flex-1 max-w-3xl mx-auto w-full p-6">
-          <div className="space-y-4">
-            {/* Input Section */}
-            <div className="relative">
+        <GlassCard className="hero" as="section" title={undefined}>
+          <span className="eyebrow small">iOS 26 inspired experience</span>
+          <h1 className="h-large-title">Learn faster with recaps</h1>
+          <p className="p-body">
+            Paste any YouTube link to generate a native-feeling summary optimised for your device and preferences.
+          </p>
+          <div className="input-row">
+            <div className="input-row__field">
+              <label htmlFor="video-url" className="visually-hidden">
+                YouTube URL
+              </label>
               <input
                 ref={inputRef}
-                type="text"
+                id="video-url"
+                className="input-field"
+                type="url"
+                placeholder="https://www.youtube.com/watch?v=…"
                 value={url}
-                onChange={(e) => setUrl(e.target.value)}
-                placeholder="Paste YouTube link here"
+                onChange={(event) => setUrl(event.target.value)}
+                aria-describedby="video-helper"
+                aria-invalid={status === 'error' && !!error}
                 disabled={status === 'processing'}
-                className="w-full px-4 py-3 bg-[#1a1a1a] border border-[#333] rounded-lg text-base placeholder-[#666] focus:outline-none focus:border-[#03D5A3] transition-colors font-mono"
               />
-              {status === 'processing' && (
-                <button
-                  onClick={handleCancel}
-                  className="absolute right-2 top-1/2 -translate-y-1/2 px-3 py-1 text-sm bg-[#333] hover:bg-[#444] rounded transition-colors"
-                >
-                  Cancel
-                </button>
-              )}
             </div>
-
-            {/* Progress Indicator */}
-            {status === 'processing' && (
-              <div className="flex justify-center py-2">
-                <ProgressIndicator stage={currentStage} />
-              </div>
-            )}
-
-            {/* Error State */}
-            {status === 'error' && (
-              <div className="bg-red-900/20 border border-red-500/30 rounded-lg p-4 text-red-300">
-                <div className="font-medium">Error</div>
-                <div className="text-sm mt-1">{error}</div>
-                <button 
-                  onClick={() => setStatus('idle')}
-                  className="text-sm text-red-400 hover:underline mt-2"
-                >
-                  Try again
-                </button>
-              </div>
-            )}
-
-            {/* Success State */}
-            {status === 'complete' && summary && (
-              <>
-                <div className="flex items-center justify-center gap-3 text-sm animate-fadeIn">
-                  <span className="text-[#03D5A3]">✓</span>
-                  <span>Saved to: {summary.savedFile}</span>
-                  <button
-                    onClick={handleOpenFolder}
-                    className="flex items-center gap-1 text-[#03D5A3] hover:underline"
-                  >
-                    Open folder
-                    <ChevronRight className="w-3 h-3" />
-                  </button>
-                  <div className="flex items-center gap-2 ml-auto">
-                    <button
-                      onClick={handleDownload}
-                      className="p-2 hover:bg-[#1a1a1a] rounded transition-colors"
-                      title="Download"
-                    >
-                      <Download className="w-4 h-4" />
-                    </button>
-                    <button
-                      onClick={handleCopy}
-                      className="p-2 hover:bg-[#1a1a1a] rounded transition-colors"
-                      title="Copy"
-                    >
-                      <Copy className="w-4 h-4" />
-                    </button>
-                    <button
-                      onClick={() => handleSummarize(url)}
-                      className="p-2 hover:bg-[#1a1a1a] rounded transition-colors"
-                      title="Regenerate"
-                    >
-                      <RefreshCw className="w-4 h-4" />
-                    </button>
-                  </div>
-                </div>
-
-                {/* Key Takeaways Card */}
-                {summary.keyTakeaways && summary.keyTakeaways.length > 0 && (
-                  <div className="border-l-4 border-[#03D5A3] bg-[#1a1a1a] rounded-r-lg p-4 animate-fadeIn">
-                    <h3 className="font-medium mb-2 text-[#03D5A3]">Key Takeaways</h3>
-                    <ul className="space-y-1 text-sm">
-                      {summary.keyTakeaways.map((takeaway, idx) => (
-                        <li key={idx}>• {takeaway}</li>
-                      ))}
-                    </ul>
-                  </div>
-                )}
-
-                {/* Summary Content */}
-                <div className="prose prose-invert max-w-none animate-fadeIn">
-                  <h1 className="text-2xl font-bold mb-4">{summary.title}</h1>
-                  {summary.author && (
-                    <p className="text-[#666] text-sm mb-4">by {summary.author}</p>
-                  )}
-                  
-                  <div className="text-[#CCCCCC] leading-relaxed whitespace-pre-wrap">
-                    {summary.content}
-                  </div>
-                </div>
-
-                {/* Tags */}
-                {isReturningUser && summary.tags && summary.tags.length > 0 && (
-                  <div className="flex gap-2 mt-6">
-                    {summary.tags.map((tag, idx) => (
-                      <span key={idx} className="px-3 py-1 bg-[#1a1a1a] text-[#03D5A3] text-sm rounded-full cursor-pointer hover:bg-[#252525] transition-colors">
-                        {tag}
-                      </span>
-                    ))}
-                  </div>
-                )}
-
-                {/* Transcript Accordion */}
-                {summary.transcript && (
-                  <details className="mt-6 border border-[#333] rounded-lg">
-                    <summary 
-                      className="px-4 py-3 cursor-pointer hover:bg-[#1a1a1a] transition-colors flex items-center justify-between"
-                      onClick={(e) => {
-                        e.preventDefault();
-                        setShowTranscript(!showTranscript);
-                      }}
-                    >
-                      <span className="text-sm">Show transcript</span>
-                      <ChevronRight className={`w-4 h-4 transition-transform ${showTranscript ? 'rotate-90' : ''}`} />
-                    </summary>
-                    {showTranscript && (
-                      <div className="px-4 py-3 border-t border-[#333] text-sm text-[#999] font-mono whitespace-pre-wrap max-h-96 overflow-y-auto">
-                        {summary.transcript}
-                      </div>
-                    )}
-                  </details>
-                )}
-              </>
-            )}
+            <div className="input-row__cta">
+              <PrimaryCTA
+                label={status === 'processing' ? 'Working…' : 'Summarize video'}
+                onPress={() => handleSummarize()}
+                disabled={status === 'processing'}
+                loading={status === 'processing'}
+                isSticky={isMobile}
+              />
+            </div>
           </div>
-        </main>
-      </div>
+          <p id="video-helper" className="small">
+            Supports transcripts across 50+ languages. All summaries are saved locally for offline review.
+          </p>
+          {status === 'error' && error ? (
+            <p className="small" role="alert">
+              {error}
+            </p>
+          ) : null}
+        </GlassCard>
 
-      <style jsx>{`
-        @keyframes fadeIn {
-          from { opacity: 0; transform: translateY(4px); }
-          to { opacity: 1; transform: translateY(0); }
-        }
-        .animate-fadeIn {
-          animation: fadeIn 0.3s ease-out;
-        }
-        
-        @keyframes pulse-custom {
-          0% { transform: scale(1); }
-          50% { transform: scale(1.1); }
-          100% { transform: scale(1); }
-        }
-        .animate-pulse-custom {
-          animation: pulse-custom 0.5s ease-out;
-        }
-        
-        @keyframes pulse-dot {
-          0% { transform: scale(1); opacity: 1; }
-          50% { transform: scale(1.5); opacity: 0.8; }
-          100% { transform: scale(1); opacity: 1; }
-        }
-        .animate-pulse-dot {
-          animation: pulse-dot 0.5s ease-out;
-        }
-      `}</style>
+        <div className="cards-grid" data-active-tab={activeTab}>
+          {showPipeline ? pipelineCard : null}
+          {showSummaries ? summariesCard : null}
+          {showSettings ? settingsCard : null}
+        </div>
+
+        {showSummaries && summaryDetailCard}
+      </main>
+      {toast ? <Toast type={toast.type} title={toast.title} message={toast.message} onDismiss={() => setToast(null)} /> : null}
     </div>
   );
 };
