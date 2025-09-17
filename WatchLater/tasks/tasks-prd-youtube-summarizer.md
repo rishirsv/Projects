@@ -23,16 +23,6 @@
 
 ## Tasks
 
-- [x] 10.0 iOS26-inspired UI System (Phase 2)
-  - [x] 10.1 Introduce design tokens (`src/styles/tokens.css`) with light/dark + high-contrast variants.
-  - [x] 10.2 Add base typography, focus, and motion resets (`src/styles/base.css`).
-  - [x] 10.3 Ship glass material primitive and responsive layout styles (`Glass.css`, `app.css`).
-  - [x] 10.4 Rebuild app shell with sticky translucent header, large-title collapse, segmented navigation, and sticky mobile CTA.
-  - [x] 10.5 Implement component suite (AppHeader, PrimaryCTA, GlassCard, PipelineStepper, SummaryListItem, SegmentedControl, Toast).
-  - [x] 10.6 Provide theme toggle & prefers-* integrations (reduced motion, reduced transparency, high contrast).
-  - [x] 10.7 Update docs/QA checklist for the new visual system and Storybook/test plans.
-  - [x] 10.8 Add Jest + Testing Library coverage for interactive controls (segmented tabs, pipeline stepper).
-
 - [ ] Fix concept map rendering in markdown summaries
   - [ ] Add `mermaid`, `remark-gfm`, and `remark-mermaidjs` dependencies.
   - [ ] Render summaries with `ReactMarkdown`, wiring the mermaid plugin and a custom renderer for `mermaid` code fences.
