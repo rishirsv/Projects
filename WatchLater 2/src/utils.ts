@@ -39,15 +39,17 @@ export function sanitizeTitle(title: string): string {
 /**
  * Generate transcript filename with title-based naming
  */
-export function generateTranscriptFilename(title: string, timestamp: string): string {
-  const sanitizedTitle = sanitizeTitle(title);
-  return `${sanitizedTitle}-transcript-${timestamp}.txt`;
+export function generateTranscriptFilename(videoId: string, title: string | null, timestamp: string): string {
+  const sanitizedTitle = title ? sanitizeTitle(title) : '';
+  const baseFilename = sanitizedTitle ? `${videoId}__${sanitizedTitle}` : videoId;
+  return `${baseFilename}-transcript-${timestamp}.txt`;
 }
 
 /**
  * Generate summary filename with title-based naming
  */
-export function generateSummaryFilename(title: string, timestamp: string): string {
-  const sanitizedTitle = sanitizeTitle(title);
-  return `${sanitizedTitle}-summary-${timestamp}.md`;
+export function generateSummaryFilename(videoId: string, title: string | null, timestamp: string): string {
+  const sanitizedTitle = title ? sanitizeTitle(title) : '';
+  const baseFilename = sanitizedTitle ? `${videoId}__${sanitizedTitle}` : videoId;
+  return `${baseFilename}-summary-${timestamp}.md`;
 }

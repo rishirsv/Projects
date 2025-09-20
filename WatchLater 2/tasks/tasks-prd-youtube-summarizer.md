@@ -23,12 +23,6 @@
 
 ## Tasks
 
-- [ ] Fix concept map rendering in markdown summaries
-  - [ ] Add `mermaid`, `remark-gfm`, and `remark-mermaidjs` dependencies.
-  - [ ] Render summaries with `ReactMarkdown`, wiring the mermaid plugin and a custom renderer for `mermaid` code fences.
-  - [ ] Update the prompt to wrap concept maps in fenced code blocks labeled `mermaid`.
-  - [ ] Verify the summary view displays mermaid diagrams instead of raw text.
-
 - [x] 1.0 Project Setup and Configuration
   - [x] 1.1 Initialize Vite + React + TypeScript project
   - [x] 1.2 **COMPLETED**: Install core dependencies: `@google/generative-ai react-markdown express cors dotenv` (replaced youtube-transcript with Supadata API)
@@ -223,3 +217,31 @@ exports/
 - ✅ **Summary File Management**: Complete (server-side saving, listing, reading, and UI management)
 - ✅ **Video Title Integration**: Complete (YouTube oEmbed API integration with title-based file naming)
 - ✅ **Production UI**: Complete (sophisticated dark theme UI with animations, progress indicators, history drawer, auto-paste, error handling)
+
+## 🆕 **PHASE 3: Tactiq-Inspired UI Overhaul**
+
+- [ ] 10.0 Discovery & Experience Brief
+  - [ ] 10.1 Capture detailed requirements from the Tactiq landing page (layout, copy hierarchy, gradients, typography, interaction states)
+  - [ ] 10.2 Inventory the current WatchLater screens and flows to preserve existing functionality while redesigning the shell
+  
+
+- [ ] 11.0 Visual System & Design Tokens
+  - [ ] 11.1 Establish global style primitives (fonts, shadows, radii, spacing) that mirror the Tactiq aesthetic via CSS variables or Tailwind config. Also reference the ios 26 aesthetic as the primary.
+  - [ ] 11.2 Implement background gradient system (dark plum base + radial highlights) and reusable containers for consistent padding
+  - [ ] 11.3 Define gradient text and button treatments (primary CTA, secondary ghost) with hover/focus states
+
+- [x] 12.0 Landing Experience Rebuild *(implemented in src/App.tsx & src/App.css)*
+  - [x] 12.1 Reconstruct hero layout with centered headline/subheadline copy and gradient-highlighted keywords
+  - [x] 12.2 Replace URL input + CTA with pill-shaped field and gradient-stroked button that mirrors Tactiq’s form styling
+  - [x] 12.3 Add supporting microcopy ("Instantly, without uploading video files", trust badges) and restructure spacing for mobile-first responsiveness
+  - [x] 12.4 Create responsive layout rules (sm/md/lg breakpoints) to maintain alignment and vertical rhythm on all screen sizes
+
+- [x] 13.0 Application Surface Harmonization *(implemented in src/App.tsx & src/App.css)*
+  - [x] 13.1 Update transcript/summary modules to use new card glassmorphism styling and typography scale
+  - [x] 13.2 Redesign status indicators (progress, success, error) with neon accents and subtle motion consistent with Tactiq
+  - [x] 13.3 Refresh history drawer/list interactions using new button styles, icons, and transition timing
+  - [x] 13.4 Audit modals, alerts, and notifications for parity; retire legacy CSS classes that conflict with the new system
+
+- [ ] 14.0 QA & Launch Readiness
+  - [x] 14.3 Update documentation/screenshots (README, marketing assets) to reflect the new experience *(README.md, README.md, docs/assets/)*
+  - [ ] 14.4 Remove unused assets/styles and log post-launch polish follow-ups in tasks backlog
