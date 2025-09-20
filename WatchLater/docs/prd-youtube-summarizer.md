@@ -132,3 +132,51 @@ repo-root/
 - **UI Integration**: Video metadata display with title, author, and thumbnail
 - **Zero Downtime**: Backward compatible with existing videoId-based files
 - **Zero Cost**: No API keys required, uses YouTube's free oEmbed service
+
+## 11. Feature — PDF Download for Saved Summaries
+
+### 11.1 Overview
+Extend the saved summary experience with a "Download PDF" action that mirrors the current markdown download. Summaries render as styled HTML in the app today; the PDF export must capture that same look-and-feel and remain fully local with no third-party services.
+
+### 11.2 Goals
+- Provide a one-click PDF export alongside the existing markdown download.
+- Produce PDFs that match the in-app summary styling (headings, lists, code blocks, callouts).
+- Keep generation fully local/server-side to avoid data exfiltration or new vendor dependencies.
+- Maintain summary history without persisting PDFs on disk unless caching is added later.
+
+### 11.3 User Stories
+| ID    | As a…        | I want to…                                   | So that…                                      |
+|-------|--------------|-----------------------------------------------|-----------------------------------------------|
+| US-11 | researcher    | Download a PDF version of a saved summary     | I can share or archive summaries in a fixed format |
+| US-12 | repeat user   | Trigger PDF export without re-running AI      | I avoid unnecessary Gemini usage and latency   |
+| US-13 | accessibility | Receive PDFs that preserve headings and links | I can review summaries offline or print them   |
+
+### 11.4 Functional Requirements
+1. Add a visible "Download PDF" control adjacent to each saved summary entry (list view and detail view) and near the existing markdown download button.
+2. Create a backend endpoint `GET /api/summary/:videoId/pdf` that streams an `application/pdf` response generated on demand.
+3. Reuse the latest summary markdown stored under `exports/summaries/` by locating the most recent file for a given `videoId` (respecting title-based filenames).
+4. Convert markdown to HTML using `markdown-it` with the same renderer settings as the client preview, including syntax highlighting hooks if present.
+5. Wrap HTML in a print-optimized template that imports the existing summary styles (Typography, spacing, code blocks) and embeds required assets inline (CSS, data URI images).
+6. Use Puppeteer (`page.setContent`) to render the HTML and call `page.pdf({ format: 'A4', printBackground: true, margin: { top: '20mm', right: '20mm', bottom: '20mm', left: '20mm' } })`.
+7. Stream the PDF directly to the client with accurate `Content-Type` and `Content-Disposition` headers; no temporary files remain on disk by default.
+8. Handle errors gracefully: missing markdown file, Puppeteer launch failures, unsupported video IDs, or concurrent generation limits. Return descriptive HTTP errors and surface them in the UI.
+9. Ensure the operation remains idempotent and performant (target ≤ 5 seconds for typical summaries under 15 pages).
+
+### 11.5 Non-Goals (Out of Scope)
+- Caching or storing generated PDFs on disk—generation is on demand only.
+- Rendering transcripts or other assets to PDF (PDF applies to summaries only).
+- Client-side PDF generation or browser-based printing workflows.
+- Adding custom PDF layouts beyond matching the existing summary styling.
+
+### 11.6 Design Considerations
+- Button placement mirrors the markdown download affordance to reinforce parity.
+- Use consistent iconography (e.g., download icon with "PDF") and tooltips for clarity.
+- Preserve responsive layout: PDF button should not overflow in narrow columns; consider a dropdown if space constrained.
+
+### 11.7 Technical Considerations
+- Dependencies: add `puppeteer` and `markdown-it` on the server; ensure deployment environment allows Chromium download or configure `PUPPETEER_EXECUTABLE_PATH` for minimal builds.
+- Resource usage: guard against simultaneous Puppeteer launches by reusing a singleton browser instance or a lightweight pool.
+- Security: sanitize resolved summary paths (no traversal) and ensure Puppeteer loads only in-memory HTML (no external network fetches).
+- Testing: unit test markdown-to-HTML conversion, and integration test `/api/summary/:videoId/pdf` to assert headers and non-empty payloads.
+
+

@@ -11,6 +11,12 @@
 - `.env` - Environment variables (GEMINI_API_KEY)
 - `public/index.html` - HTML template
 - `.gitignore` - Git ignore configuration
+- `server.js` - Express API server to host the new PDF download route
+- `server/pdf-renderer.js` - Helper to render markdown summaries to PDF with Puppeteer
+- `server/markdown-to-html.js` - Shared markdown-it renderer to keep HTML consistent with the UI
+- `tests/pdf-route.test.ts` - Integration tests that exercise the PDF endpoint
+- `docs/prd-youtube-summarizer.md` - PRD source documenting the PDF export requirements
+- `tasks/issues/google-api-key-exposed.md` - Security issue documenting the leaked Google API key remediation
 
 ### Notes
 
@@ -249,3 +255,49 @@ exports/
 - [ ] 14.0 QA & Launch Readiness
   - [x] 14.3 Update documentation/screenshots (README, marketing assets) to reflect the new experience *(README.md, README.md, docs/assets/)*
   - [ ] 14.4 Remove unused assets/styles and log post-launch polish follow-ups in tasks backlog
+
+## 🆕 Feature: PDF Download for Summaries
+
+- [ ] 15.0 Backend PDF Export Pipeline
+  - [ ] 15.1 Install and configure `puppeteer` (with Chromium download strategy) and `markdown-it`; update `package.json` scripts if needed.
+  - [ ] 15.2 Build a reusable markdown-to-HTML helper in `server/markdown-to-html.js` that mirrors client styling (headings, lists, code blocks).
+  - [ ] 15.3 Implement `server/pdf-renderer.js` that accepts HTML, applies print stylesheet, and streams `page.pdf()` output via Puppeteer.
+  - [ ] 15.4 Add `GET /api/summary/:videoId/pdf` route to `server.js` that resolves the latest summary file, invokes the renderer, and sets `Content-Type: application/pdf`.
+  - [ ] 15.5 Harden error handling for missing summaries, Puppeteer launch failures, and concurrent exports; log durations for observability.
+
+- [ ] 16.0 Client UX Integration
+  - [ ] 16.1 Add "Download PDF" buttons adjacent to existing markdown download controls in saved summaries list/detail views.
+  - [ ] 16.2 Wire the new UI to the backend via `window.open` or fetch+blob to trigger downloads with sanitized filenames.
+  - [ ] 16.3 Provide loading/errostate feedback so users know when the PDF export succeeded or failed without blocking markdown downloads.
+
+- [ ] 17.0 Verification & Testing
+  - [ ] 17.1 Unit test markdown-to-HTML conversion to ensure parity with client rendering (headings, lists, links, code, blockquotes).
+  - [ ] 17.2 Add integration test (`tests/pdf-route.test.ts`) to confirm PDF responses include correct headers, non-zero byte payloads, and 404 behavior.
+  - [ ] 17.3 Run manual QA covering long summaries, summaries with images/data URIs, and simultaneous export requests; capture findings in QA notes.
+
+- [ ] 18.0 Documentation & Ops
+  - [ ] 18.1 Update `README.md` and `docs/prd-youtube-summarizer.md` to describe the PDF download capability and prerequisites.
+  - [ ] 18.2 Add operational guidance (Chromium caching, Puppeteer sandbox flags, environment variables) to `ARCHITECTURE.md` or a new `docs/pdf-export.md`.
+  - [ ] 18.3 Document logging/monitoring expectations for PDF generation failures to inform alerting and support triage.
+
+## 🔐 Secret Remediation (Google API Key Exposure)
+
+- [ ] 19.0 Rotate & Contain
+  - [ ] 19.1 Revoke the compromised Google API key in Google Cloud Console and generate a fresh credential.
+  - [ ] 19.2 Validate the new key via manual smoke test (local summary generation) and confirm logging captures the new key usage only through env variables.
+  - [ ] 19.3 Purge the exposed key from git history (e.g., `git filter-repo` or GitHub Secret Scanning mitigation) and force-push/remedy forks per security policy.
+
+- [ ] 20.0 Secure Storage & Deployment
+  - [ ] 20.1 Ensure `.env` and deployment secrets files remain git-ignored; double-check build artifacts for embedded keys.
+  - [ ] 20.2 Update deployment configuration (Render, Vercel, Docker, etc.) to use the rotated key via environment secrets manager.
+  - [ ] 20.3 Add runtime guardrails that throw if the Google API key is missing or hard-coded (server + client).
+
+- [ ] 21.0 Detection & Automation
+  - [ ] 21.1 Add CI secret scanning (e.g., `gitleaks` GitHub Action) gating pull requests.
+  - [ ] 21.2 Configure Git hooks or lint rules (`lefthook`, `pre-commit`) to scan staged changes for high-entropy strings before commits.
+  - [ ] 21.3 Document and enable GitHub Secret Scanning alerts for private forks or downstream repos, if available.
+
+- [ ] 22.0 Documentation & Onboarding
+  - [ ] 22.1 Update `ARCHITECTURE.md` or `SECURITY.md` with the new secret management workflow and rotation playbook.
+  - [ ] 22.2 Add onboarding checklist steps for developers covering `.env` setup, secret rotation cadence, and scanning tools.
+  - [ ] 22.3 Communicate remediation steps to the team (Slack/email) and track acknowledgement for compliance.
