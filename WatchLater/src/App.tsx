@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useCallback } from 'react';
+import React, { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import ReactMarkdown from 'react-markdown';
 import {
   Download,
@@ -15,7 +15,8 @@ import {
   Clock,
   ShieldCheck,
   Loader2,
-  Trash
+  Trash,
+  AlertTriangle
 } from 'lucide-react';
 import {
   fetchTranscript,
@@ -31,7 +32,12 @@ import {
 import { extractVideoId } from './utils';
 import './App.css';
 import BatchImportModal, { BatchImportRequest } from './components/BatchImportModal';
-import { useBatchImportQueue } from './hooks/useBatchImportQueue';
+import {
+  useBatchImportQueue,
+  BatchQueueItem,
+  BatchProcessor,
+  BatchQueueStage
+} from './hooks/useBatchImportQueue';
 import { createModelRegistry } from './config/model-registry';
 import { resolveRuntimeEnv } from '../shared/env';
 import { ActiveModelProvider } from './context/model-context';
@@ -107,6 +113,15 @@ const STAGES: Stage[] = [
   { id: 4, title: 'Save', description: 'Markdown summary archived locally' }
 ];
 
+const QUEUE_STAGE_LABELS: Record<BatchQueueStage, string> = {
+  queued: 'Queued',
+  fetchingMetadata: 'Fetching metadata',
+  fetchingTranscript: 'Fetching transcript',
+  generatingSummary: 'Generating summary',
+  completed: 'Completed',
+  failed: 'Failed'
+};
+
 const WatchLater = () => {
   const [url, setUrl] = useState('');
   const [status, setStatus] = useState<'idle' | 'processing' | 'complete' | 'error'>('idle');
@@ -151,7 +166,11 @@ const WatchLater = () => {
   const batchImportTriggerRef = useRef<HTMLButtonElement | null>(null);
   const batchQueue = useBatchImportQueue();
   const {
+    state: batchQueueState,
+    registerProcessor,
     enqueue: enqueueBatchRequests,
+    retryItem: retryBatchItem,
+    removeItem: removeBatchItem,
     stats: batchQueueStats,
     setProcessingHold: setBatchQueueHold
   } = batchQueue;
@@ -255,9 +274,120 @@ const WatchLater = () => {
     inputRef.current?.focus();
   }, [loadSavedSummaries]);
 
+  useEffect(() => {
+    const processor: BatchProcessor = async (item, { updateStage }) => {
+      let metadata: Awaited<ReturnType<typeof fetchVideoMetadata>> | null = null;
+
+      try {
+        updateStage('fetchingMetadata');
+        try {
+          metadata = await fetchVideoMetadata(item.videoId);
+        } catch (metadataError) {
+          console.warn('Batch metadata fetch failed:', metadataError);
+        }
+
+        updateStage('fetchingTranscript');
+        const transcriptText = await fetchTranscript(item.videoId);
+        await saveTranscript(item.videoId, transcriptText, false, metadata?.title);
+
+        updateStage('generatingSummary');
+        await generateSummaryFromFile(item.videoId, activeModelId);
+
+        updateStage('completed');
+        await loadSavedSummaries();
+        const title = metadata?.title ? `“${metadata.title}”` : item.videoId;
+        showToast(`Summary ready: ${title}`, 'success');
+        return { status: 'succeeded', stage: 'completed' };
+      } catch (error) {
+        const message = error instanceof Error ? error.message : 'Batch import failed';
+        console.error('Batch processing error:', error);
+        return { status: 'failed', stage: 'failed', error: message };
+      }
+    };
+
+    registerProcessor(processor);
+    return () => registerProcessor(null);
+  }, [activeModelId, loadSavedSummaries, registerProcessor, showToast]);
+
+  const queueItems = useMemo<BatchQueueItem[]>(() =>
+    batchQueueState.order
+      .map((id) => batchQueueState.items[id])
+      .filter((item): item is BatchQueueItem => Boolean(item) && item.status !== 'succeeded'),
+  [batchQueueState]);
+
+  useEffect(() => {
+    if (batchQueueState.order.length === 0) {
+      return;
+    }
+
+    for (const videoId of batchQueueState.order) {
+      const pending = batchQueueState.items[videoId];
+      if (pending?.status === 'succeeded') {
+        removeBatchItem(videoId);
+      }
+    }
+  }, [batchQueueState, removeBatchItem]);
+
   const isYouTubeUrl = useCallback((text: string) => {
     return /(?:youtube\.com\/watch\?v=|youtu\.be\/)([^&\n?]+)/.test(text);
   }, []);
+
+  const renderQueueItem = useCallback((item: BatchQueueItem) => {
+    const stageLabel = QUEUE_STAGE_LABELS[item.stage] ?? 'Processing';
+    const isFailed = item.status === 'failed';
+    const isProcessingItem = item.status === 'processing';
+    const stageIcon = isFailed ? (
+      <AlertTriangle size={14} />
+    ) : isProcessingItem ? (
+      <Loader2 size={14} className="spin" />
+    ) : (
+      <Clock size={14} />
+    );
+    const createdAt = new Date(item.createdAt);
+    const addedLabel = Number.isNaN(createdAt.getTime())
+      ? ''
+      : createdAt.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+    return (
+      <div key={`queue-${item.videoId}`} className={`history-item queue ${item.status}`}>
+        <div className="history-item-content">
+          <div className="history-item-title">{item.videoId}</div>
+          {addedLabel && (
+            <div className="queue-item-meta">
+              <Clock size={14} />
+              <span>Added {addedLabel}</span>
+            </div>
+          )}
+          {isFailed && item.error && <div className="queue-item-error">{item.error}</div>}
+        </div>
+        <div className="history-item-actions">
+          {isFailed ? (
+            <>
+              <button
+                type="button"
+                className="history-item-action"
+                onClick={() => retryBatchItem(item.videoId)}
+              >
+                Retry
+              </button>
+              <button
+                type="button"
+                className="history-item-action ghost"
+                onClick={() => removeBatchItem(item.videoId)}
+              >
+                Dismiss
+              </button>
+            </>
+          ) : (
+            <span className={`history-item-status ${item.status}`}>
+              {stageIcon}
+              <span>{stageLabel}</span>
+            </span>
+          )}
+        </div>
+      </div>
+    );
+  }, [removeBatchItem, retryBatchItem]);
 
   const handleSummarize = useCallback(
     async (urlToProcess = url) => {
@@ -860,8 +990,11 @@ const WatchLater = () => {
             </div>
           </div>
           <div className="history-list">
+            {queueItems.length > 0 && queueItems.map((item) => renderQueueItem(item))}
             {loadingSummaries && <div className="empty-state">Refreshing history…</div>}
-            {!loadingSummaries && savedSummaries.length === 0 && <div className="empty-state">Summaries will appear here after your first run.</div>}
+            {!loadingSummaries && savedSummaries.length === 0 && queueItems.length === 0 && (
+              <div className="empty-state">Summaries will appear here after your first run.</div>
+            )}
             {!loadingSummaries &&
               savedSummaries.map((saved) => {
                 const baseName = saved.filename.replace(/-summary-.*\.md$/, '');

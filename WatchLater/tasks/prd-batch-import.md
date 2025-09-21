@@ -111,15 +111,15 @@ Add a batch import workflow that lets power users queue up to ten YouTube videos
 - [x] 2.3 Integrate `extractVideoId` validation, inline error messaging, and a live counter ("n / 10 URLs ready").
 - [x] 2.4 Disable the import CTA unless valid URLs exist and reset modal state after successful submission or cancellation.
 
-- [ ] 3.0 Implement the client-side batch queue manager
+- [x] 3.0 Implement the client-side batch queue manager
 - [x] 3.1 Create a queue controller (hook or module) that tracks queued, processing, completed, and failed states per videoId.
   - [x] 3.2 Persist queue state to `localStorage` and hydrate it on load so refreshes retain progress.
   - [x] 3.3 Schedule jobs sequentially (one active request) with hooks for pausing/resuming and detecting duplicates across batches.
 
-- [ ] 4.0 Integrate queued videos with transcript pipeline and persistence
-  - [ ] 4.1 For each queued item, call metadata → transcript → summary helpers and reuse existing save flows.
-  - [ ] 4.2 Update transcript library cards to reflect queue states (queued, fetching, generating, success, failed) and lock actions until complete.
-  - [ ] 4.3 Surface failure reasons, allow per-item retry, and ensure sanitized filenames prevent duplicate exports.
+- [x] 4.0 Integrate queued videos with transcript pipeline and persistence
+  - [x] 4.1 For each queued item, call metadata → transcript → summary helpers and reuse existing save flows.
+  - [x] 4.2 Update transcript library cards to reflect queue states (queued, fetching, generating, success, failed) and lock actions until complete.
+  - [x] 4.3 Surface failure reasons, allow per-item retry, and ensure sanitized filenames prevent duplicate exports.
 
 - [ ] 5.0 Verify, document, and roll out the Batch Import workflow
   - [ ] 5.1 Add unit/integration tests covering queue transitions, modal validation, and UI state updates.
