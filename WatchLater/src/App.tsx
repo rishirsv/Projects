@@ -5,6 +5,7 @@ import {
   Copy,
   RefreshCw,
   ChevronRight,
+  FileText,
   Circle,
   CheckCircle,
   History,
@@ -13,7 +14,8 @@ import {
   Sparkles,
   Clock,
   ShieldCheck,
-  Loader2
+  Loader2,
+  Trash
 } from 'lucide-react';
 import {
   fetchTranscript,
@@ -21,10 +23,17 @@ import {
   generateSummaryFromFile,
   getSavedSummaries,
   readSavedSummary,
-  fetchVideoMetadata
+  fetchVideoMetadata,
+  downloadSummaryPdf,
+  deleteSummary,
+  deleteAllSummaries
 } from './api';
 import { extractVideoId } from './utils';
 import './App.css';
+import { createModelRegistry } from './config/model-registry';
+import { resolveRuntimeEnv } from '../shared/env';
+import { ActiveModelProvider } from './context/model-context';
+import ModelSelector from './components/ModelSelector';
 
 type SummaryData = {
   videoId: string;
@@ -45,6 +54,65 @@ type SavedSummary = {
   modified?: string;
   size?: number;
 };
+
+type PdfExportState = {
+  state: 'idle' | 'loading' | 'success' | 'error';
+  message?: string;
+};
+
+type DeleteModalState =
+  | { mode: 'none' }
+  | {
+      mode: 'clearAll';
+      includeTranscripts: boolean;
+      input: string;
+      submitting: boolean;
+    }
+  | {
+      mode: 'single';
+      videoId: string;
+      title: string;
+      deleteAllVersions: boolean;
+      input: string;
+      submitting: boolean;
+    };
+
+type ToastState = {
+  message: string;
+  tone: 'success' | 'error';
+};
+
+type BatchImportModalProps = {
+  open: boolean;
+  onClose: () => void;
+};
+
+const BatchImportModal: React.FC<BatchImportModalProps> = ({ open, onClose }) => {
+  if (!open) {
+    return null;
+  }
+
+  return (
+    <div className="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="batch-import-title">
+      <div className="modal batch-import-modal">
+        <h3 id="batch-import-title">Batch import</h3>
+        <p className="modal-description">Batch import workflow is in progress.</p>
+        <button type="button" className="hero-cancel" onClick={onClose}>
+          Close
+        </button>
+      </div>
+    </div>
+  );
+};
+
+const modelRegistry = createModelRegistry(resolveRuntimeEnv());
+const MODEL_STORAGE_KEY = 'watchlater-active-model';
+
+if (modelRegistry.warnings.length > 0) {
+  for (const warning of modelRegistry.warnings) {
+    console.warn(`[model-selector] ${warning}`);
+  }
+}
 
 type Stage = {
   id: number;
@@ -68,13 +136,122 @@ const WatchLater = () => {
   const [error, setError] = useState('');
   const [savedSummaries, setSavedSummaries] = useState<SavedSummary[]>([]);
   const [loadingSummaries, setLoadingSummaries] = useState(false);
+  const [pdfExportState, setPdfExportState] = useState<PdfExportState>({ state: 'idle' });
+  const [deleteModal, setDeleteModal] = useState<DeleteModalState>({ mode: 'none' });
+  const [deleteModalError, setDeleteModalError] = useState('');
+  const [toast, setToast] = useState<ToastState | null>(null);
+  const [isBatchImportOpen, setIsBatchImportOpen] = useState(false);
+  const [activeModelId, setActiveModelId] = useState<string>(() => {
+    const fallback = modelRegistry.defaultModel;
+
+    if (typeof window === 'undefined') {
+      return fallback;
+    }
+
+    try {
+      const stored = window.sessionStorage.getItem(MODEL_STORAGE_KEY);
+      if (stored && modelRegistry.options.some(option => option.id === stored)) {
+        return stored;
+      }
+      if (stored) {
+        console.warn(
+          `[model-selector] Stored model "${stored}" not found in current options; falling back to "${fallback}".`
+        );
+      }
+    } catch (storageError) {
+      console.warn('[model-selector] Failed to read stored model preference:', storageError);
+    }
+
+    return fallback;
+  });
   const inputRef = useRef<HTMLInputElement | null>(null);
+  const pdfStatusTimeoutRef = useRef<number | null>(null);
+  const toastTimeoutRef = useRef<number | null>(null);
+
+  const updatePdfExportState = useCallback((next: PdfExportState) => {
+    if (pdfStatusTimeoutRef.current) {
+      window.clearTimeout(pdfStatusTimeoutRef.current);
+      pdfStatusTimeoutRef.current = null;
+    }
+
+    setPdfExportState(next);
+
+    if (next.state === 'success') {
+      pdfStatusTimeoutRef.current = window.setTimeout(() => {
+        setPdfExportState({ state: 'idle' });
+        pdfStatusTimeoutRef.current = null;
+      }, 4000);
+    }
+  }, []);
+
+  const showToast = useCallback((message: string, tone: 'success' | 'error' = 'success') => {
+    if (toastTimeoutRef.current) {
+      window.clearTimeout(toastTimeoutRef.current);
+      toastTimeoutRef.current = null;
+    }
+
+    setToast({ message, tone });
+
+    toastTimeoutRef.current = window.setTimeout(() => {
+      setToast(null);
+      toastTimeoutRef.current = null;
+    }, 4000);
+  }, []);
+
+  useEffect(() => {
+    return () => {
+      if (pdfStatusTimeoutRef.current) {
+        window.clearTimeout(pdfStatusTimeoutRef.current);
+      }
+      if (toastTimeoutRef.current) {
+        window.clearTimeout(toastTimeoutRef.current);
+      }
+    };
+  }, []);
+
+  useEffect(() => {
+    if (typeof window === 'undefined') {
+      return;
+    }
+
+    try {
+      if (activeModelId) {
+        window.sessionStorage.setItem(MODEL_STORAGE_KEY, activeModelId);
+      } else {
+        window.sessionStorage.removeItem(MODEL_STORAGE_KEY);
+      }
+    } catch (storageError) {
+      console.warn('[model-selector] Failed to persist model preference:', storageError);
+    }
+  }, [activeModelId]);
+
+  const isValidModelId = useCallback(
+    (candidate: string) => modelRegistry.options.some(option => option.id === candidate),
+    []
+  );
+
+  const updateActiveModel = useCallback(
+    (nextModelId: string) => {
+      if (!isValidModelId(nextModelId)) {
+        console.warn(`[model-selector] Ignoring unknown model id "${nextModelId}".`);
+        return;
+      }
+      setActiveModelId(nextModelId);
+    },
+    [isValidModelId]
+  );
 
   const loadSavedSummaries = useCallback(async () => {
     setLoadingSummaries(true);
     try {
       const summaries = await getSavedSummaries();
-      setSavedSummaries(summaries);
+      const dedupedByVideo = new Map<string, SavedSummary>();
+      for (const summaryItem of summaries) {
+        if (!dedupedByVideo.has(summaryItem.videoId)) {
+          dedupedByVideo.set(summaryItem.videoId, summaryItem);
+        }
+      }
+      setSavedSummaries(Array.from(dedupedByVideo.values()));
     } catch (err) {
       console.error('Error loading saved summaries:', err);
     } finally {
@@ -95,6 +272,7 @@ const WatchLater = () => {
     async (urlToProcess = url) => {
       if (!isYouTubeUrl(urlToProcess) || status === 'processing') return;
 
+      updatePdfExportState({ state: 'idle' });
       setStatus('processing');
       setCurrentStage(1);
       setError('');
@@ -146,7 +324,7 @@ const WatchLater = () => {
         console.error('Summarization error:', err);
       }
     },
-    [isYouTubeUrl, loadSavedSummaries, status, url]
+    [isYouTubeUrl, loadSavedSummaries, status, updatePdfExportState, url]
   );
 
   useEffect(() => {
@@ -172,6 +350,7 @@ const WatchLater = () => {
     setStatus('idle');
     setCurrentStage(0);
     setError('');
+    updatePdfExportState({ state: 'idle' });
   };
 
   const handleDownload = () => {
@@ -187,6 +366,20 @@ const WatchLater = () => {
     document.body.removeChild(link);
     URL.revokeObjectURL(downloadUrl);
   };
+
+  const handleDownloadPdf = useCallback(async () => {
+    if (!summary) return;
+
+    updatePdfExportState({ state: 'loading', message: 'Preparing PDF…' });
+
+    try {
+      const filename = await downloadSummaryPdf(summary.videoId);
+      updatePdfExportState({ state: 'success', message: `Downloaded ${filename}` });
+    } catch (err) {
+      const message = err instanceof Error ? err.message : 'Unable to export PDF';
+      updatePdfExportState({ state: 'error', message });
+    }
+  }, [summary, updatePdfExportState]);
 
   const handleCopy = () => {
     if (!summary) return;
@@ -217,6 +410,7 @@ const WatchLater = () => {
         tags: extractHashtags(summaryData.summary)
       };
 
+      updatePdfExportState({ state: 'idle' });
       setSummary(displayData);
       setStatus('complete');
       setShowTranscript(false);
@@ -225,6 +419,134 @@ const WatchLater = () => {
       setError(`Failed to load summary: ${err instanceof Error ? err.message : 'Unknown error'}`);
       setStatus('error');
     }
+  };
+
+  const openClearAllModal = () => {
+    setDeleteModal({ mode: 'clearAll', includeTranscripts: false, input: '', submitting: false });
+    setDeleteModalError('');
+  };
+
+  const openSingleDeleteModal = (videoId: string, title: string) => {
+    setDeleteModal({
+      mode: 'single',
+      videoId,
+      title,
+      deleteAllVersions: false,
+      input: '',
+      submitting: false
+    });
+    setDeleteModalError('');
+  };
+
+  const closeDeleteModal = () => {
+    setDeleteModal({ mode: 'none' });
+    setDeleteModalError('');
+  };
+
+  const updateDeleteModalInput = (value: string) => {
+    setDeleteModal((prev) => {
+      if (prev.mode === 'clearAll' || prev.mode === 'single') {
+        return { ...prev, input: value };
+      }
+      return prev;
+    });
+    setDeleteModalError('');
+  };
+
+  const toggleIncludeTranscripts = (checked: boolean) => {
+    setDeleteModal((prev) => {
+      if (prev.mode !== 'clearAll') {
+        return prev;
+      }
+      return { ...prev, includeTranscripts: checked };
+    });
+  };
+
+  const toggleDeleteAllVersions = (checked: boolean) => {
+    setDeleteModal((prev) => {
+      if (prev.mode !== 'single') {
+        return prev;
+      }
+      return { ...prev, deleteAllVersions: checked };
+    });
+  };
+
+  const handleConfirmDelete = async () => {
+    if (deleteModal.mode === 'none') {
+      return;
+    }
+
+    if (deleteModal.input.trim().toUpperCase() !== 'DELETE') {
+      setDeleteModalError('Type DELETE to confirm.');
+      return;
+    }
+
+    if (deleteModal.mode === 'clearAll') {
+      setDeleteModal((prev) => (prev.mode === 'clearAll' ? { ...prev, submitting: true } : prev));
+      const previousSummaries = [...savedSummaries];
+      setSavedSummaries([]);
+      if (summary) {
+        setSummary(null);
+        setStatus('idle');
+        updatePdfExportState({ state: 'idle' });
+      }
+
+      try {
+        const result = await deleteAllSummaries({ includeTranscripts: deleteModal.includeTranscripts });
+        closeDeleteModal();
+        showToast(
+          `${result.deletedSummaries} ${result.deletedSummaries === 1 ? 'file' : 'files'} deleted`,
+          'success'
+        );
+        await loadSavedSummaries();
+      } catch (error) {
+        setSavedSummaries(previousSummaries);
+        const message = error instanceof Error ? error.message : 'Failed to delete summaries';
+        setDeleteModalError(message);
+        showToast(message, 'error');
+        setDeleteModal((prev) => (prev.mode === 'clearAll' ? { ...prev, submitting: false } : prev));
+      }
+
+      return;
+    }
+
+    if (deleteModal.mode === 'single') {
+      setDeleteModal((prev) => (prev.mode === 'single' ? { ...prev, submitting: true } : prev));
+      const previousSummaries = [...savedSummaries];
+      setSavedSummaries((prev) => prev.filter((item) => item.videoId !== deleteModal.videoId));
+      if (summary?.videoId === deleteModal.videoId) {
+        setSummary(null);
+        setStatus('idle');
+        updatePdfExportState({ state: 'idle' });
+      }
+
+      try {
+        const result = await deleteSummary(deleteModal.videoId, {
+          deleteAllVersions: deleteModal.deleteAllVersions
+        });
+        closeDeleteModal();
+        showToast(
+          `${result.deletedCount} ${result.deletedCount === 1 ? 'file' : 'files'} deleted`,
+          'success'
+        );
+        await loadSavedSummaries();
+      } catch (error) {
+        setSavedSummaries(previousSummaries);
+        const message = error instanceof Error ? error.message : 'Failed to delete summary';
+        setDeleteModalError(message);
+        showToast(message, 'error');
+        setDeleteModal((prev) => (prev.mode === 'single' ? { ...prev, submitting: false } : prev));
+      }
+    }
+  };
+
+  const handleHistoryItemDelete = (
+    event: React.MouseEvent<HTMLButtonElement>,
+    saved: SavedSummary,
+    title: string
+  ) => {
+    event.stopPropagation();
+    openSingleDeleteModal(saved.videoId, title || saved.videoId);
   };
 
   const summaryCount = savedSummaries.length;
@@ -236,8 +558,19 @@ const WatchLater = () => {
     handleSummarize(url);
   };
 
+  const handleBatchImportClick = () => {
+    setIsBatchImportOpen(true);
+  };
+
+  const handleBatchImportClose = () => {
+    setIsBatchImportOpen(false);
+  };
+
   return (
-    <div className="app-shell">
+    <ActiveModelProvider
+      value={{ activeModelId, setActiveModelId: updateActiveModel, registry: modelRegistry }}
+    >
+      <div className="app-shell">
       <header className="app-header">
         <div className="header-brand">
           <SignalGlyph animated={isProcessing} />
@@ -245,10 +578,15 @@ const WatchLater = () => {
           <span className="header-badge">Phase 3</span>
         </div>
         <div className="header-actions">
-          <span className="header-badge">Saved · {summaryCount}</span>
-          <button className="action-icon-button" onClick={loadSavedSummaries} title="Refresh history">
-            {loadingSummaries ? <Loader2 className="spin" size={18} /> : <RefreshCw size={18} />}
+          <button type="button" className="batch-import-button" onClick={handleBatchImportClick}>
+            Batch Import
           </button>
+          <div className="header-secondary-actions">
+            <span className="header-badge">Saved · {summaryCount}</span>
+            <button className="action-icon-button" onClick={loadSavedSummaries} title="Refresh history">
+              {loadingSummaries ? <Loader2 className="spin" size={18} /> : <RefreshCw size={18} />}
+            </button>
+          </div>
         </div>
       </header>
 
@@ -343,20 +681,29 @@ const WatchLater = () => {
               <>
                 <div className="summary-card-header">
                   <h2 className="summary-title">{summary.title}</h2>
-                  <div className="summary-actions">
-                    <button className="action-icon-button" onClick={handleDownload} title="Download markdown">
-                      <Download size={18} />
-                    </button>
-                    <button className="action-icon-button" onClick={handleCopy} title="Copy to clipboard">
-                      <Copy size={18} />
-                    </button>
-                    <button className="action-icon-button" onClick={() => handleSummarize(url)} title="Regenerate summary">
-                      <RefreshCw size={18} />
-                    </button>
-                    <button className="action-icon-button" onClick={handleOpenFolder} title="Open local folder">
-                      <ChevronRight size={18} />
-                    </button>
-                  </div>
+                <div className="summary-actions">
+                  <button className="action-icon-button" onClick={handleDownload} title="Download markdown">
+                    <Download size={18} />
+                  </button>
+                  <button
+                    className="action-icon-button"
+                    onClick={handleDownloadPdf}
+                    title="Download PDF"
+                    disabled={pdfExportState.state === 'loading'}
+                  >
+                    {pdfExportState.state === 'loading' ? <Loader2 className="spin" size={18} /> : <FileText size={18} />}
+                  </button>
+                  <button className="action-icon-button" onClick={handleCopy} title="Copy to clipboard">
+                    <Copy size={18} />
+                  </button>
+                  <ModelSelector />
+                  <button className="action-icon-button" onClick={() => handleSummarize(url)} title="Regenerate summary">
+                    <RefreshCw size={18} />
+                  </button>
+                  <button className="action-icon-button" onClick={handleOpenFolder} title="Open local folder">
+                    <ChevronRight size={18} />
+                  </button>
+                </div>
                 </div>
 
                 <div className="summary-meta">
@@ -364,6 +711,12 @@ const WatchLater = () => {
                   <span>Author · {summary.author}</span>
                   <span>Saved file · {summary.savedFile}</span>
                 </div>
+
+                {pdfExportState.state !== 'idle' && (
+                  <div className={`summary-feedback ${pdfExportState.state}`}>
+                    {pdfExportState.state === 'loading' ? 'Preparing PDF…' : pdfExportState.message}
+                  </div>
+                )}
 
                 {summary.keyTakeaways.length > 0 && (
                   <div className="key-takeaways">
@@ -417,9 +770,18 @@ const WatchLater = () => {
             <div className="hero-topline" style={{ letterSpacing: 0 }}>
               <History size={18} /> Saved summaries
             </div>
-            <button className="action-icon-button" onClick={loadSavedSummaries} title="Refresh list">
-              {loadingSummaries ? <Loader2 className="spin" size={18} /> : <RefreshCw size={18} />}
-            </button>
+            <div className="history-actions">
+              <button className="action-icon-button" onClick={loadSavedSummaries} title="Refresh list">
+                {loadingSummaries ? <Loader2 className="spin" size={18} /> : <RefreshCw size={18} />}
+              </button>
+              <button
+                className="action-icon-button danger"
+                onClick={openClearAllModal}
+                title="Clear all summaries"
+              >
+                <Trash size={18} />
+              </button>
+            </div>
           </div>
           <div className="history-list">
             {loadingSummaries && <div className="empty-state">Refreshing history…</div>}
@@ -434,10 +796,19 @@ const WatchLater = () => {
 
                 return (
                   <div key={saved.filename} className="history-item" onClick={() => handleHistoryItemClick(saved)}>
-                    <div className="history-item-title">{displayTitle}</div>
-                    <div className="history-item-meta">
-                      {timestamp} {size && `· ${size}`}
+                    <div className="history-item-content">
+                      <div className="history-item-title">{displayTitle}</div>
+                      <div className="history-item-meta">
+                        {timestamp} {size && `· ${size}`}
+                      </div>
                     </div>
+                    <button
+                      className="history-item-delete"
+                      title="Delete summary"
+                      onClick={(event) => handleHistoryItemDelete(event, saved, displayTitle)}
+                    >
+                      <Trash size={16} />
+                    </button>
                   </div>
                 );
               })}
@@ -453,7 +824,89 @@ const WatchLater = () => {
           </button>
         </div>
       )}
-    </div>
+
+      <BatchImportModal open={isBatchImportOpen} onClose={handleBatchImportClose} />
+
+      {deleteModal.mode !== 'none' && (
+        <div className="modal-overlay" role="dialog" aria-modal="true">
+          <div className="modal">
+            <h3>
+              {deleteModal.mode === 'clearAll'
+                ? 'Delete all summaries?'
+                : `Delete summary for "${deleteModal.title}"?`}
+            </h3>
+            <p className="modal-description">
+              {deleteModal.mode === 'clearAll'
+                ? 'This removes every saved summary. Transcripts stay put unless you include them below.'
+                : deleteModal.deleteAllVersions
+                    ? 'This removes every saved summary for this video.'
+                    : 'This removes the most recent summary for this video.'}
+            </p>
+
+            {deleteModal.mode === 'clearAll' && (
+              <label className="modal-checkbox">
+                <input
+                  type="checkbox"
+                  checked={deleteModal.includeTranscripts}
+                  onChange={(event) => toggleIncludeTranscripts(event.target.checked)}
+                  disabled={deleteModal.submitting}
+                />
+                Include transcripts (.txt)
+              </label>
+            )}
+
+            {deleteModal.mode === 'single' && (
+              <label className="modal-checkbox">
+                <input
+                  type="checkbox"
+                  checked={deleteModal.deleteAllVersions}
+                  onChange={(event) => toggleDeleteAllVersions(event.target.checked)}
+                  disabled={deleteModal.submitting}
+                />
+                Delete all saved versions for this video
+              </label>
+            )}
+
+            <label className="modal-input-label">
+              Type <span>DELETE</span> to confirm
+              <input
+                type="text"
+                value={deleteModal.input}
+                onChange={(event) => updateDeleteModalInput(event.target.value)}
+                onKeyDown={(event) => {
+                  if (event.key === 'Enter') {
+                    event.preventDefault();
+                    handleConfirmDelete();
+                  }
+                }}
+                disabled={deleteModal.submitting}
+              />
+            </label>
+
+            {deleteModalError && <div className="modal-error">{deleteModalError}</div>}
+
+            <div className="modal-actions">
+              <button type="button" onClick={closeDeleteModal} disabled={deleteModal.submitting}>
+                Cancel
+              </button>
+              <button
+                type="button"
+                className="modal-delete-button"
+                onClick={handleConfirmDelete}
+                disabled={
+                  deleteModal.submitting || deleteModal.input.trim().toUpperCase() !== 'DELETE'
+                }
+              >
+                {deleteModal.submitting ? 'Deleting…' : 'Delete'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {toast && <div className={`toast ${toast.tone}`}>{toast.message}</div>}
+      </div>
+    </ActiveModelProvider>
   );
 };
 
