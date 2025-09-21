@@ -65,6 +65,7 @@ Add a batch import workflow that lets power users queue up to ten YouTube videos
 # Tasks
 ## Relevant Files
 - `src/App.tsx` — Toolbar actions, transcript library rendering, queue state management.
+- `src/components/BatchImportModal.tsx` — Batch import modal UI, validation, and submit handling.
 - `src/api.ts` — API helpers for transcript/summary generation; may need new batch orchestration helpers.
 - `src/App.css` — Styles for toolbar button, modal, and queued-card states.
 - `prompts/` — Update templates if new copy or CTA text is introduced.
@@ -74,7 +75,7 @@ Add a batch import workflow that lets power users queue up to ten YouTube videos
 ## Task Breakdown
 - [ ] 1.0 UX & Interaction
 - [x] 1.1 Add "Batch Import" toolbar button with responsive layout.
-  - [ ] 1.2 Implement modal dialog (gradient background, instructions, validation messaging).
+- [x] 1.2 Implement modal dialog (gradient background, instructions, validation messaging).
   - [ ] 1.3 Introduce transcript library card states for queued/processing/failed videos.
 
 - [ ] 2.0 Queue & Processing Logic
@@ -104,11 +105,11 @@ Add a batch import workflow that lets power users queue up to ten YouTube videos
 - [x] 1.2 Ensure the button layout adapts for mobile/desktop breakpoints without crowding existing controls.
 - [x] 1.3 Wire the button click handler to invoke the batch import modal and manage open/close state.
 
-- [ ] 2.0 Build the Batch Import modal with URL validation UX
-  - [ ] 2.1 Implement a modal component that follows purple gradient/glassmorphism styling with accessible focus management.
-  - [ ] 2.2 Add a multi-line input that trims whitespace, deduplicates entries, and constrains submissions to ≤ 10 URLs.
-  - [ ] 2.3 Integrate `extractVideoId` validation, inline error messaging, and a live counter ("n / 10 URLs ready").
-  - [ ] 2.4 Disable the import CTA unless valid URLs exist and reset modal state after successful submission or cancellation.
+- [x] 2.0 Build the Batch Import modal with URL validation UX
+- [x] 2.1 Implement a modal component that follows purple gradient/glassmorphism styling with accessible focus management.
+- [x] 2.2 Add a multi-line input that trims whitespace, deduplicates entries, and constrains submissions to ≤ 10 URLs.
+- [x] 2.3 Integrate `extractVideoId` validation, inline error messaging, and a live counter ("n / 10 URLs ready").
+- [x] 2.4 Disable the import CTA unless valid URLs exist and reset modal state after successful submission or cancellation.
 
 - [ ] 3.0 Implement the client-side batch queue manager
   - [ ] 3.1 Create a queue controller (hook or module) that tracks queued, processing, completed, and failed states per videoId.

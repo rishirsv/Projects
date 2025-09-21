@@ -30,6 +30,7 @@ import {
 } from './api';
 import { extractVideoId } from './utils';
 import './App.css';
+import BatchImportModal, { BatchImportRequest } from './components/BatchImportModal';
 import { createModelRegistry } from './config/model-registry';
 import { resolveRuntimeEnv } from '../shared/env';
 import { ActiveModelProvider } from './context/model-context';
@@ -42,6 +43,7 @@ type SummaryData = {
   content: string;
   transcript: string;
   savedFile: string;
+  modelId: string;
   keyTakeaways: string[];
   tags: string[];
 };
@@ -82,29 +84,6 @@ type ToastState = {
   tone: 'success' | 'error';
 };
 
-type BatchImportModalProps = {
-  open: boolean;
-  onClose: () => void;
-};
-
-const BatchImportModal: React.FC<BatchImportModalProps> = ({ open, onClose }) => {
-  if (!open) {
-    return null;
-  }
-
-  return (
-    <div className="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="batch-import-title">
-      <div className="modal batch-import-modal">
-        <h3 id="batch-import-title">Batch import</h3>
-        <p className="modal-description">Batch import workflow is in progress.</p>
-        <button type="button" className="hero-cancel" onClick={onClose}>
-          Close
-        </button>
-      </div>
-    </div>
-  );
-};
-
 const modelRegistry = createModelRegistry(resolveRuntimeEnv());
 const MODEL_STORAGE_KEY = 'watchlater-active-model';
 
@@ -141,6 +120,7 @@ const WatchLater = () => {
   const [deleteModalError, setDeleteModalError] = useState('');
   const [toast, setToast] = useState<ToastState | null>(null);
   const [isBatchImportOpen, setIsBatchImportOpen] = useState(false);
+  const [isBatchImportSubmitting, setIsBatchImportSubmitting] = useState(false);
   const [activeModelId, setActiveModelId] = useState<string>(() => {
     const fallback = modelRegistry.defaultModel;
 
@@ -167,6 +147,7 @@ const WatchLater = () => {
   const inputRef = useRef<HTMLInputElement | null>(null);
   const pdfStatusTimeoutRef = useRef<number | null>(null);
   const toastTimeoutRef = useRef<number | null>(null);
+  const batchImportTriggerRef = useRef<HTMLButtonElement | null>(null);
 
   const updatePdfExportState = useCallback((next: PdfExportState) => {
     if (pdfStatusTimeoutRef.current) {
@@ -299,7 +280,7 @@ const WatchLater = () => {
 
         setCurrentStage(3);
 
-        const result = await generateSummaryFromFile(extractedVideoId);
+        const result = await generateSummaryFromFile(extractedVideoId, activeModelId);
 
         setCurrentStage(4);
 
@@ -310,6 +291,7 @@ const WatchLater = () => {
           content: result.summary,
           transcript: transcriptText,
           savedFile: result.savedFile.filename,
+          modelId: result.modelId,
           keyTakeaways: extractKeyTakeaways(result.summary),
           tags: extractHashtags(result.summary)
         };
@@ -324,7 +306,7 @@ const WatchLater = () => {
         console.error('Summarization error:', err);
       }
     },
-    [isYouTubeUrl, loadSavedSummaries, status, updatePdfExportState, url]
+    [activeModelId, isYouTubeUrl, loadSavedSummaries, status, updatePdfExportState, url]
   );
 
   useEffect(() => {
@@ -406,6 +388,7 @@ const WatchLater = () => {
         content: summaryData.summary,
         transcript: '',
         savedFile: summaryData.filename,
+        modelId: summary?.modelId ?? activeModelId,
         keyTakeaways: extractKeyTakeaways(summaryData.summary),
         tags: extractHashtags(summaryData.summary)
       };
@@ -559,12 +542,37 @@ const WatchLater = () => {
   };
 
   const handleBatchImportClick = () => {
+    setIsBatchImportSubmitting(false);
     setIsBatchImportOpen(true);
   };
 
-  const handleBatchImportClose = () => {
+  const handleBatchImportClose = useCallback(() => {
     setIsBatchImportOpen(false);
-  };
+    setIsBatchImportSubmitting(false);
+
+    if (typeof window !== 'undefined') {
+      window.requestAnimationFrame(() => {
+        batchImportTriggerRef.current?.focus();
+      });
+    }
+  }, [batchImportTriggerRef]);
+
+  const handleBatchImportSubmit = useCallback(
+    async (requests: BatchImportRequest[]) => {
+      setIsBatchImportSubmitting(true);
+      try {
+        handleBatchImportClose();
+        const count = requests.length;
+        showToast(
+          `${count} ${count === 1 ? 'video' : 'videos'} queued for batch import`,
+          'success'
+        );
+      } finally {
+        setIsBatchImportSubmitting(false);
+      }
+    },
+    [handleBatchImportClose, showToast]
+  );
 
   return (
     <ActiveModelProvider
@@ -578,7 +586,14 @@ const WatchLater = () => {
           <span className="header-badge">Phase 3</span>
         </div>
         <div className="header-actions">
-          <button type="button" className="batch-import-button" onClick={handleBatchImportClick}>
+          <button
+            ref={batchImportTriggerRef}
+            type="button"
+            className="batch-import-button"
+            onClick={handleBatchImportClick}
+            aria-haspopup="dialog"
+            aria-expanded={isBatchImportOpen}
+          >
             Batch Import
           </button>
           <div className="header-secondary-actions">
@@ -825,7 +840,12 @@ const WatchLater = () => {
         </div>
       )}
 
-      <BatchImportModal open={isBatchImportOpen} onClose={handleBatchImportClose} />
+      <BatchImportModal
+        open={isBatchImportOpen}
+        onClose={handleBatchImportClose}
+        onSubmit={handleBatchImportSubmit}
+        isSubmitting={isBatchImportSubmitting}
+      />
 
       {deleteModal.mode !== 'none' && (
         <div className="modal-overlay" role="dialog" aria-modal="true">
