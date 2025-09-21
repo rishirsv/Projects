@@ -121,7 +121,7 @@ Add a batch import workflow that lets power users queue up to ten YouTube videos
   - [x] 4.2 Update transcript library cards to reflect queue states (queued, fetching, generating, success, failed) and lock actions until complete.
   - [x] 4.3 Surface failure reasons, allow per-item retry, and ensure sanitized filenames prevent duplicate exports.
 
-- [ ] 5.0 Verify, document, and roll out the Batch Import workflow
-  - [ ] 5.1 Add unit/integration tests covering queue transitions, modal validation, and UI state updates.
-  - [ ] 5.2 Draft manual QA steps (invalid URLs, partial batches, refresh mid-run, concurrency with single import) and update docs/README.
-  - [ ] 5.3 Capture logging or telemetry hooks for queue length, duration, and failure counts to monitor roll-out.
+- [x] 5.0 Verify, document, and roll out the Batch Import workflow
+  - [x] 5.1 Add unit/integration tests covering queue transitions, modal validation, and UI state updates.
+  - [x] 5.2 Draft manual QA steps (invalid URLs, partial batches, refresh mid-run, concurrency with single import) and update docs/README.
+  - [x] 5.3 Capture logging or telemetry hooks for queue length, duration, and failure counts to monitor roll-out.

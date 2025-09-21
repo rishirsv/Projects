@@ -31,13 +31,11 @@ import {
 } from './api';
 import { extractVideoId } from './utils';
 import './App.css';
-import BatchImportModal, { BatchImportRequest } from './components/BatchImportModal';
+import BatchImportModal, { type BatchImportRequest } from './components/BatchImportModal';
 import {
-  useBatchImportQueue,
-  BatchQueueItem,
-  BatchProcessor,
-  BatchQueueStage
+  useBatchImportQueue
 } from './hooks/useBatchImportQueue';
+import type { BatchQueueItem, BatchProcessor, BatchQueueStage } from './hooks/useBatchImportQueue';
 import { createModelRegistry } from './config/model-registry';
 import { resolveRuntimeEnv } from '../shared/env';
 import { ActiveModelProvider } from './context/model-context';

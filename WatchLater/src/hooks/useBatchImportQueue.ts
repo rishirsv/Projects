@@ -84,6 +84,12 @@ type PersistedQueueItem = Partial<BatchQueueItem> & {
   url?: string;
 };
 
+const logQueueEvent = (message: string, payload: Record<string, unknown> = {}) => {
+  if (typeof console !== 'undefined') {
+    console.info(`[batch-import] ${message}`, payload);
+  }
+};
+
 type PersistedQueueState = {
   items?: Record<string, PersistedQueueItem>;
   order?: unknown;
@@ -290,6 +296,11 @@ export const useBatchImportQueue = () => {
       const activeId = previous.activeId === videoId ? null : previous.activeId;
       const nextState: QueueState = { ...previous, items, activeId };
       stateRef.current = nextState;
+      logQueueEvent('job-succeeded', {
+        videoId,
+        queueLength: nextState.order.length,
+        completedAt: timestamp
+      });
       return nextState;
     });
   }, []);
@@ -323,6 +334,11 @@ export const useBatchImportQueue = () => {
         const activeId = previous.activeId === videoId ? null : previous.activeId;
         const nextState: QueueState = { ...previous, items, activeId };
         stateRef.current = nextState;
+        logQueueEvent('job-failed', {
+          videoId,
+          queueLength: nextState.order.length,
+          error: errorMessage
+        });
         return nextState;
       });
     },
@@ -347,6 +363,7 @@ export const useBatchImportQueue = () => {
           const items = { ...previous.items, [videoId]: nextItem };
           const nextState: QueueState = { ...previous, items };
           stateRef.current = nextState;
+          logQueueEvent('job-stage', { videoId, stage });
           return nextState;
         });
       }
@@ -459,8 +476,10 @@ export const useBatchImportQueue = () => {
     const added: BatchQueueItem[] = [];
     const skipped: EnqueueResult['skipped'] = [];
 
+    let queueLengthAfter = stateRef.current.order.length;
     setState((previous) => {
       if (uniqueRequests.size === 0) {
+        queueLengthAfter = previous.order.length;
         return previous;
       }
 
@@ -506,6 +525,7 @@ export const useBatchImportQueue = () => {
       }
 
       if (!changed) {
+        queueLengthAfter = previous.order.length;
         return previous;
       }
 
@@ -516,8 +536,17 @@ export const useBatchImportQueue = () => {
       };
 
       stateRef.current = nextState;
+      queueLengthAfter = nextState.order.length;
       return nextState;
     });
+
+    if (added.length > 0 || skipped.length > 0) {
+      logQueueEvent('enqueue', {
+        added: added.map((item) => item.videoId),
+        skipped: skipped.map((item) => item.videoId),
+        queueLength: queueLengthAfter
+      });
+    }
 
     if (added.length > 0) {
       processNext();
@@ -568,6 +597,9 @@ export const useBatchImportQueue = () => {
         if (!isPausedNow) {
           processNext();
         }
+        logQueueEvent(isPausedNow ? 'queue-paused' : 'queue-resumed', {
+          tokens: Array.from(tokens)
+        });
       }
     },
     [processNext]
@@ -632,6 +664,9 @@ export const useBatchImportQueue = () => {
         activeId: previous.activeId && items[previous.activeId] ? previous.activeId : null
       };
       stateRef.current = nextState;
+      logQueueEvent('clear-completed', {
+        remaining: nextState.order.length
+      });
       return nextState;
     });
   }, []);
