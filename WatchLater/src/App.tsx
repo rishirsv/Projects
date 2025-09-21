@@ -150,7 +150,14 @@ const WatchLater = () => {
   const toastTimeoutRef = useRef<number | null>(null);
   const batchImportTriggerRef = useRef<HTMLButtonElement | null>(null);
   const batchQueue = useBatchImportQueue();
-  const { enqueue: enqueueBatchRequests, stats: batchQueueStats } = batchQueue;
+  const {
+    enqueue: enqueueBatchRequests,
+    stats: batchQueueStats,
+    setProcessingHold: setBatchQueueHold
+  } = batchQueue;
+
+  const pendingBatchCount = batchQueueStats.processing + batchQueueStats.queued;
+  const hasPendingBatch = pendingBatchCount > 0;
 
   const updatePdfExportState = useCallback((next: PdfExportState) => {
     if (pdfStatusTimeoutRef.current) {
@@ -256,6 +263,16 @@ const WatchLater = () => {
     async (urlToProcess = url) => {
       if (!isYouTubeUrl(urlToProcess) || status === 'processing') return;
 
+      if (hasPendingBatch) {
+        showToast(
+          'Batch import queue is running. Wait for it to finish before starting a single summary.',
+          'error'
+        );
+        return;
+      }
+
+      setBatchQueueHold('single-import', true);
+
       updatePdfExportState({ state: 'idle' });
       setStatus('processing');
       setCurrentStage(1);
@@ -307,9 +324,21 @@ const WatchLater = () => {
         setStatus('error');
         setCurrentStage(0);
         console.error('Summarization error:', err);
+      } finally {
+        setBatchQueueHold('single-import', false);
       }
     },
-    [activeModelId, isYouTubeUrl, loadSavedSummaries, status, updatePdfExportState, url]
+    [
+      activeModelId,
+      hasPendingBatch,
+      isYouTubeUrl,
+      loadSavedSummaries,
+      setBatchQueueHold,
+      showToast,
+      status,
+      updatePdfExportState,
+      url
+    ]
   );
 
   useEffect(() => {
@@ -538,6 +567,7 @@ const WatchLater = () => {
   const summaryCount = savedSummaries.length;
   const isProcessing = status === 'processing';
   const isReturningUser = summaryCount > 0;
+  const isSummarizeDisabled = !isYouTubeUrl(url) || isProcessing || hasPendingBatch;
 
   const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
@@ -611,10 +641,13 @@ const WatchLater = () => {
             onClick={handleBatchImportClick}
             aria-haspopup="dialog"
             aria-expanded={isBatchImportOpen}
+            disabled={isProcessing}
             title={
-              batchQueueStats.total > 0
-                ? `Open batch import · ${batchQueueStats.processing + batchQueueStats.queued} pending`
-                : 'Open batch import'
+              isProcessing
+                ? 'Finish the current summary before starting a batch import'
+                : batchQueueStats.total > 0
+                    ? `Open batch import · ${pendingBatchCount} pending`
+                    : 'Open batch import'
             }
           >
             Batch Import
@@ -658,11 +691,16 @@ const WatchLater = () => {
               </button>
             )}
           </label>
-          <button type="submit" className="hero-submit" disabled={!isYouTubeUrl(url) || isProcessing}>
+          <button type="submit" className="hero-submit" disabled={isSummarizeDisabled}>
             {isProcessing ? <Loader2 className="spin" size={18} /> : <ArrowRight size={18} />}
             {isProcessing ? 'Working…' : 'Summarize video'}
           </button>
         </form>
+        {hasPendingBatch && (
+          <div className="hero-queue-warning" role="status">
+            Batch import queue is running ({pendingBatchCount} pending). Single summaries resume once it finishes.
+          </div>
+        )}
         <div className="hero-proof-points">
           <span>
             <ShieldCheck size={16} color="#46e0b1" /> Private, local-first pipeline

@@ -86,7 +86,7 @@ Add a batch import workflow that lets power users queue up to ten YouTube videos
 - [ ] 3.0 Persistence & Storage
   - [ ] 3.1 Persist queue state to localStorage and reconcile on load.
   - [ ] 3.2 Ensure saved transcripts/summaries reuse sanitized filenames without duplicates.
-  - [ ] 3.3 Guard against simultaneous single-URL and batch conflicts (locking or scheduling strategy).
+  - [x] 3.3 Guard against simultaneous single-URL and batch conflicts (locking or scheduling strategy).
 
 - [ ] 4.0 Testing & QA
   - [ ] 4.1 Add Jest tests for queue manager (enqueue, dedupe, status transitions).
@@ -114,7 +114,7 @@ Add a batch import workflow that lets power users queue up to ten YouTube videos
 - [ ] 3.0 Implement the client-side batch queue manager
 - [x] 3.1 Create a queue controller (hook or module) that tracks queued, processing, completed, and failed states per videoId.
   - [x] 3.2 Persist queue state to `localStorage` and hydrate it on load so refreshes retain progress.
-  - [ ] 3.3 Schedule jobs sequentially (one active request) with hooks for pausing/resuming and detecting duplicates across batches.
+  - [x] 3.3 Schedule jobs sequentially (one active request) with hooks for pausing/resuming and detecting duplicates across batches.
 
 - [ ] 4.0 Integrate queued videos with transcript pipeline and persistence
   - [ ] 4.1 For each queued item, call metadata → transcript → summary helpers and reuse existing save flows.

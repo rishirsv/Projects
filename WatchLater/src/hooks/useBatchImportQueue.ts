@@ -228,6 +228,8 @@ export const useBatchImportQueue = () => {
   const isProcessingRef = useRef(false);
   const stateRef = useRef<QueueState>(state);
   const lastPersistedSnapshot = useRef<string | null>(null);
+  const pauseTokensRef = useRef<Set<string>>(new Set());
+  const [isPaused, setIsPaused] = useState(false);
 
   useEffect(() => {
     stateRef.current = state;
@@ -359,6 +361,10 @@ export const useBatchImportQueue = () => {
 
     const processor = processorRef.current;
     if (!processor) {
+      return;
+    }
+
+    if (pauseTokensRef.current.size > 0) {
       return;
     }
 
@@ -545,6 +551,28 @@ export const useBatchImportQueue = () => {
     });
   }, []);
 
+  const setProcessingHold = useCallback(
+    (token: string, shouldHold: boolean) => {
+      const tokens = pauseTokensRef.current;
+      const wasPaused = tokens.size > 0;
+
+      if (shouldHold) {
+        tokens.add(token);
+      } else {
+        tokens.delete(token);
+      }
+
+      const isPausedNow = tokens.size > 0;
+      if (isPausedNow !== wasPaused) {
+        setIsPaused(isPausedNow);
+        if (!isPausedNow) {
+          processNext();
+        }
+      }
+    },
+    [processNext]
+  );
+
   const retryItem = useCallback(
     (videoId: string) => {
       setState((previous) => {
@@ -634,7 +662,9 @@ export const useBatchImportQueue = () => {
     updateStage,
     getItem,
     stats,
-    isProcessing: isProcessingRef.current
+    isProcessing: isProcessingRef.current,
+    isPaused,
+    setProcessingHold
   };
 };
 

@@ -97,6 +97,13 @@
   transform: translateY(0);
 }
 
+.batch-import-button:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
 .batch-import-overlay {
   align-items: flex-start;
   justify-content: center;
@@ -486,6 +493,16 @@
 .hero-cancel:hover {
   border-color: rgba(70, 224, 177, 0.6);
   color: var(--color-text-primary);
+}
+
+.hero-queue-warning {
+  margin-top: var(--space-3);
+  padding: var(--space-3) var(--space-4);
+  border-radius: var(--radius-lg);
+  border: 1px solid rgba(255, 108, 143, 0.45);
+  background: rgba(62, 22, 34, 0.45);
+  color: #ff6c8f;
+  font-size: 0.9rem;
 }
 
 .hero-proof-points {
