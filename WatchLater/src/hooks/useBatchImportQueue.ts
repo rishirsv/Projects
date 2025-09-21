@@ -66,16 +66,197 @@ const initialState: QueueState = {
   activeId: null
 };
 
+const STORAGE_KEY = 'watchlater-batch-import-queue';
+const VALID_STATUSES: BatchQueueStatus[] = ['queued', 'processing', 'succeeded', 'failed'];
+const VALID_STAGES: BatchQueueStage[] = [
+  'queued',
+  'fetchingMetadata',
+  'fetchingTranscript',
+  'generatingSummary',
+  'completed',
+  'failed'
+];
+
 const nowIso = () => new Date().toISOString();
 
+type PersistedQueueItem = Partial<BatchQueueItem> & {
+  videoId?: string;
+  url?: string;
+};
+
+type PersistedQueueState = {
+  items?: Record<string, PersistedQueueItem>;
+  order?: unknown;
+  activeId?: unknown;
+};
+
+const sanitizeQueueState = (candidate: unknown): QueueState => {
+  if (!candidate || typeof candidate !== 'object') {
+    return initialState;
+  }
+
+  const { items: rawItems, order: rawOrder, activeId } = candidate as PersistedQueueState;
+  const items: Record<string, BatchQueueItem> = {};
+  const fallbackTimestamp = nowIso();
+
+  if (rawItems && typeof rawItems === 'object') {
+    for (const [videoId, rawItem] of Object.entries(rawItems)) {
+      if (!rawItem || typeof rawItem !== 'object') {
+        continue;
+      }
+
+      if (typeof videoId !== 'string' || videoId.length === 0) {
+        continue;
+      }
+
+      const url = typeof rawItem.url === 'string' ? rawItem.url : '';
+      if (!url) {
+        continue;
+      }
+
+      const rawStatus = (rawItem as PersistedQueueItem).status;
+      const rawStage = rawItem.stage;
+
+      const status: BatchQueueStatus = VALID_STATUSES.includes(rawStatus as BatchQueueStatus)
+        ? (rawStatus as BatchQueueStatus)
+        : 'queued';
+
+      const normalizedStatus: BatchQueueStatus = status === 'processing' ? 'queued' : status;
+
+      const stage: BatchQueueStage = VALID_STAGES.includes(rawStage as BatchQueueStage)
+        ? (rawStage as BatchQueueStage)
+        : 'queued';
+
+      const normalizedStage: BatchQueueStage =
+        normalizedStatus === 'queued' && stage !== 'failed' ? 'queued' : stage;
+
+      const attemptsCandidate = (rawItem as PersistedQueueItem).attempts;
+      const attempts =
+        typeof attemptsCandidate === 'number' && Number.isFinite(attemptsCandidate) && attemptsCandidate >= 0
+          ? Math.floor(attemptsCandidate)
+          : 0;
+
+      const createdAt =
+        typeof rawItem.createdAt === 'string' && rawItem.createdAt.trim().length > 0
+          ? rawItem.createdAt
+          : fallbackTimestamp;
+      const updatedAt =
+        typeof rawItem.updatedAt === 'string' && rawItem.updatedAt.trim().length > 0
+          ? rawItem.updatedAt
+          : createdAt;
+      const startedAt =
+        typeof rawItem.startedAt === 'string' && rawItem.startedAt.trim().length > 0
+          ? rawItem.startedAt
+          : undefined;
+      const lastAttemptedAt =
+        typeof rawItem.lastAttemptedAt === 'string' && rawItem.lastAttemptedAt.trim().length > 0
+          ? rawItem.lastAttemptedAt
+          : undefined;
+      const completedAt =
+        normalizedStatus === 'succeeded' &&
+        typeof rawItem.completedAt === 'string' &&
+        rawItem.completedAt.trim().length > 0
+          ? rawItem.completedAt
+          : undefined;
+      const error =
+        normalizedStatus === 'failed' && typeof rawItem.error === 'string'
+          ? rawItem.error
+          : undefined;
+
+      items[videoId] = {
+        videoId,
+        url,
+        status: normalizedStatus,
+        stage: normalizedStage,
+        attempts,
+        createdAt,
+        updatedAt,
+        startedAt,
+        lastAttemptedAt,
+        completedAt,
+        error
+      };
+    }
+  }
+
+  const rawOrderArray = Array.isArray(rawOrder) ? rawOrder : [];
+  const order: string[] = [];
+
+  for (const entry of rawOrderArray) {
+    if (typeof entry === 'string' && items[entry] && !order.includes(entry)) {
+      order.push(entry);
+    }
+  }
+
+  for (const videoId of Object.keys(items)) {
+    if (!order.includes(videoId)) {
+      order.push(videoId);
+    }
+  }
+
+  const normalizedActiveId =
+    typeof activeId === 'string' && items[activeId] ? activeId : null;
+
+  return {
+    items,
+    order,
+    activeId: normalizedActiveId
+  };
+};
+
+const loadPersistedQueueState = (): QueueState => {
+  if (typeof window === 'undefined') {
+    return initialState;
+  }
+
+  try {
+    const raw = window.localStorage.getItem(STORAGE_KEY);
+    if (!raw) {
+      return initialState;
+    }
+    const parsed = JSON.parse(raw) as PersistedQueueState;
+    return sanitizeQueueState(parsed);
+  } catch (error) {
+    console.warn('[batch-import] Failed to load queue state from storage:', error);
+    return initialState;
+  }
+};
+
 export const useBatchImportQueue = () => {
-  const [state, setState] = useState<QueueState>(initialState);
+  const [state, setState] = useState<QueueState>(() => loadPersistedQueueState());
   const processorRef = useRef<BatchProcessor | null>(null);
   const isProcessingRef = useRef(false);
-  const stateRef = useRef<QueueState>(initialState);
+  const stateRef = useRef<QueueState>(state);
+  const lastPersistedSnapshot = useRef<string | null>(null);
 
   useEffect(() => {
     stateRef.current = state;
+  }, [state]);
+
+  useEffect(() => {
+    if (typeof window === 'undefined') {
+      return;
+    }
+
+    try {
+      if (state.order.length === 0) {
+        if (lastPersistedSnapshot.current !== null) {
+          window.localStorage.removeItem(STORAGE_KEY);
+          lastPersistedSnapshot.current = null;
+        }
+        return;
+      }
+
+      const snapshot = JSON.stringify(state);
+      if (snapshot === lastPersistedSnapshot.current) {
+        return;
+      }
+
+      window.localStorage.setItem(STORAGE_KEY, snapshot);
+      lastPersistedSnapshot.current = snapshot;
+    } catch (error) {
+      console.warn('[batch-import] Failed to persist queue state:', error);
+    }
   }, [state]);
 
   const markSuccess = useCallback((videoId: string, stage: BatchQueueStage = 'completed') => {
@@ -105,7 +286,9 @@ export const useBatchImportQueue = () => {
 
       const items = { ...previous.items, [videoId]: nextItem };
       const activeId = previous.activeId === videoId ? null : previous.activeId;
-      return { ...previous, items, activeId };
+      const nextState: QueueState = { ...previous, items, activeId };
+      stateRef.current = nextState;
+      return nextState;
     });
   }, []);
 
@@ -136,7 +319,9 @@ export const useBatchImportQueue = () => {
 
         const items = { ...previous.items, [videoId]: nextItem };
         const activeId = previous.activeId === videoId ? null : previous.activeId;
-        return { ...previous, items, activeId };
+        const nextState: QueueState = { ...previous, items, activeId };
+        stateRef.current = nextState;
+        return nextState;
       });
     },
     []
@@ -158,7 +343,9 @@ export const useBatchImportQueue = () => {
           };
 
           const items = { ...previous.items, [videoId]: nextItem };
-          return { ...previous, items };
+          const nextState: QueueState = { ...previous, items };
+          stateRef.current = nextState;
+          return nextState;
         });
       }
     }),
@@ -206,8 +393,10 @@ export const useBatchImportQueue = () => {
 
       snapshot = nextItem;
       const items = { ...previous.items, [nextId]: nextItem };
+      const nextState: QueueState = { ...previous, items, activeId: nextId };
+      stateRef.current = nextState;
       isProcessingRef.current = true;
-      return { ...previous, items, activeId: nextId };
+      return nextState;
     });
 
     if (!snapshot) {
@@ -350,7 +539,9 @@ export const useBatchImportQueue = () => {
       };
 
       const items = { ...previous.items, [videoId]: updated };
-      return { ...previous, items };
+      const nextState: QueueState = { ...previous, items };
+      stateRef.current = nextState;
+      return nextState;
     });
   }, []);
 

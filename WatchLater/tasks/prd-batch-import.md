@@ -113,7 +113,7 @@ Add a batch import workflow that lets power users queue up to ten YouTube videos
 
 - [ ] 3.0 Implement the client-side batch queue manager
 - [x] 3.1 Create a queue controller (hook or module) that tracks queued, processing, completed, and failed states per videoId.
-  - [ ] 3.2 Persist queue state to `localStorage` and hydrate it on load so refreshes retain progress.
+  - [x] 3.2 Persist queue state to `localStorage` and hydrate it on load so refreshes retain progress.
   - [ ] 3.3 Schedule jobs sequentially (one active request) with hooks for pausing/resuming and detecting duplicates across batches.
 
 - [ ] 4.0 Integrate queued videos with transcript pipeline and persistence
