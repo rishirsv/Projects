@@ -112,7 +112,7 @@ Add a batch import workflow that lets power users queue up to ten YouTube videos
 - [x] 2.4 Disable the import CTA unless valid URLs exist and reset modal state after successful submission or cancellation.
 
 - [ ] 3.0 Implement the client-side batch queue manager
-  - [ ] 3.1 Create a queue controller (hook or module) that tracks queued, processing, completed, and failed states per videoId.
+- [x] 3.1 Create a queue controller (hook or module) that tracks queued, processing, completed, and failed states per videoId.
   - [ ] 3.2 Persist queue state to `localStorage` and hydrate it on load so refreshes retain progress.
   - [ ] 3.3 Schedule jobs sequentially (one active request) with hooks for pausing/resuming and detecting duplicates across batches.
 

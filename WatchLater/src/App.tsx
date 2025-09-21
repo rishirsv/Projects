@@ -31,6 +31,7 @@ import {
 import { extractVideoId } from './utils';
 import './App.css';
 import BatchImportModal, { BatchImportRequest } from './components/BatchImportModal';
+import { useBatchImportQueue } from './hooks/useBatchImportQueue';
 import { createModelRegistry } from './config/model-registry';
 import { resolveRuntimeEnv } from '../shared/env';
 import { ActiveModelProvider } from './context/model-context';
@@ -148,6 +149,8 @@ const WatchLater = () => {
   const pdfStatusTimeoutRef = useRef<number | null>(null);
   const toastTimeoutRef = useRef<number | null>(null);
   const batchImportTriggerRef = useRef<HTMLButtonElement | null>(null);
+  const batchQueue = useBatchImportQueue();
+  const { enqueue: enqueueBatchRequests, stats: batchQueueStats } = batchQueue;
 
   const updatePdfExportState = useCallback((next: PdfExportState) => {
     if (pdfStatusTimeoutRef.current) {
@@ -561,17 +564,32 @@ const WatchLater = () => {
     async (requests: BatchImportRequest[]) => {
       setIsBatchImportSubmitting(true);
       try {
+        const result = enqueueBatchRequests(requests);
+
+        if (result.added.length === 0) {
+          const reason = result.skipped[0]?.reason;
+          const message =
+            reason === 'alreadyCompleted'
+              ? 'Those videos already have completed summaries.'
+              : reason === 'failedNeedsRetry'
+                  ? 'Use retry on failed videos from the queue before re-queuing.'
+                  : 'Those videos are already in the batch queue.';
+          throw new Error(message);
+        }
+
         handleBatchImportClose();
-        const count = requests.length;
-        showToast(
-          `${count} ${count === 1 ? 'video' : 'videos'} queued for batch import`,
-          'success'
-        );
+        const addedCount = result.added.length;
+        const skippedCount = result.skipped.length;
+        const parts = [`${addedCount} ${addedCount === 1 ? 'video' : 'videos'} queued`];
+        if (skippedCount > 0) {
+          parts.push(`${skippedCount} duplicate${skippedCount === 1 ? '' : 's'} skipped`);
+        }
+        showToast(parts.join(' · '), 'success');
       } finally {
         setIsBatchImportSubmitting(false);
       }
     },
-    [handleBatchImportClose, showToast]
+    [enqueueBatchRequests, handleBatchImportClose, showToast]
   );
 
   return (
@@ -593,6 +611,11 @@ const WatchLater = () => {
             onClick={handleBatchImportClick}
             aria-haspopup="dialog"
             aria-expanded={isBatchImportOpen}
+            title={
+              batchQueueStats.total > 0
+                ? `Open batch import · ${batchQueueStats.processing + batchQueueStats.queued} pending`
+                : 'Open batch import'
+            }
           >
             Batch Import
           </button>
