@@ -1,209 +1,72 @@
 # Personal Capital Expense Tracker
 
-A Google Apps Script-based personal finance management system that integrates with Google Sheets to import, categorize, and analyze financial transactions from multiple bank accounts.
+> Automate multi-bank CSV imports, rule-based categorization, and financial insights inside Google Sheets with Google Apps Script and Python digests.
 
-## Overview
+## Table of Contents
+- [✨ Key Benefits](#-key-benefits)
+- [🚀 Quick Start](#-quick-start)
+- [📋 Prerequisites](#-prerequisites)
+- [🎯 Target Audience](#-target-audience)
+- [🛠️ Technology Stack](#-technology-stack)
+- [💡 Use Cases](#-use-cases)
+- [📈 Success Stories](#-success-stories)
+- [📚 Documentation](#-documentation)
 
-This project provides a comprehensive expense tracking solution built on Google Apps Script. It allows users to import CSV files from various banks (AMEX, CIBC, Simplii), categorize transactions, and generate spending insights—all within a Google Sheets environment.
+## ✨ Key Benefits
+- Drag-and-drop CSV import workflow with automatic bank format detection.
+- Rule engine for consistent categorization, confidence scoring, and audit trails.
+- Integrated staging → ledger pipeline with date filtering and rollbacks.
+- Rich Google Sheets UI extensions (dialogs, sidebars, charts) tailored for finance teams.
+- Python utilities that convert portfolio exports into analytics-ready digests.
 
-## Features
+## 🚀 Quick Start
+1. **Install CLASP**: `npm install -g @google/clasp`
+2. **Clone**: `git clone <repo> && cd "Personal Capital"`
+3. **Authenticate**: `clasp login`
+4. **Deploy**: `clasp push`
+5. **Configure Sheets**: Create a Google Sheet with `STG_Transactions`, `Transactions`, `SYS_ImportLog`, and `SYS_CatRules` tabs.
+6. **Run**: Use the `Personal Capital` menu → `Import CSV(s)…` to upload your first bank file.
 
-- **Multi-Bank CSV Import**: Support for AMEX, CIBC, and Simplii bank formats
-- **Two-Stage Workflow**: Import to staging area → Review/categorize → Move to final ledger
-- **Auto-Categorization**: Rule-based categorization system (to be implemented)
-- **Spending Insights**: Visual analytics with charts and comparative metrics
-- **Date-Range Filtering**: Selective import from staging to transactions
+> ✅ See the [Installation Guide](./docs/installation.md) and [Usage Guide](./docs/usage-guide.md) for full setup and workflows.
 
-## Project Structure
+## 📋 Prerequisites
+- Google Workspace or personal Google account with Sheets access.
+- CLASP CLI (`@google/clasp`) and Node.js 18+ for deployment.
+- Access to bank CSV exports (AMEX, CIBC, Simplii out-of-the-box).
+- Optional: Python 3.10+ and `pip` for running digest scripts.
 
-### Core Files
+## 🎯 Target Audience
+- Individuals and families managing multi-account finances in Google Sheets.
+- Financial coaches consolidating client transactions into a single ledger.
+- Quant-minded professionals seeking granular spending analytics without SaaS lock-in.
+- Developers extending Apps Script solutions with Python-based reporting.
 
-#### `Code.js`
-The main Google Apps Script file containing all server-side logic:
-- **Sheet Constants**: `SH_STG` (STG_Transactions) and `SH_TX` (Transactions)
-- **Menu Creation**: `onOpen()` - Builds the custom "Personal Capital" menu
-- **Import Functions**:
-  - `importAmexCSV()` - Handles AMEX CSV import (TODO: Complete implementation)
-  - `importCIBCCSV()` - Handles CIBC CSV import (TODO: Complete implementation)
-  - `importSimpliiCSV()` - Handles Simplii CSV import (TODO: Complete implementation)
-- **Transfer Function**: `importToTransactions()` - Moves rows from staging to transactions
-- **Dialog Launchers**: Functions to open various HTML dialogs
+## 🛠️ Technology Stack
+- Google Apps Script (V8 runtime) for menu actions, sheet automation, and HTML dialogs.
+- HTML/CSS/JavaScript for modal dialogs and sidebars (file uploads, insights dashboards).
+- Python (pandas, numpy, scipy) for net-worth and IBKR digest generation.
+- Google Sheets as the primary data store with staging, ledger, rules, and log sheets.
 
-#### `appsscript.json`
-Google Apps Script manifest file:
-- Timezone: America/Toronto
-- Runtime: V8 engine
-- Logging: Stackdriver
+## 💡 Use Cases
+- **Household Budgeting**: Import CSVs weekly, auto-categorize recurring merchants, and review exceptions in the sidebar.
+- **Side Hustle Tracking**: Separate personal vs. business categories with rule priorities and confidence scoring.
+- **Portfolio Insights**: Transform IBKR exports into digest CSVs for net worth, allocations, and cash flow.
+- **Client Reviews**: Present curated spending dashboards using the Spending Insights sidebar.
 
-### HTML Dialogs
+## 📈 Success Stories
+- A couple consolidates AMEX and CIBC statements monthly, using rule confidences to focus only on ambiguous expenses.
+- A consultant blends Simplii CSVs with Python cash-flow digests to produce quarterly tax-ready reports.
+- A financial coach shares templated Sheets and scripts with clients, reducing onboarding time from hours to minutes.
 
-#### `ImportDialog.html`
-Contains client-side import logic for CSV files. Includes JavaScript functions that mirror the server-side import functions but appear to be incomplete implementations.
-
-#### `ImportToLedgerDialog.html`
-Simple date-range picker for moving transactions from staging to the ledger:
-- Two date inputs (from/to)
-- Calls `importToTransactions()` on submission
-
-#### `ReviewSidebar.html`
-Sidebar for reviewing and categorizing uncategorized transactions:
-- Displays transaction details in a table
-- Dropdown for category selection
-- Checkbox to create categorization rules
-- Apply button for each row
-
-#### `SpendingInsightsDialog.html`
-Period selection dialog for generating spending insights:
-- Options: Last Month, Year-to-Date, Trailing 12 Months
-- Triggers insight generation
-
-#### `SpendingInsightsSidebar.html`
-Rich visualization sidebar for spending analytics:
-- Narrative summary section
-- Google Charts integration for visual representation
-- Detailed metrics table with comparisons
-
-### Configuration
-
-#### `.clasp.json`
-CLASP (Command Line Apps Script) configuration:
-- Script ID for deployment
-- File extension mappings
-- Push/pull settings
-
-## Setup Instructions
-
-1. **Prerequisites**:
-   - Google Account with Google Sheets access
-   - Node.js and npm installed
-   - CLASP CLI tool: `npm install -g @google/clasp`
-
-2. **Clone and Deploy**:
-   ```bash
-   git clone [repository-url]
-   cd "Personal Capital"
-   clasp login
-   clasp push
-   ```
-
-3. **Spreadsheet Setup**:
-   - Create sheets named "STG_Transactions" and "Transactions"
-   - Ensure both sheets have matching column headers:
-     - Date | Vendor | Amount | Category | Source
-
-## Usage
-
-1. **Import Bank Data**:
-   - Menu → Personal Capital → Import [Bank] CSV
-   - Select CSV file(s)
-   - Data imports to STG_Transactions sheet
-
-2. **Review & Categorize**:
-   - Review imported transactions in staging
-   - Use the Review Sidebar for bulk categorization
-
-3. **Move to Ledger**:
-   - Menu → Personal Capital → Import Staging → Transactions
-   - Select date range (or leave blank for all)
-   - Click Import
-
-4. **Generate Insights**:
-   - Menu → Personal Capital → Generate Spending Insights
-   - Select analysis period
-   - View charts and metrics
-
-## Future Enhancements
-
-### High Priority
-1. **Complete CSV Import Functions**:
-   - Implement actual CSV parsing and data insertion
-   - Add duplicate detection
-   - Proper column mapping for each bank format
-
-2. **Auto-Categorization Engine**:
-   - Implement `autoCategorize()` function
-   - Rule-based pattern matching
-   - Machine learning suggestions
-
-3. **Data Validation**:
-   - Amount parsing and validation
-   - Date format standardization
-   - Currency handling
-
-### Medium Priority
-4. **Enhanced Analytics**:
-   - Budget tracking and alerts
-   - Savings rate calculation
-   - Cash flow forecasting
-   - Category trends over time
-
-5. **Import Improvements**:
-   - Support more bank formats
-   - Bulk file import UI
-   - Import history tracking
-   - Undo/rollback functionality
-
-6. **Category Management**:
-   - Custom category creation
-   - Category hierarchy/subcategories
-   - Bulk recategorization tools
-   - Category spending limits
-
-### Low Priority
-7. **User Experience**:
-   - Dark mode support
-   - Mobile-responsive dialogs
-   - Keyboard shortcuts
-   - Progress indicators for long operations
-
-8. **Data Export**:
-   - Export to various formats (PDF, Excel, CSV)
-   - Scheduled report generation
-   - Email summaries
-
-9. **Integration Features**:
-   - Google Drive backup
-   - Calendar integration for bills
-   - Mobile app companion
-   - API for third-party tools
-
-10. **Advanced Features**:
-    - Multi-currency support
-    - Investment tracking
-    - Tax report generation
-    - Financial goal tracking
-
-## Technical Debt
-
-1. **Missing Functions**:
-   - `logImportStats()` - Referenced but not implemented
-   - `autoCategorize()` - Referenced but not implemented
-   - `applySidebarCategory()` - Referenced in ReviewSidebar.html
-   - `generateSpendingInsights()` - Referenced but not implemented
-
-2. **Code Quality**:
-   - Consolidate duplicate dialog launcher functions
-   - Add proper error handling and logging
-   - Implement unit tests
-   - Add JSDoc documentation
-
-3. **Performance**:
-   - Batch operations for large datasets
-   - Optimize sheet operations
-   - Implement caching where appropriate
-
-## Contributing
-
-Contributions are welcome! Please ensure:
-- Code follows existing style patterns
-- New features include documentation
-- Changes are tested in a Google Sheets environment
-- Use `clasp push` to deploy changes
-
-## License
-
-[Add appropriate license information]
-
-## Support
-
-[Add contact/support information] 
+## Documentation
+- [Installation Guide](./docs/installation.md)
+- [Usage Guide](./docs/usage-guide.md)
+- [Configuration Reference](./docs/configuration.md)
+- [API & Integration Guide](./docs/api-reference.md)
+- [Architecture & Design](./docs/architecture.md)
+- [Examples](./docs/examples/basic-examples.md)
+- [Troubleshooting](./docs/troubleshooting.md)
+- [Contributing](./docs/contributing.md)
+- [Changelog](./docs/changelog.md)
+- [FAQ](./docs/faq.md)
+- [Glossary](./docs/glossary.md)

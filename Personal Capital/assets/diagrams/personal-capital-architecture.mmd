@@ -1,0 +1,8 @@
+%% Mermaid diagram for Personal Capital data flow
+flowchart TD
+  A[Import Dialog] --> B[importCsvFiles]
+  B --> C[STG_Transactions]
+  C --> D[runAutoCategorization]
+  D --> E[Transactions]
+  E --> F[Spending Insights]
+  E --> G[Python Digests]
