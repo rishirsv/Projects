@@ -16,7 +16,8 @@ import {
   ShieldCheck,
   Loader2,
   Trash,
-  AlertTriangle
+  AlertTriangle,
+  PauseCircle
 } from 'lucide-react';
 import {
   fetchTranscript,
@@ -182,7 +183,12 @@ const WatchLater = () => {
     retryItem: retryBatchItem,
     removeItem: removeBatchItem,
     stats: batchQueueStats,
-    setProcessingHold: setBatchQueueHold
+    setProcessingHold: setBatchQueueHold,
+    stopActive: stopBatchProcessing,
+    stopAll: stopAllBatchProcessing,
+    resumeProcessing: resumeBatchProcessing,
+    recoverStalled: recoverStalledBatch,
+    isStopRequested: isBatchStopRequested
   } = batchQueue;
 
   const pendingBatchCount = batchQueueStats.processing + batchQueueStats.queued;
@@ -286,30 +292,47 @@ const WatchLater = () => {
   }, [loadSavedSummaries]);
 
   useEffect(() => {
-    const processor: BatchProcessor = async (item, { updateStage }) => {
+    const processor: BatchProcessor = async (item, { updateStage, signal }) => {
       let metadata: Awaited<ReturnType<typeof fetchVideoMetadata>> | null = null;
 
       try {
+        const ensureActive = () => {
+          if (!signal.aborted) {
+            return;
+          }
+          const reason = signal.reason;
+          throw reason instanceof Error ? reason : new Error('Batch stopped by user');
+        };
+
         updateStage('fetchingMetadata');
         try {
-          metadata = await fetchVideoMetadata(item.videoId);
+          metadata = await fetchVideoMetadata(item.videoId, { signal });
         } catch (metadataError) {
           console.warn('Batch metadata fetch failed:', metadataError);
         }
 
         updateStage('fetchingTranscript');
-        const transcriptText = await fetchTranscript(item.videoId);
-        await saveTranscript(item.videoId, transcriptText, false, metadata?.title);
+        const transcriptText = await fetchTranscript(item.videoId, { signal });
+        await saveTranscript(item.videoId, transcriptText, false, metadata?.title, { signal });
 
         updateStage('generatingSummary');
-        await generateSummaryFromFile(item.videoId, activeModelId);
+        await generateSummaryFromFile(item.videoId, activeModelId, { signal });
 
         updateStage('completed');
+        ensureActive();
         await loadSavedSummaries();
         const title = metadata?.title ? `“${metadata.title}”` : item.videoId;
         showToast(`Summary ready: ${title}`, 'success');
         return { status: 'succeeded', stage: 'completed' };
       } catch (error) {
+        if (error instanceof Error && error.name === 'AbortError') {
+          console.warn('Batch processing aborted:', error.message);
+          return {
+            status: 'failed',
+            stage: 'failed',
+            error: error.message || 'Batch stopped by user'
+          };
+        }
         const message = error instanceof Error ? error.message : 'Batch import failed';
         console.error('Batch processing error:', error);
         return { status: 'failed', stage: 'failed', error: message };
@@ -765,6 +788,62 @@ const WatchLater = () => {
     [enqueueBatchRequests, handleBatchImportClose, showToast]
   );
 
+  const activeBatchId = batchQueueState.activeId;
+  const activeBatchItem = activeBatchId ? batchQueueState.items[activeBatchId] ?? null : null;
+  const activeStageLabel = activeBatchItem ? QUEUE_STAGE_LABELS[activeBatchItem.stage] ?? activeBatchItem.stage : null;
+  const queueStatusText = `${batchQueueStats.processing} processing · ${batchQueueStats.queued} queued`;
+
+  const handleStopActiveBatch = useCallback(() => {
+    const stopped = stopBatchProcessing('Stopped current batch');
+    if (stopped) {
+      showToast('Stopped the current batch item. Resume when ready.', 'error');
+    } else {
+      showToast('No active batch item to stop.', 'error');
+    }
+  }, [showToast, stopBatchProcessing]);
+
+  const handleStopAllBatches = useCallback(() => {
+    if (pendingBatchCount === 0) {
+      showToast('No queued videos to stop.', 'error');
+      return;
+    }
+
+    let confirmed = true;
+    try {
+      confirmed =
+        typeof window === 'undefined' || typeof window.confirm !== 'function'
+          ? true
+          : window.confirm('Stop all queued videos and mark them as failed?');
+    } catch (error) {
+      console.warn('Stop-all confirmation unavailable, defaulting to proceed.', error);
+      confirmed = true;
+    }
+
+    if (!confirmed) {
+      return;
+    }
+
+    const stopped = stopAllBatchProcessing('Stopped batch queue');
+    if (stopped) {
+      showToast('Batch queue stopped. Resume or retry items from the list.', 'error');
+    }
+  }, [pendingBatchCount, showToast, stopAllBatchProcessing]);
+
+  const handleResumeBatchQueue = useCallback(() => {
+    resumeBatchProcessing();
+    showToast('Batch queue resumed.', 'success');
+  }, [resumeBatchProcessing, showToast]);
+
+  const handleRecoverBatch = useCallback(() => {
+    const targetId = activeBatchId ?? undefined;
+    const recovered = recoverStalledBatch(targetId);
+    if (recovered) {
+      showToast('Stalled batch item moved back to the queue.', 'success');
+    } else {
+      showToast('No stalled batch item to recover.', 'error');
+    }
+  }, [activeBatchId, recoverStalledBatch, showToast]);
+
   return (
     <ActiveModelProvider
       value={{ activeModelId, setActiveModelId: updateActiveModel, registry: modelRegistry }}
@@ -841,7 +920,9 @@ const WatchLater = () => {
         </form>
         {hasPendingBatch && (
           <div className="hero-queue-warning" role="status">
-            Batch import queue is running ({pendingBatchCount} pending). Single summaries resume once it finishes.
+            {isBatchStopRequested
+              ? `Batch import queue is paused (${pendingBatchCount} pending). Resume when ready or retry items individually.`
+              : `Batch import queue is running (${pendingBatchCount} pending). Single summaries resume once it finishes.`}
           </div>
         )}
         <div className="hero-proof-points">
@@ -1014,6 +1095,64 @@ const WatchLater = () => {
             </div>
           </div>
           <div className="history-list">
+            {pendingBatchCount > 0 && (
+              <div className="queue-controls" role="region" aria-live="polite">
+                <div className="queue-controls-header">
+                  <div className="queue-controls-status">
+                    {isBatchStopRequested ? (
+                      <PauseCircle size={16} />
+                    ) : (
+                      <Loader2 size={16} className={batchQueueStats.processing > 0 ? 'spin' : ''} />
+                    )}
+                    <span>
+                      {queueStatusText}
+                      {isBatchStopRequested ? ' · Paused' : ''}
+                    </span>
+                  </div>
+                  {activeBatchItem && (
+                    <div className="queue-active-meta">
+                      Active: <strong>{activeBatchItem.videoId}</strong>
+                      {activeStageLabel ? ` · ${activeStageLabel}` : ''}
+                    </div>
+                  )}
+                </div>
+                <div className="queue-controls-actions">
+                  <button
+                    type="button"
+                    className="history-item-action"
+                    onClick={handleStopActiveBatch}
+                    disabled={!activeBatchId}
+                  >
+                    Stop current
+                  </button>
+                  <button
+                    type="button"
+                    className="history-item-action danger"
+                    onClick={handleStopAllBatches}
+                    disabled={pendingBatchCount === 0}
+                  >
+                    Stop all
+                  </button>
+                  {isBatchStopRequested && (
+                    <button
+                      type="button"
+                      className="history-item-action"
+                      onClick={handleResumeBatchQueue}
+                    >
+                      Resume
+                    </button>
+                  )}
+                  <button
+                    type="button"
+                    className="history-item-action ghost"
+                    onClick={handleRecoverBatch}
+                    disabled={!activeBatchId}
+                  >
+                    Retry stalled
+                  </button>
+                </div>
+              </div>
+            )}
             {queueItems.length > 0 && queueItems.map((item) => renderQueueItem(item))}
             {loadingSummaries && <div className="empty-state">Refreshing history…</div>}
             {!loadingSummaries && savedSummaries.length === 0 && queueItems.length === 0 && (

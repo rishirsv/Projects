@@ -3,6 +3,121 @@ import { hasContent, normalizeContent } from '../shared/content-validation.js';
 import { resolveRuntimeEnv } from '../shared/env';
 import { extractVideoId } from './utils';
 
+type RequestConfig = {
+  signal?: AbortSignal;
+  timeoutMs?: number;
+};
+
+const DEFAULT_FETCH_TIMEOUT_MS = 30_000;
+const PROMPT_TIMEOUT_MS = 10_000;
+const METADATA_TIMEOUT_MS = 15_000;
+const TRANSCRIPT_TIMEOUT_MS = 60_000;
+const SAVE_TRANSCRIPT_TIMEOUT_MS = 45_000;
+const SUMMARY_SAVE_TIMEOUT_MS = 45_000;
+const OPENROUTER_TIMEOUT_MS = 120_000;
+const SUMMARY_PDF_TIMEOUT_MS = 60_000;
+const DELETE_TIMEOUT_MS = 30_000;
+
+const createAbortError = (message: string) => {
+  const error = new Error(message);
+  error.name = 'AbortError';
+  return error;
+};
+
+const fetchWithTimeout = async (
+  input: RequestInfo | URL,
+  init: RequestInit = {},
+  { timeoutMs = DEFAULT_FETCH_TIMEOUT_MS, signal }: RequestConfig = {}
+): Promise<Response> => {
+  const controller = new AbortController();
+  const abortReason = createAbortError(`Request aborted after ${timeoutMs}ms`);
+  let timeoutId: ReturnType<typeof setTimeout> | undefined;
+
+  const handleExternalAbort = () => {
+    controller.abort(signal?.reason ?? createAbortError('Request aborted'));
+  };
+
+  if (signal) {
+    if (signal.aborted) {
+      controller.abort(signal.reason ?? createAbortError('Request aborted'));
+    } else {
+      signal.addEventListener('abort', handleExternalAbort);
+    }
+  }
+
+  if (typeof timeoutMs === 'number' && Number.isFinite(timeoutMs) && timeoutMs > 0) {
+    timeoutId = setTimeout(() => {
+      controller.abort(abortReason);
+    }, timeoutMs);
+  }
+
+  try {
+    const response = await fetch(input, {
+      ...init,
+      signal: controller.signal
+    });
+    return response;
+  } catch (error) {
+    if (controller.signal.aborted) {
+      const reason = controller.signal.reason;
+      if (reason instanceof Error) {
+        throw reason;
+      }
+      throw createAbortError(typeof reason === 'string' ? reason : 'Request aborted');
+    }
+    throw error;
+  } finally {
+    if (timeoutId) {
+      clearTimeout(timeoutId);
+    }
+    if (signal && !signal.aborted) {
+      signal.removeEventListener('abort', handleExternalAbort);
+    }
+  }
+};
+
+const throwIfAborted = (signal?: AbortSignal) => {
+  if (!signal) {
+    return;
+  }
+  const reason = signal.reason;
+  if (signal.aborted) {
+    throw reason instanceof Error
+      ? reason
+      : createAbortError(typeof reason === 'string' ? reason : 'Request aborted');
+  }
+};
+
+const settleWithSignal = async <T>(promise: Promise<T>, signal?: AbortSignal): Promise<T> => {
+  if (!signal) {
+    return promise;
+  }
+
+  throwIfAborted(signal);
+
+  return new Promise<T>((resolve, reject) => {
+    const handleAbort = () => {
+      reject(
+        signal.reason instanceof Error
+          ? signal.reason
+          : createAbortError(typeof signal.reason === 'string' ? signal.reason : 'Request aborted')
+      );
+    };
+
+    signal.addEventListener('abort', handleAbort);
+
+    promise
+      .then((value) => {
+        signal.removeEventListener('abort', handleAbort);
+        resolve(value);
+      })
+      .catch((error) => {
+        signal.removeEventListener('abort', handleAbort);
+        reject(error);
+      });
+  });
+};
+
 // Backend server URL
 const SERVER_URL = 'http://localhost:3001';
 
@@ -38,9 +153,16 @@ async function parsePdfError(response: Response): Promise<string> {
 /**
  * Fetch prompt template from backend
  */
-async function fetchPromptTemplate(): Promise<string> {
+async function fetchPromptTemplate(config: RequestConfig = {}): Promise<string> {
   try {
-    const response = await fetch(`${SERVER_URL}/api/prompt`);
+    const response = await fetchWithTimeout(
+      `${SERVER_URL}/api/prompt`,
+      undefined,
+      {
+        signal: config.signal,
+        timeoutMs: config.timeoutMs ?? PROMPT_TIMEOUT_MS
+      }
+    );
     const data = await response.json();
     
     if (!response.ok) {
@@ -71,7 +193,10 @@ Here is the transcript to process:
 /**
  * Fetch video metadata using YouTube oEmbed API via backend
  */
-export async function fetchVideoMetadata(videoId: string): Promise<{
+export async function fetchVideoMetadata(
+  videoId: string,
+  config: RequestConfig = {}
+): Promise<{
   success: boolean;
   videoId: string;
   title: string;
@@ -86,12 +211,19 @@ export async function fetchVideoMetadata(videoId: string): Promise<{
   console.log('Fetching video metadata via oEmbed API for video ID:', videoId);
   
   try {
-    const response = await fetch(`${SERVER_URL}/api/video-metadata/${videoId}`, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
+    const response = await fetchWithTimeout(
+      `${SERVER_URL}/api/video-metadata/${videoId}`,
+      {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      },
+      {
+        signal: config.signal,
+        timeoutMs: config.timeoutMs ?? METADATA_TIMEOUT_MS
       }
-    });
+    );
 
     const data = await response.json();
 
@@ -107,6 +239,9 @@ export async function fetchVideoMetadata(videoId: string): Promise<{
     return data;
 
   } catch (error) {
+    if (error instanceof Error && error.name === 'AbortError') {
+      throw error;
+    }
     // Check if server is running
     if (error instanceof Error && error.message.includes('fetch')) {
       throw new Error(`Cannot connect to metadata server at ${SERVER_URL}. Make sure to run: npm run server`);
@@ -121,17 +256,24 @@ export async function fetchVideoMetadata(videoId: string): Promise<{
 /**
  * Fetch transcript for a YouTube video via local server (using Supadata API)
  */
-export async function fetchTranscript(videoId: string): Promise<string> {
+export async function fetchTranscript(videoId: string, config: RequestConfig = {}): Promise<string> {
   console.log('Fetching transcript via local server (Supadata API) for video ID:', videoId);
   
   try {
-    const response = await fetch(`${SERVER_URL}/api/transcript`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
+    const response = await fetchWithTimeout(
+      `${SERVER_URL}/api/transcript`,
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ videoId })
       },
-      body: JSON.stringify({ videoId })
-    });
+      {
+        signal: config.signal,
+        timeoutMs: config.timeoutMs ?? TRANSCRIPT_TIMEOUT_MS
+      }
+    );
 
     const data = await response.json();
 
@@ -147,6 +289,9 @@ export async function fetchTranscript(videoId: string): Promise<string> {
     return data.transcript;
 
   } catch (error) {
+    if (error instanceof Error && error.name === 'AbortError') {
+      throw error;
+    }
     // Check if server is running
     if (error instanceof Error && error.message.includes('fetch')) {
       throw new Error(`Cannot connect to transcript server at ${SERVER_URL}. Make sure to run: npm run server`);
@@ -163,19 +308,35 @@ const DEFAULT_GEMINI_MODEL = 'gemini-2.5-flash';
 /**
  * Generate summary using the selected model/provider.
  */
-export async function generateSummary(transcript: string, modelId: string): Promise<string> {
-  const promptTemplate = await fetchPromptTemplate();
+export async function generateSummary(
+  transcript: string,
+  modelId: string,
+  config: RequestConfig = {}
+): Promise<string> {
+  throwIfAborted(config.signal);
+
+  const promptTemplate = await fetchPromptTemplate({
+    signal: config.signal,
+    timeoutMs: config.timeoutMs ?? PROMPT_TIMEOUT_MS
+  });
   const prompt = promptTemplate + transcript;
   const trimmedModel = modelId?.trim() || DEFAULT_GEMINI_MODEL;
 
   if (trimmedModel.startsWith('openrouter/')) {
-    return generateSummaryViaOpenRouter(trimmedModel, prompt);
+    return generateSummaryViaOpenRouter(trimmedModel, prompt, {
+      signal: config.signal,
+      timeoutMs: config.timeoutMs ?? OPENROUTER_TIMEOUT_MS
+    });
   }
 
-  return generateSummaryViaGemini(trimmedModel, prompt);
+  return generateSummaryViaGemini(trimmedModel, prompt, config);
 }
 
-async function generateSummaryViaGemini(modelId: string, prompt: string): Promise<string> {
+async function generateSummaryViaGemini(
+  modelId: string,
+  prompt: string,
+  config: RequestConfig = {}
+): Promise<string> {
   const runtimeEnv = resolveRuntimeEnv();
   const apiKey = runtimeEnv?.VITE_GEMINI_API_KEY;
   if (!apiKey) {
@@ -183,26 +344,41 @@ async function generateSummaryViaGemini(modelId: string, prompt: string): Promis
   }
 
   try {
+    throwIfAborted(config.signal);
     const genAI = new GoogleGenerativeAI(apiKey);
     const model = genAI.getGenerativeModel({ model: modelId || DEFAULT_GEMINI_MODEL });
 
-    const result = await model.generateContent(prompt);
-    const response = await result.response;
+    const result = await settleWithSignal(model.generateContent(prompt), config.signal);
+    const response = await settleWithSignal(Promise.resolve(result.response), config.signal);
     return response.text();
   } catch (error) {
+    if (error instanceof Error && error.name === 'AbortError') {
+      throw error;
+    }
     throw new Error(`Failed to generate summary: ${error instanceof Error ? error.message : 'Unknown error'}`);
   }
 }
 
-async function generateSummaryViaOpenRouter(modelId: string, prompt: string): Promise<string> {
+async function generateSummaryViaOpenRouter(
+  modelId: string,
+  prompt: string,
+  config: RequestConfig = {}
+): Promise<string> {
   try {
-    const response = await fetch(`${SERVER_URL}/api/openrouter/generate`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
+    const response = await fetchWithTimeout(
+      `${SERVER_URL}/api/openrouter/generate`,
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ modelId, prompt })
       },
-      body: JSON.stringify({ modelId, prompt })
-    });
+      {
+        signal: config.signal,
+        timeoutMs: config.timeoutMs ?? OPENROUTER_TIMEOUT_MS
+      }
+    );
 
     const data = await response.json();
 
@@ -216,6 +392,9 @@ async function generateSummaryViaOpenRouter(modelId: string, prompt: string): Pr
 
     return data.summary;
   } catch (error) {
+    if (error instanceof Error && error.name === 'AbortError') {
+      throw error;
+    }
     throw new Error(`Failed to generate summary via OpenRouter: ${error instanceof Error ? error.message : 'Unknown error'}`);
   }
 }
@@ -223,7 +402,13 @@ async function generateSummaryViaOpenRouter(modelId: string, prompt: string): Pr
 /**
  * Save transcript to file system and localStorage
  */
-export async function saveTranscript(videoId: string, transcript: string, autoDownload = false, title?: string): Promise<void> {
+export async function saveTranscript(
+  videoId: string,
+  transcript: string,
+  autoDownload = false,
+  title?: string,
+  config: RequestConfig = {}
+): Promise<void> {
   if (!hasContent(transcript)) {
     throw new Error('No transcript available to save. Supadata did not return any text.');
   }
@@ -232,13 +417,20 @@ export async function saveTranscript(videoId: string, transcript: string, autoDo
 
   try {
     // Save to backend file system
-    const response = await fetch(`${SERVER_URL}/api/save-transcript`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
+    const response = await fetchWithTimeout(
+      `${SERVER_URL}/api/save-transcript`,
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ videoId, transcript: normalizedTranscript, title })
       },
-      body: JSON.stringify({ videoId, transcript: normalizedTranscript, title })
-    });
+      {
+        signal: config.signal,
+        timeoutMs: config.timeoutMs ?? SAVE_TRANSCRIPT_TIMEOUT_MS
+      }
+    );
 
     const data = await response.json();
     
@@ -289,6 +481,9 @@ ${normalizedTranscript}`;
     console.log(`📱 Transcript also saved to localStorage with key: ${storageKey}`);
 
   } catch (error) {
+    if (error instanceof Error && error.name === 'AbortError') {
+      throw error;
+    }
     console.error('Error saving transcript:', error);
     
     // Fallback to localStorage only if file system save fails
@@ -335,9 +530,18 @@ export function getStoredTranscripts(): Array<{ videoId: string; timestamp: stri
 /**
  * Get all saved transcripts from file system
  */
-export async function getSavedTranscripts(): Promise<Array<{ filename: string; videoId: string; created: string; modified: string; size: number }>> {
+export async function getSavedTranscripts(
+  config: RequestConfig = {}
+): Promise<Array<{ filename: string; videoId: string; created: string; modified: string; size: number }>> {
   try {
-    const response = await fetch(`${SERVER_URL}/api/transcripts`);
+    const response = await fetchWithTimeout(
+      `${SERVER_URL}/api/transcripts`,
+      undefined,
+      {
+        signal: config.signal,
+        timeoutMs: config.timeoutMs ?? DEFAULT_FETCH_TIMEOUT_MS
+      }
+    );
     const data = await response.json();
     
     if (!response.ok) {
@@ -346,6 +550,9 @@ export async function getSavedTranscripts(): Promise<Array<{ filename: string; v
     
     return data.transcripts;
   } catch (error) {
+    if (error instanceof Error && error.name === 'AbortError') {
+      throw error;
+    }
     console.error('Error getting saved transcripts:', error);
     throw new Error(`Failed to get saved transcripts: ${error instanceof Error ? error.message : 'Unknown error'}`);
   }
@@ -354,9 +561,19 @@ export async function getSavedTranscripts(): Promise<Array<{ filename: string; v
 /**
  * Read specific transcript file from file system
  */
-export async function readSavedTranscript(videoId: string): Promise<{ videoId: string; filename: string; transcript: string; length: number }> {
+export async function readSavedTranscript(
+  videoId: string,
+  config: RequestConfig = {}
+): Promise<{ videoId: string; filename: string; transcript: string; length: number }> {
   try {
-    const response = await fetch(`${SERVER_URL}/api/transcript-file/${videoId}`);
+    const response = await fetchWithTimeout(
+      `${SERVER_URL}/api/transcript-file/${videoId}`,
+      undefined,
+      {
+        signal: config.signal,
+        timeoutMs: config.timeoutMs ?? DEFAULT_FETCH_TIMEOUT_MS
+      }
+    );
     const data = await response.json();
     
     if (!response.ok) {
@@ -365,6 +582,9 @@ export async function readSavedTranscript(videoId: string): Promise<{ videoId: s
     
     return data;
   } catch (error) {
+    if (error instanceof Error && error.name === 'AbortError') {
+      throw error;
+    }
     console.error('Error reading saved transcript:', error);
     throw new Error(`Failed to read saved transcript: ${error instanceof Error ? error.message : 'Unknown error'}`);
   }
@@ -375,16 +595,18 @@ export async function readSavedTranscript(videoId: string): Promise<{ videoId: s
  */
 export async function generateSummaryFromFile(
   videoId: string,
-  modelId: string
+  modelId: string,
+  config: RequestConfig = {}
 ): Promise<{ summary: string; savedFile: { filename: string; path: string }; modelId: string }> {
   try {
+    throwIfAborted(config.signal);
     // First, read the transcript from file
-    const transcriptData = await readSavedTranscript(videoId);
+    const transcriptData = await readSavedTranscript(videoId, config);
     
     // Try to fetch video metadata for title
     let title = undefined;
     try {
-      const metadata = await fetchVideoMetadata(videoId);
+      const metadata = await fetchVideoMetadata(videoId, config);
       title = metadata.title;
       console.log(`📝 Using video title for summary: "${title}"`);
     } catch (metadataError) {
@@ -392,16 +614,19 @@ export async function generateSummaryFromFile(
     }
     
     // Then generate summary using the file content
-    const summary = await generateSummary(transcriptData.transcript, modelId);
+    const summary = await generateSummary(transcriptData.transcript, modelId, config);
 
     // Auto-save the summary to server file system with title
-    const savedFile = await saveSummaryToServer(videoId, summary, title, modelId);
+    const savedFile = await saveSummaryToServer(videoId, summary, title, modelId, config);
     const resolvedModel = savedFile.modelId ?? modelId;
 
     console.log(`📝 Generated and saved summary for transcript: ${videoId} → ${savedFile.filename}`);
     return { summary, savedFile, modelId: resolvedModel };
 
   } catch (error) {
+    if (error instanceof Error && error.name === 'AbortError') {
+      throw error;
+    }
     console.error('Error generating summary from file:', error);
     throw new Error(`Failed to generate summary from file: ${error instanceof Error ? error.message : 'Unknown error'}`);
   }
@@ -414,7 +639,8 @@ export async function saveSummaryToServer(
   videoId: string,
   summary: string,
   title?: string,
-  modelId?: string
+  modelId?: string,
+  config: RequestConfig = {}
 ): Promise<{ filename: string; path: string; modelId?: string }> {
   if (!hasContent(summary)) {
     throw new Error('Summary is empty; nothing to save.');
@@ -423,13 +649,20 @@ export async function saveSummaryToServer(
   const normalizedSummary = normalizeContent(summary);
 
   try {
-    const response = await fetch(`${SERVER_URL}/api/save-summary`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
+    const response = await fetchWithTimeout(
+      `${SERVER_URL}/api/save-summary`,
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ videoId, summary: normalizedSummary, title, modelId })
       },
-      body: JSON.stringify({ videoId, summary: normalizedSummary, title, modelId })
-    });
+      {
+        signal: config.signal,
+        timeoutMs: config.timeoutMs ?? SUMMARY_SAVE_TIMEOUT_MS
+      }
+    );
 
     const data = await response.json();
 
@@ -441,6 +674,9 @@ export async function saveSummaryToServer(
     return { filename: data.filename, path: data.path, modelId: data.modelId ?? modelId };
 
   } catch (error) {
+    if (error instanceof Error && error.name === 'AbortError') {
+      throw error;
+    }
     console.error('Error saving summary to server:', error);
     throw new Error(`Failed to save summary to server: ${error instanceof Error ? error.message : 'Unknown error'}`);
   }
@@ -486,14 +722,18 @@ ${summary}`;
   }
 }
 
-/**
- * Get all saved summaries from file system
- */
-export async function getSavedSummaries(): Promise<
+export async function getSavedSummaries(config: RequestConfig = {}): Promise<
   Array<{ filename: string; videoId: string; title?: string | null; created: string; modified: string; size: number }>
 > {
   try {
-    const response = await fetch(`${SERVER_URL}/api/summaries`);
+    const response = await fetchWithTimeout(
+      `${SERVER_URL}/api/summaries`,
+      undefined,
+      {
+        signal: config.signal,
+        timeoutMs: config.timeoutMs ?? DEFAULT_FETCH_TIMEOUT_MS
+      }
+    );
     const data = await response.json();
     
     if (!response.ok) {
@@ -502,6 +742,9 @@ export async function getSavedSummaries(): Promise<
     
     return data.summaries;
   } catch (error) {
+    if (error instanceof Error && error.name === 'AbortError') {
+      throw error;
+    }
     console.error('Error getting saved summaries:', error);
     throw new Error(`Failed to get saved summaries: ${error instanceof Error ? error.message : 'Unknown error'}`);
   }
@@ -511,10 +754,18 @@ export async function getSavedSummaries(): Promise<
  * Read specific summary file from file system
  */
 export async function readSavedSummary(
-  videoId: string
+  videoId: string,
+  config: RequestConfig = {}
 ): Promise<{ videoId: string; filename: string; summary: string; length: number; modelId?: string }> {
   try {
-    const response = await fetch(`${SERVER_URL}/api/summary-file/${videoId}`);
+    const response = await fetchWithTimeout(
+      `${SERVER_URL}/api/summary-file/${videoId}`,
+      undefined,
+      {
+        signal: config.signal,
+        timeoutMs: config.timeoutMs ?? DEFAULT_FETCH_TIMEOUT_MS
+      }
+    );
     const data = await response.json();
     
     if (!response.ok) {
@@ -523,6 +774,9 @@ export async function readSavedSummary(
     
     return data;
   } catch (error) {
+    if (error instanceof Error && error.name === 'AbortError') {
+      throw error;
+    }
     console.error('Error reading saved summary:', error);
     throw new Error(`Failed to read saved summary: ${error instanceof Error ? error.message : 'Unknown error'}`);
   }
@@ -544,9 +798,16 @@ export async function downloadSavedSummary(videoId: string): Promise<void> {
 /**
  * Request PDF export for a saved summary and trigger browser download.
  */
-export async function downloadSummaryPdf(videoId: string): Promise<string> {
+export async function downloadSummaryPdf(videoId: string, config: RequestConfig = {}): Promise<string> {
   try {
-    const response = await fetch(`${SERVER_URL}/api/summary/${videoId}/pdf`);
+    const response = await fetchWithTimeout(
+      `${SERVER_URL}/api/summary/${videoId}/pdf`,
+      undefined,
+      {
+        signal: config.signal,
+        timeoutMs: config.timeoutMs ?? SUMMARY_PDF_TIMEOUT_MS
+      }
+    );
 
     if (!response.ok) {
       const errorMessage = await parsePdfError(response);
@@ -568,13 +829,19 @@ export async function downloadSummaryPdf(videoId: string): Promise<string> {
 
     return filename;
   } catch (error) {
+    if (error instanceof Error && error.name === 'AbortError') {
+      throw error;
+    }
     console.error('Error exporting summary PDF:', error);
     const message = error instanceof Error ? error.message : 'Unknown error';
     throw new Error(`Failed to export PDF: ${message}`);
   }
 }
 
-export async function deleteAllSummaries(options: { includeTranscripts?: boolean } = {}): Promise<{
+export async function deleteAllSummaries(
+  options: { includeTranscripts?: boolean } = {},
+  requestConfig: RequestConfig = {}
+): Promise<{
   deletedSummaries: number;
   deletedTranscripts: number;
   deletedSummaryFiles?: string[];
@@ -588,9 +855,16 @@ export async function deleteAllSummaries(options: { includeTranscripts?: boolean
   const query = params.toString() ? `?${params.toString()}` : '';
 
   try {
-    const response = await fetch(`${SERVER_URL}/api/summaries${query}`, {
-      method: 'DELETE'
-    });
+    const response = await fetchWithTimeout(
+      `${SERVER_URL}/api/summaries${query}`,
+      {
+        method: 'DELETE'
+      },
+      {
+        signal: requestConfig.signal,
+        timeoutMs: requestConfig.timeoutMs ?? DELETE_TIMEOUT_MS
+      }
+    );
 
     const data = await response.json().catch(() => ({}));
 
@@ -600,12 +874,19 @@ export async function deleteAllSummaries(options: { includeTranscripts?: boolean
 
     return data;
   } catch (error) {
+    if (error instanceof Error && error.name === 'AbortError') {
+      throw error;
+    }
     console.error('Error deleting summaries:', error);
     throw new Error(`Failed to delete summaries: ${error instanceof Error ? error.message : 'Unknown error'}`);
   }
 }
 
-export async function deleteSummary(videoId: string, options: { deleteAllVersions?: boolean } = {}): Promise<{
+export async function deleteSummary(
+  videoId: string,
+  options: { deleteAllVersions?: boolean } = {},
+  requestConfig: RequestConfig = {}
+): Promise<{
   deletedCount: number;
   deletedFiles: string[];
   deleteAll: boolean;
@@ -618,9 +899,16 @@ export async function deleteSummary(videoId: string, options: { deleteAllVersion
   const query = params.toString() ? `?${params.toString()}` : '';
 
   try {
-    const response = await fetch(`${SERVER_URL}/api/summary/${videoId}${query}`, {
-      method: 'DELETE'
-    });
+    const response = await fetchWithTimeout(
+      `${SERVER_URL}/api/summary/${videoId}${query}`,
+      {
+        method: 'DELETE'
+      },
+      {
+        signal: requestConfig.signal,
+        timeoutMs: requestConfig.timeoutMs ?? DELETE_TIMEOUT_MS
+      }
+    );
 
     const data = await response.json().catch(() => ({}));
 
@@ -630,6 +918,9 @@ export async function deleteSummary(videoId: string, options: { deleteAllVersion
 
     return data;
   } catch (error) {
+    if (error instanceof Error && error.name === 'AbortError') {
+      throw error;
+    }
     console.error('Error deleting summary:', error);
     throw new Error(`Failed to delete summary: ${error instanceof Error ? error.message : 'Unknown error'}`);
   }
@@ -640,7 +931,8 @@ export async function deleteSummary(videoId: string, options: { deleteAllVersion
  */
 export async function processSummary(
   url: string,
-  modelId: string
+  modelId: string,
+  config: RequestConfig = {}
 ): Promise<{ videoId: string; summary: string; transcript: string; modelId: string }> {
   // Extract video ID
   const videoId = extractVideoId(url);
@@ -649,13 +941,13 @@ export async function processSummary(
   }
 
   // Fetch transcript
-  const transcript = await fetchTranscript(videoId);
+  const transcript = await fetchTranscript(videoId, config);
   
   // Save transcript
-  await saveTranscript(videoId, transcript);
+  await saveTranscript(videoId, transcript, false, undefined, config);
   
   // Generate summary
-  const summary = await generateSummary(transcript, modelId);
+  const summary = await generateSummary(transcript, modelId, config);
   
   return { videoId, summary, transcript, modelId };
 }

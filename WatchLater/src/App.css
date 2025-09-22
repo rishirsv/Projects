@@ -964,6 +964,45 @@
   gap: var(--space-2);
 }
 
+.queue-controls {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  margin-bottom: var(--space-4);
+  padding: var(--space-4);
+  border-radius: var(--radius-lg);
+  border: 1px dashed rgba(127, 91, 255, 0.28);
+  background: rgba(16, 9, 30, 0.65);
+}
+
+.queue-controls-header {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--space-3);
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.queue-controls-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.85rem;
+  color: var(--color-text-secondary);
+}
+
+.queue-active-meta {
+  font-size: 0.8rem;
+  color: var(--color-text-secondary);
+  font-weight: 600;
+}
+
+.queue-controls-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
 .history-item-actions {
   display: flex;
   align-items: center;
@@ -1005,6 +1044,16 @@
 .history-item-action:hover {
   border-color: rgba(70, 224, 177, 0.6);
   color: var(--color-text-primary);
+}
+
+.history-item-action.danger {
+  border-color: rgba(255, 108, 143, 0.55);
+  color: #ff6c8f;
+}
+
+.history-item-action.danger:hover {
+  border-color: rgba(255, 108, 143, 0.85);
+  color: #ff6c8f;
 }
 
 .history-item-action.ghost {

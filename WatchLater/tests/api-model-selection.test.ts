@@ -17,13 +17,19 @@ jest.mock('@google/generative-ai', () => ({
 }));
 
 import { saveSummaryToServer, generateSummary } from '../src/api';
+import type { RuntimeEnv } from '../shared/env';
 
 type FetchMock = jest.MockedFunction<typeof fetch>;
 
 declare global {
-  // eslint-disable-next-line no-var
-  var __WATCH_LATER_IMPORT_META_ENV__: any;
+  var __WATCH_LATER_IMPORT_META_ENV__: RuntimeEnv | undefined;
 }
+
+const createMockResponse = <T>(payload: T, ok = true): Response =>
+  ({
+    ok,
+    json: () => Promise.resolve(payload),
+  } satisfies { ok: boolean; json: () => Promise<T> }) as unknown as Response;
 
 describe('model-aware API surfaces', () => {
   const originalEnv = globalThis.__WATCH_LATER_IMPORT_META_ENV__;
@@ -33,7 +39,7 @@ describe('model-aware API surfaces', () => {
     jest.clearAllMocks();
     globalThis.__WATCH_LATER_IMPORT_META_ENV__ = {
       VITE_GEMINI_API_KEY: 'demo-key',
-    } as any;
+    } satisfies RuntimeEnv;
   });
 
   afterAll(() => {
@@ -42,16 +48,14 @@ describe('model-aware API surfaces', () => {
   });
 
   it('includes modelId in save-summary payload and response', async () => {
-    const mockFetch: FetchMock = jest.fn().mockResolvedValue({
-      ok: true,
-      json: () =>
-        Promise.resolve({
-          success: true,
-          filename: 'video-summary.md',
-          path: '/tmp/video-summary.md',
-          modelId: 'model-b',
-        }),
-    } as any);
+    const mockFetch: FetchMock = jest.fn().mockResolvedValue(
+      createMockResponse({
+        success: true,
+        filename: 'video-summary.md',
+        path: '/tmp/video-summary.md',
+        modelId: 'model-b',
+      })
+    );
 
     globalThis.fetch = mockFetch;
 
@@ -66,10 +70,9 @@ describe('model-aware API surfaces', () => {
   });
 
   it('passes model id through to GoogleGenerativeAI', async () => {
-    const mockFetch: FetchMock = jest.fn().mockResolvedValue({
-      ok: true,
-      json: () => Promise.resolve({ prompt: 'Prompt: ' }),
-    } as any);
+    const mockFetch: FetchMock = jest
+      .fn()
+      .mockResolvedValue(createMockResponse({ prompt: 'Prompt: ' }));
 
     globalThis.fetch = mockFetch;
 
@@ -80,10 +83,9 @@ describe('model-aware API surfaces', () => {
   });
 
   it('falls back to default model when identifier is blank', async () => {
-    const mockFetch: FetchMock = jest.fn().mockResolvedValue({
-      ok: true,
-      json: () => Promise.resolve({ prompt: 'Prompt: ' }),
-    } as any);
+    const mockFetch: FetchMock = jest
+      .fn()
+      .mockResolvedValue(createMockResponse({ prompt: 'Prompt: ' }));
 
     globalThis.fetch = mockFetch;
 
@@ -95,14 +97,8 @@ describe('model-aware API surfaces', () => {
   it('requests OpenRouter backend when model id uses openrouter prefix', async () => {
     const mockFetch: FetchMock = jest
       .fn()
-      .mockResolvedValueOnce({
-        ok: true,
-        json: () => Promise.resolve({ prompt: 'Prompt: ' }),
-      } as any)
-      .mockResolvedValueOnce({
-        ok: true,
-        json: () => Promise.resolve({ summary: 'OpenRouter summary' }),
-      } as any);
+      .mockResolvedValueOnce(createMockResponse({ prompt: 'Prompt: ' }))
+      .mockResolvedValueOnce(createMockResponse({ summary: 'OpenRouter summary' }));
 
     globalThis.fetch = mockFetch;
 

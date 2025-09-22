@@ -2,10 +2,17 @@ import fs from 'fs';
 import path from 'path';
 import { deleteSummaryByVideoId, deleteAllSummaries } from '../server.js';
 
+type DeleteSummaryRequest = Parameters<typeof deleteSummaryByVideoId>[0];
+type DeleteSummaryResponse = Parameters<typeof deleteSummaryByVideoId>[1];
+type DeleteAllSummariesRequest = Parameters<typeof deleteAllSummaries>[0];
+type DeleteAllSummariesResponse = Parameters<typeof deleteAllSummaries>[1];
+
 const summariesDir = path.resolve(process.cwd(), 'exports', 'summaries');
 const transcriptsDir = path.resolve(process.cwd(), 'exports', 'transcripts');
 
-class MockResponse {
+class MockResponse
+  implements Pick<DeleteSummaryResponse, 'status' | 'setHeader' | 'getHeader' | 'json' | 'send'>
+{
   statusCode = 200;
   headers = new Map<string, string>();
   body: unknown = undefined;
@@ -90,10 +97,10 @@ describe('Summary deletion endpoints', () => {
     await new Promise((resolve) => setTimeout(resolve, 10));
     await writeSummary(summaryNewer);
 
-    const req = { params: { videoId }, query: {} } as any;
+    const req = { params: { videoId }, query: {} } as unknown as DeleteSummaryRequest;
     const res = new MockResponse();
 
-    await deleteSummaryByVideoId(req, res as any);
+    await deleteSummaryByVideoId(req, res as unknown as DeleteSummaryResponse);
 
     expect(res.statusCode).toBe(200);
     const payload = res.body as { deletedCount: number; deletedFiles: string[] };
@@ -109,10 +116,10 @@ describe('Summary deletion endpoints', () => {
     await new Promise((resolve) => setTimeout(resolve, 10));
     await writeSummary(summaryNewer);
 
-    const req = { params: { videoId }, query: { all: 'true' } } as any;
+    const req = { params: { videoId }, query: { all: 'true' } } as unknown as DeleteSummaryRequest;
     const res = new MockResponse();
 
-    await deleteSummaryByVideoId(req, res as any);
+    await deleteSummaryByVideoId(req, res as unknown as DeleteSummaryResponse);
 
     expect(res.statusCode).toBe(200);
     const payload = res.body as { deletedCount: number; deletedFiles: string[]; deleteAll: boolean };
@@ -125,10 +132,10 @@ describe('Summary deletion endpoints', () => {
   });
 
   it('returns 400 for invalid video identifiers', async () => {
-    const req = { params: { videoId: '../evil' }, query: {} } as any;
+    const req = { params: { videoId: '../evil' }, query: {} } as unknown as DeleteSummaryRequest;
     const res = new MockResponse();
 
-    await deleteSummaryByVideoId(req, res as any);
+    await deleteSummaryByVideoId(req, res as unknown as DeleteSummaryResponse);
 
     expect(res.statusCode).toBe(400);
     const payload = res.body as { error?: string };
@@ -166,10 +173,10 @@ describe('Summary deletion endpoints', () => {
       await writeSummary(summaryOlder);
       await writeTranscript(transcriptName);
 
-      const reqNoTranscripts = { query: {} } as any;
+      const reqNoTranscripts = { query: {} } as unknown as DeleteAllSummariesRequest;
       const resNoTranscripts = new MockResponse();
 
-      await deleteAllSummaries(reqNoTranscripts, resNoTranscripts as any);
+      await deleteAllSummaries(reqNoTranscripts, resNoTranscripts as unknown as DeleteAllSummariesResponse);
 
       expect(resNoTranscripts.statusCode).toBe(200);
       const payloadNoTranscripts = resNoTranscripts.body as { deletedSummaries: number; deletedTranscripts: number };
@@ -181,10 +188,13 @@ describe('Summary deletion endpoints', () => {
       await writeSummary(summaryOlder);
       await writeTranscript(transcriptName);
 
-      const reqIncludeTranscripts = { query: { includeTranscripts: 'true' } } as any;
+      const reqIncludeTranscripts = { query: { includeTranscripts: 'true' } } as unknown as DeleteAllSummariesRequest;
       const resIncludeTranscripts = new MockResponse();
 
-      await deleteAllSummaries(reqIncludeTranscripts, resIncludeTranscripts as any);
+      await deleteAllSummaries(
+        reqIncludeTranscripts,
+        resIncludeTranscripts as unknown as DeleteAllSummariesResponse
+      );
 
       expect(resIncludeTranscripts.statusCode).toBe(200);
       const payloadInclude = resIncludeTranscripts.body as { deletedSummaries: number; deletedTranscripts: number };
@@ -201,10 +211,10 @@ describe('Summary deletion endpoints', () => {
     await writeSummary(summaryOlder);
     await writeSummary(otherSummary);
 
-    const req = { params: { videoId }, query: {} } as any;
+    const req = { params: { videoId }, query: {} } as unknown as DeleteSummaryRequest;
     const res = new MockResponse();
 
-    await deleteSummaryByVideoId(req, res as any);
+    await deleteSummaryByVideoId(req, res as unknown as DeleteSummaryResponse);
 
     const remaining = await fs.promises.readdir(summariesDir);
     expect(remaining).toContain(otherSummary);

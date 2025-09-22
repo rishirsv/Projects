@@ -3,6 +3,7 @@ import { act, type ReactNode } from 'react';
 import { createRoot, Root } from 'react-dom/client';
 import WatchLater from '../src/App';
 import * as api from '../src/api';
+import type { RuntimeEnv } from '../shared/env';
 
 jest.mock('react-markdown', () => ({
   __esModule: true,
@@ -25,8 +26,12 @@ describe('WatchLater deletion UI flows', () => {
   let root: Root;
 
   beforeAll(() => {
-    (globalThis as any).IS_REACT_ACT_ENVIRONMENT = true;
-    (globalThis as any).__WATCH_LATER_IMPORT_META_ENV__ = { VITE_MODEL_OPTIONS: '[]' };
+    const testGlobals = globalThis as typeof globalThis & {
+      IS_REACT_ACT_ENVIRONMENT?: boolean;
+      __WATCH_LATER_IMPORT_META_ENV__?: RuntimeEnv;
+    };
+    testGlobals.IS_REACT_ACT_ENVIRONMENT = true;
+    testGlobals.__WATCH_LATER_IMPORT_META_ENV__ = { VITE_MODEL_OPTIONS: '[]' };
   });
 
   beforeEach(() => {

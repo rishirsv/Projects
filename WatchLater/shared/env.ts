@@ -1,10 +1,15 @@
-export type RuntimeEnv = Record<string, any>;
+export type RuntimeEnv = Record<string, string | undefined>;
+
+type GlobalWithRuntimeEnv = typeof globalThis & {
+  __WATCH_LATER_IMPORT_META_ENV__?: RuntimeEnv;
+};
 
 let cachedEnv: RuntimeEnv | null = null;
 
 export const resolveRuntimeEnv = (): RuntimeEnv => {
   if (typeof globalThis !== 'undefined') {
-    const injected = (globalThis as any).__WATCH_LATER_IMPORT_META_ENV__;
+    const globalWithRuntimeEnv = globalThis as GlobalWithRuntimeEnv;
+    const injected = globalWithRuntimeEnv.__WATCH_LATER_IMPORT_META_ENV__;
     if (injected) {
       cachedEnv = injected;
       return injected;
@@ -15,9 +20,12 @@ export const resolveRuntimeEnv = (): RuntimeEnv => {
     return cachedEnv;
   }
 
-  if (typeof process !== 'undefined' && (process as any).env) {
-    cachedEnv = (process as any).env as RuntimeEnv;
-    return cachedEnv;
+  if (typeof process !== 'undefined') {
+    const nodeProcess = process as typeof process & { env?: RuntimeEnv };
+    if (nodeProcess.env) {
+      cachedEnv = nodeProcess.env;
+      return cachedEnv;
+    }
   }
 
   cachedEnv = {};

@@ -18,6 +18,7 @@ export type BatchProcessorResult =
 
 export type BatchProcessorControls = {
   updateStage: (stage: BatchQueueStage) => void;
+  signal: AbortSignal;
 };
 
 export type BatchProcessor = (
@@ -37,6 +38,7 @@ export type BatchQueueItem = {
   startedAt?: string;
   lastAttemptedAt?: string;
   completedAt?: string;
+  stageUpdatedAt?: string;
 };
 
 type QueueState = {
@@ -60,6 +62,13 @@ type EnqueueResult = {
   }>;
 };
 
+type ActiveJob = {
+  videoId: string;
+  controller: AbortController;
+  stopReason: string | null;
+  startedAt: number;
+};
+
 const initialState: QueueState = {
   items: {},
   order: [],
@@ -78,6 +87,14 @@ const VALID_STAGES: BatchQueueStage[] = [
 ];
 
 const nowIso = () => new Date().toISOString();
+const PROCESSING_TIMEOUT_MS = 90_000;
+const WATCHDOG_INTERVAL_MS = 5_000;
+const STOP_HOLD_TOKEN = 'batch-stop';
+const createAbortError = (message: string) => {
+  const error = new Error(message);
+  error.name = 'AbortError';
+  return error;
+};
 
 type PersistedQueueItem = Partial<BatchQueueItem> & {
   videoId?: string;
@@ -164,6 +181,16 @@ const sanitizeQueueState = (candidate: unknown): QueueState => {
         rawItem.completedAt.trim().length > 0
           ? rawItem.completedAt
           : undefined;
+      let stageUpdatedAt: string;
+      if (typeof rawItem.stageUpdatedAt === 'string' && rawItem.stageUpdatedAt.trim().length > 0) {
+        stageUpdatedAt = rawItem.stageUpdatedAt;
+      } else if (status === 'queued') {
+        stageUpdatedAt = createdAt;
+      } else if (status === 'processing') {
+        stageUpdatedAt = startedAt ?? updatedAt;
+      } else {
+        stageUpdatedAt = updatedAt;
+      }
       const error =
         normalizedStatus === 'failed' && typeof rawItem.error === 'string'
           ? rawItem.error
@@ -180,6 +207,7 @@ const sanitizeQueueState = (candidate: unknown): QueueState => {
         startedAt,
         lastAttemptedAt,
         completedAt,
+        stageUpdatedAt,
         error
       };
     }
@@ -235,7 +263,11 @@ export const useBatchImportQueue = () => {
   const stateRef = useRef<QueueState>(state);
   const lastPersistedSnapshot = useRef<string | null>(null);
   const pauseTokensRef = useRef<Set<string>>(new Set());
+  const activeJobRef = useRef<ActiveJob | null>(null);
+  const watchdogTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const lastTimeoutNotifiedRef = useRef<string | null>(null);
   const [isPaused, setIsPaused] = useState(false);
+  const [isStopRequested, setIsStopRequested] = useState(false);
 
   useEffect(() => {
     stateRef.current = state;
@@ -281,7 +313,8 @@ export const useBatchImportQueue = () => {
         stage,
         error: undefined,
         updatedAt: timestamp,
-        completedAt: timestamp
+        completedAt: timestamp,
+        stageUpdatedAt: timestamp
       };
 
       if (
@@ -319,7 +352,8 @@ export const useBatchImportQueue = () => {
           status: 'failed',
           stage,
           error: errorMessage,
-          updatedAt: timestamp
+          updatedAt: timestamp,
+          stageUpdatedAt: timestamp
         };
 
         if (
@@ -346,7 +380,8 @@ export const useBatchImportQueue = () => {
   );
 
   const createControls = useCallback(
-    (videoId: string): BatchProcessorControls => ({
+    (videoId: string, controller: AbortController): BatchProcessorControls => ({
+      signal: controller.signal,
       updateStage: (stage: BatchQueueStage) => {
         setState((previous) => {
           const current = previous.items[videoId];
@@ -354,10 +389,12 @@ export const useBatchImportQueue = () => {
             return previous;
           }
 
+          const timestamp = nowIso();
           const nextItem: BatchQueueItem = {
             ...current,
             stage,
-            updatedAt: nowIso()
+            updatedAt: timestamp,
+            stageUpdatedAt: timestamp
           };
 
           const items = { ...previous.items, [videoId]: nextItem };
@@ -397,6 +434,7 @@ export const useBatchImportQueue = () => {
 
     const timestamp = nowIso();
     let snapshot: BatchQueueItem | null = null;
+    let controller: AbortController | null = null;
 
     setState((previous) => {
       const current = previous.items[nextId];
@@ -411,7 +449,9 @@ export const useBatchImportQueue = () => {
         attempts: current.attempts + 1,
         startedAt: timestamp,
         lastAttemptedAt: timestamp,
-        updatedAt: timestamp
+        updatedAt: timestamp,
+        stageUpdatedAt: timestamp,
+        error: undefined
       };
 
       snapshot = nextItem;
@@ -427,7 +467,16 @@ export const useBatchImportQueue = () => {
       return;
     }
 
-    const controls = createControls(nextId);
+    controller = new AbortController();
+    activeJobRef.current = {
+      videoId: nextId,
+      controller,
+      stopReason: null,
+      startedAt: Date.now()
+    };
+    lastTimeoutNotifiedRef.current = null;
+
+    const controls = createControls(nextId, controller);
 
     Promise.resolve(processor(snapshot, controls))
       .then((result) => {
@@ -440,10 +489,19 @@ export const useBatchImportQueue = () => {
         markFailure(nextId, errorMessage, result.stage ?? 'failed');
       })
       .catch((error) => {
-        const message = error instanceof Error ? error.message : 'Batch item failed';
+        const activeJob = activeJobRef.current;
+        const stopReason = activeJob && activeJob.videoId === nextId ? activeJob.stopReason : null;
+        const message = stopReason
+          ? stopReason
+          : error instanceof Error
+              ? error.message
+              : 'Batch item failed';
         markFailure(nextId, message, 'failed');
       })
       .finally(() => {
+        if (activeJobRef.current && activeJobRef.current.videoId === nextId) {
+          activeJobRef.current = null;
+        }
         isProcessingRef.current = false;
         processNext();
       });
@@ -515,7 +573,8 @@ export const useBatchImportQueue = () => {
           stage: 'queued',
           attempts: 0,
           createdAt: timestamp,
-          updatedAt: timestamp
+          updatedAt: timestamp,
+          stageUpdatedAt: timestamp
         };
 
         items[request.videoId] = item;
@@ -592,6 +651,7 @@ export const useBatchImportQueue = () => {
       }
 
       const isPausedNow = tokens.size > 0;
+      setIsStopRequested(tokens.has(STOP_HOLD_TOKEN));
       if (isPausedNow !== wasPaused) {
         setIsPaused(isPausedNow);
         if (!isPausedNow) {
@@ -618,7 +678,9 @@ export const useBatchImportQueue = () => {
           status: 'queued',
           stage: 'queued',
           error: undefined,
-          updatedAt: nowIso()
+          updatedAt: nowIso(),
+          stageUpdatedAt: nowIso(),
+          startedAt: undefined
         };
 
         const items = { ...previous.items, [videoId]: updated };
@@ -638,7 +700,8 @@ export const useBatchImportQueue = () => {
         return previous;
       }
 
-      const { [videoId]: _removed, ...rest } = previous.items;
+      const rest = { ...previous.items };
+      delete rest[videoId];
       const order = previous.order.filter((id) => id !== videoId);
       const activeId = previous.activeId === videoId ? null : previous.activeId;
       const nextState: QueueState = { items: rest, order, activeId };
@@ -671,6 +734,135 @@ export const useBatchImportQueue = () => {
     });
   }, []);
 
+  const stopActive = useCallback(
+    (reason = 'Batch stopped by user') => {
+      const activeId = stateRef.current.activeId;
+      if (!activeId) {
+        return false;
+      }
+
+      setProcessingHold(STOP_HOLD_TOKEN, true);
+      const job = activeJobRef.current;
+      lastTimeoutNotifiedRef.current = null;
+
+      if (job && job.videoId === activeId && !job.controller.signal.aborted) {
+        job.stopReason = reason;
+        job.controller.abort(createAbortError(reason));
+      } else if (!job) {
+        markFailure(activeId, reason, 'failed');
+        isProcessingRef.current = false;
+        activeJobRef.current = null;
+      }
+
+      logQueueEvent('stop-active', { videoId: activeId, reason });
+      return true;
+    },
+    [markFailure, setProcessingHold]
+  );
+
+  const stopAll = useCallback(
+    (reason = 'Batch stopped by user') => {
+      setProcessingHold(STOP_HOLD_TOKEN, true);
+      const stoppedActive = stopActive(reason);
+
+      let affected: string[] = [];
+      const timestamp = nowIso();
+
+      setState((previous) => {
+        const items = { ...previous.items };
+        affected = previous.order.filter((id) => {
+          const entry = items[id];
+          return entry && entry.status === 'queued';
+        });
+
+        if (affected.length === 0) {
+          return previous;
+        }
+
+        for (const id of affected) {
+          const current = items[id];
+          if (!current) continue;
+          items[id] = {
+            ...current,
+            status: 'failed',
+            stage: 'failed',
+            error: reason,
+            updatedAt: timestamp,
+            stageUpdatedAt: timestamp
+          };
+        }
+
+        const nextState: QueueState = { ...previous, items };
+        stateRef.current = nextState;
+        return nextState;
+      });
+
+      if (affected.length > 0) {
+        logQueueEvent('stop-all', { reason, affected });
+      }
+
+      return stoppedActive || affected.length > 0;
+    },
+    [setProcessingHold, stopActive]
+  );
+
+  const resumeProcessing = useCallback(() => {
+    setProcessingHold(STOP_HOLD_TOKEN, false);
+  }, [setProcessingHold]);
+
+  const recoverStalled = useCallback(
+    (videoId?: string) => {
+      const targetId = videoId ?? stateRef.current.activeId;
+      if (!targetId) {
+        return false;
+      }
+
+      let recovered = false;
+      const timestamp = nowIso();
+
+      setState((previous) => {
+        const current = previous.items[targetId];
+        if (!current || (current.status !== 'processing' && current.status !== 'failed')) {
+          return previous;
+        }
+
+        const nextItem: BatchQueueItem = {
+          ...current,
+          status: 'queued',
+          stage: 'queued',
+          error: undefined,
+          startedAt: undefined,
+          updatedAt: timestamp,
+          stageUpdatedAt: timestamp
+        };
+
+        const items = { ...previous.items, [targetId]: nextItem };
+        const nextState: QueueState = {
+          ...previous,
+          items,
+          activeId: previous.activeId === targetId ? null : previous.activeId
+        };
+        stateRef.current = nextState;
+        recovered = true;
+        return nextState;
+      });
+
+      if (recovered) {
+        if (activeJobRef.current && activeJobRef.current.videoId === targetId) {
+          activeJobRef.current = null;
+        }
+        isProcessingRef.current = false;
+        setProcessingHold(STOP_HOLD_TOKEN, false);
+        lastTimeoutNotifiedRef.current = null;
+        logQueueEvent('recover-stalled', { videoId: targetId });
+        processNext();
+      }
+
+      return recovered;
+    },
+    [processNext, setProcessingHold]
+  );
+
   const stats = useMemo(() => {
     const values = Object.values(state.items);
     const counts = values.reduce(
@@ -687,6 +879,69 @@ export const useBatchImportQueue = () => {
     };
   }, [state.items]);
 
+  useEffect(() => {
+    const checkTimeout = () => {
+      const activeId = stateRef.current.activeId;
+      if (!activeId) {
+        lastTimeoutNotifiedRef.current = null;
+        return;
+      }
+
+      const item = stateRef.current.items[activeId];
+      if (!item || item.status !== 'processing') {
+        return;
+      }
+
+      const stageTimestamp = item.stageUpdatedAt ?? item.updatedAt ?? item.startedAt;
+      if (!stageTimestamp) {
+        return;
+      }
+
+      const stageTime = Date.parse(stageTimestamp);
+      if (!Number.isFinite(stageTime)) {
+        return;
+      }
+
+      const elapsed = Date.now() - stageTime;
+      if (elapsed < PROCESSING_TIMEOUT_MS) {
+        return;
+      }
+
+      if (lastTimeoutNotifiedRef.current === activeId) {
+        return;
+      }
+
+      lastTimeoutNotifiedRef.current = activeId;
+      const reason = `Processing timed out after ${Math.round(PROCESSING_TIMEOUT_MS / 1000)}s`;
+      logQueueEvent('watchdog-timeout', {
+        videoId: activeId,
+        stage: item.stage,
+        elapsedMs: elapsed
+      });
+
+      const job = activeJobRef.current;
+      if (job && job.videoId === activeId && !job.controller.signal.aborted) {
+        job.stopReason = reason;
+        job.controller.abort(createAbortError(reason));
+        return;
+      }
+
+      markFailure(activeId, reason, 'failed');
+      isProcessingRef.current = false;
+      processNext();
+    };
+
+    const intervalId = setInterval(checkTimeout, WATCHDOG_INTERVAL_MS);
+    watchdogTimerRef.current = intervalId;
+
+    return () => {
+      clearInterval(intervalId);
+      if (watchdogTimerRef.current === intervalId) {
+        watchdogTimerRef.current = null;
+      }
+    };
+  }, [markFailure, processNext]);
+
   return {
     state,
     registerProcessor,
@@ -699,7 +954,12 @@ export const useBatchImportQueue = () => {
     stats,
     isProcessing: isProcessingRef.current,
     isPaused,
-    setProcessingHold
+    setProcessingHold,
+    stopActive,
+    stopAll,
+    resumeProcessing,
+    recoverStalled,
+    isStopRequested
   };
 };
 

@@ -50,10 +50,13 @@ const renderQueueHarness = async (): Promise<Harness> => {
 
 describe('useBatchImportQueue', () => {
   beforeEach(() => {
+    jest.useFakeTimers({ now: new Date('2024-01-01T00:00:00Z').getTime() });
     localStorage.clear();
   });
 
   afterEach(() => {
+    jest.runOnlyPendingTimers();
+    jest.useRealTimers();
     localStorage.clear();
   });
 
@@ -129,6 +132,86 @@ describe('useBatchImportQueue', () => {
     const clearedState = harness.getResult().state;
     expect(clearedState.items['video-stage']).toBeUndefined();
     expect(clearedState.order).toHaveLength(0);
+
+    await harness.unmount();
+  });
+
+  it('exposes stop controls that abort the active job and retain pause state until resumed', async () => {
+    const harness = await renderQueueHarness();
+    const hook = harness.getResult();
+
+    await act(async () => {
+      hook.registerProcessor(async (_item, { signal }) => {
+        return new Promise((_, reject) => {
+          signal.addEventListener('abort', () => {
+            reject(signal.reason instanceof Error ? signal.reason : new Error('aborted'));
+          });
+        });
+      });
+    });
+
+    await act(async () => {
+      hook.enqueue(buildRequests('stop-me'));
+    });
+
+    await act(async () => {
+      hook.stopActive('Stopped for test');
+    });
+
+    await act(async () => {
+      jest.runOnlyPendingTimers();
+      await Promise.resolve();
+    });
+
+    const stoppedItem = harness.getResult().state.items['stop-me'];
+    expect(stoppedItem?.status).toBe('failed');
+    expect(stoppedItem?.error).toBe('Stopped for test');
+    expect(harness.getResult().isStopRequested).toBe(true);
+
+    await act(async () => {
+      hook.resumeProcessing();
+    });
+
+    expect(harness.getResult().isStopRequested).toBe(false);
+
+    await harness.unmount();
+  });
+
+  it('fails hung jobs via watchdog timeout and requeues recovery', async () => {
+    const harness = await renderQueueHarness();
+    const hook = harness.getResult();
+
+    await act(async () => {
+      hook.registerProcessor(async (_item, { signal }) => {
+        return new Promise((_, reject) => {
+          signal.addEventListener('abort', () => {
+            reject(signal.reason instanceof Error ? signal.reason : new Error('aborted'));
+          });
+        });
+      });
+    });
+
+    await act(async () => {
+      hook.enqueue(buildRequests('hang-test'));
+    });
+
+    await act(async () => {
+      jest.advanceTimersByTime(95_000);
+      jest.runOnlyPendingTimers();
+      await Promise.resolve();
+    });
+
+    const failedItem = harness.getResult().state.items['hang-test'];
+    expect(failedItem?.status).toBe('failed');
+    expect(failedItem?.error).toContain('timed out');
+
+    await act(async () => {
+      hook.recoverStalled('hang-test');
+    });
+
+    const recoveredItem = harness.getResult().state.items['hang-test'];
+    expect(['queued', 'processing']).toContain(recoveredItem?.status);
+    expect(recoveredItem?.error).toBeUndefined();
 
     await harness.unmount();
   });

@@ -3,9 +3,14 @@ import path from 'path';
 import { getSummaryPdf } from '../server.js';
 import { shutdownPdfRenderer } from '../server/pdf-renderer.js';
 
+type PdfRequest = Parameters<typeof getSummaryPdf>[0];
+type PdfResponse = Parameters<typeof getSummaryPdf>[1];
+
 const summariesDir = path.resolve(process.cwd(), 'exports', 'summaries');
 
-class MockResponse {
+class MockResponse
+  implements Pick<PdfResponse, 'status' | 'setHeader' | 'getHeader' | 'json' | 'send'>
+{
   statusCode = 200;
   headers = new Map<string, string>();
   body: unknown = undefined;
@@ -54,10 +59,10 @@ describe('GET /api/summary/:videoId/pdf', () => {
   });
 
   it('returns a PDF stream with headers for an existing summary', async () => {
-    const req = { params: { videoId } } as any;
+    const req = { params: { videoId } } as unknown as PdfRequest;
     const res = new MockResponse();
 
-    await getSummaryPdf(req, res as any);
+    await getSummaryPdf(req, res as unknown as PdfResponse);
 
     expect(res.statusCode).toBe(200);
     expect(res.getHeader('content-type')).toBe('application/pdf');
@@ -68,10 +73,10 @@ describe('GET /api/summary/:videoId/pdf', () => {
   });
 
   it('returns 404 when a summary cannot be found', async () => {
-    const req = { params: { videoId: 'missing-id' } } as any;
+    const req = { params: { videoId: 'missing-id' } } as unknown as PdfRequest;
     const res = new MockResponse();
 
-    await getSummaryPdf(req, res as any);
+    await getSummaryPdf(req, res as unknown as PdfResponse);
 
     expect(res.statusCode).toBe(404);
     expect(res.body).toBeDefined();

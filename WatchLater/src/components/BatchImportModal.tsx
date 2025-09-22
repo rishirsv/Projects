@@ -135,7 +135,7 @@ const BatchImportModal: React.FC<BatchImportModalProps> = ({
       return;
     }
     setSubmissionError(null);
-  }, [rawInput]);
+  }, [rawInput, submissionError]);
 
   const entries = useMemo(() => parseEntries(rawInput), [rawInput]);
   const validEntries = useMemo(() => entries.filter((entry) => entry.status === 'valid'), [entries]);

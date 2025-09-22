@@ -14,6 +14,8 @@ This playbook walks through the scenarios that exercised the new batch import wo
 - **Failure and retry**: temporarily break network access (or edit `SUPADATA_API_KEY` to an invalid value) and enqueue a URL. Verify the queue card turns red, surfaces the error message, and exposes `Retry` and `Dismiss` buttons. Restore the key and retry to ensure the item succeeds.
 - **Persistence**: reload the tab mid-process. Confirm queued/processing cards rehydrate with the latest stage and resume automatically.
 - **Concurrency guard**: start a single URL summary and, while it is running, attempt to open the Batch Import modal or submit another single URL. The modal button should be disabled and the hero banner should warn that the batch queue is busy.
+- **Stop controls**: while a batch is processing, click `Stop current` and confirm the active card flips to failed with "Stopped" text, the hero banner switches to "paused," and single-shot summaries are unblocked only after pressing `Resume`. Repeat with `Stop all` and ensure remaining queued cards fail with the stop message.
+- **Watchdog recovery**: throttle or unplug the network so a batch item hangs. After ~90 seconds the queue should mark it as timed out, log the watchdog event, and keep the queue paused. Use `Retry stalled` to requeue the item and verify it processes once connectivity returns.
 
 ## Manual Edge Cases
 - Paste more than ten URLs (11+) and ensure the modal blocks submission with an over-limit error.

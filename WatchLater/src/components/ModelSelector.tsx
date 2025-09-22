@@ -1,6 +1,6 @@
 import React from 'react';
 import { ChevronDown } from 'lucide-react';
-import { useActiveModel } from '../context/model-context';
+import { useActiveModel } from '../hooks/use-active-model';
 
 const ModelSelector: React.FC = () => {
   const { activeModelId, setActiveModelId, registry } = useActiveModel();
