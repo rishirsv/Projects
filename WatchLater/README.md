@@ -1,6 +1,6 @@
 # WatchLater — YouTube summaries in seconds
 
-WatchLater turns any YouTube URL into a polished markdown brief using Gemini 2.5 Flash. Phase 3 delivers a Tactiq-inspired interface with glassmorphic cards, animated progress, and instant history recall—all running locally through a lightweight Node + React stack.
+WatchLater turns any YouTube URL into a polished markdown brief using the AI model of your choice. Phase 3 delivers a Tactiq-inspired interface with glassmorphic cards, animated progress, and instant history recall—all running locally through a lightweight Node + React stack.
 
 ## Product Goals & User Stories
 ### Goals
@@ -55,22 +55,25 @@ Create `.env` at the repo root (see `.env.example`):
 ```env
 # Client-side (exposed in browser; local use only)
 VITE_GEMINI_API_KEY=...
-VITE_MODEL_OPTIONS=gemini-2.5-flash|Gemini 2.5 Flash,openrouter/google/gpt-4o-mini|GPT-4o Mini (OpenRouter)
-VITE_MODEL_DEFAULT=gemini-2.5-flash
+VITE_MODEL_OPTIONS=gemini-2.5-flash|Gemini 2.5 Flash,openrouter/openai/gpt-4o-mini|GPT-4o Mini (OpenRouter),openrouter/x-ai/grok-4-fast:free|Grok 4 Fast (OpenRouter)
+VITE_MODEL_DEFAULT=openrouter/openai/gpt-4o-mini
 
 # Server-side (kept on backend)
 SUPADATA_API_KEY=...
+OPENROUTER_API_KEY=...
+OPENROUTER_APP_URL=http://localhost:5173
+OPENROUTER_APP_TITLE=WatchLater Summaries
 PORT=3001
 ALLOWED_ORIGINS=http://localhost:5173
 ```
 
-`VITE_MODEL_OPTIONS` accepts comma-separated entries in the form `modelId|Label`; the label is optional but keeps the dropdown readable. `VITE_MODEL_DEFAULT` must match one of the provided model IDs. Adjust these values to surface Gemini and OpenRouter endpoints that you have configured.
+`VITE_MODEL_OPTIONS` accepts comma-separated entries in the form `modelId|Label`; the label is optional but keeps the dropdown readable. `VITE_MODEL_DEFAULT` must match one of the provided model IDs. Adjust these values to surface Gemini, OpenRouter, Grok, or any other backends you have configured. The client injects the resolved environment at boot, so edits to `.env` only require a refresh.
 
 `WatchLater/.gitignore` excludes `.env` and other secret-bearing files, so keep your real keys local and never commit them. Running `npm test` will fail if a Google API key pattern slips into tracked sources.
 
 ### Switching summarization models
 
-The summary toolbar exposes a gradient "Model" selector beside the refresh button. The dropdown is populated from `VITE_MODEL_OPTIONS` at build time, and the selected entry is kept in session storage so you can iterate quickly when comparing providers. Each summary request forwards the `modelId` to the backend, and the saved Markdown file records the model used for easy auditing.
+The summary toolbar exposes a gradient "Model" selector beside the refresh button. The dropdown is populated from `VITE_MODEL_OPTIONS` at runtime, and the selected entry is kept in session storage (scoped to the active default) so you can iterate quickly when comparing providers. Gemini models run directly in the browser using `VITE_GEMINI_API_KEY`. Any `openrouter/...` model—including Grok 4—routes through the Express server with `OPENROUTER_API_KEY`, and the saved Markdown records the model used for easy auditing.
 
 ### Batch import workflow
 - Tap the **Batch Import** pill in the toolbar to open a modal that accepts up to ten YouTube URLs at once. Paste freely—the input trims whitespace, deduplicates IDs, and blocks submission until at least one valid link remains.
@@ -153,14 +156,11 @@ Screenshots referenced in README:
 > Replace these PNGs after each visual iteration to keep marketing assets current.
 
 ## Reference Material
-- `docs/PRD.md` – current product requirements overview
-- `docs/prd-pdf-download.md` – requirements for the PDF export feature
+- `docs/CLAUDE.md` – assistant setup + architecture snapshot
 - `docs/batch-import-qa.md` – manual QA checklist for the batch import pipeline
-- `docs/pdf-export.md` – operations guide, configuration flags, QA checklist
+- `docs/prd-pdf-download.md` – requirements for the PDF export feature
 - `docs/ui-phase3-redesign.md` – discovery notes, design tokens, textual mockups
-- `tasks/prd-pdf-download.md` – execution tracker for the PDF feature
-- `tasks/prd-video-title-integration.md` – title-based file naming and metadata requirements
-- `tasks/prd-batch-import.md` – development tracker for the batch import feature
+- `docs/TEST_INSTRUCTIONS.md` – quick verification steps for summaries
 
 ## Screenshot Workflow
 1. Run the app locally with a representative summary.
@@ -171,9 +171,6 @@ Screenshots referenced in README:
 
 ## Testing
 - [Test Instructions](docs/TEST_INSTRUCTIONS.md)
-
-## Handoff
-- [Project Handoff](docs/handoff.md)
 
 ## AI Assistant Config
 - [Claude Instructions](docs/CLAUDE.md)

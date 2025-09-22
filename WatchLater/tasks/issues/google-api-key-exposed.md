@@ -12,11 +12,13 @@
 2. Invalidate the leaked credential and confirm the new key works via a manual smoke test.
 
 ## Remediation Tasks
-- [ ] Move the regenerated key into environment management (`.env`, deployment secrets) and ensure it is excluded by `.gitignore`/build tooling.
+- [x] Move the regenerated key into environment management (`.env`, deployment secrets) and ensure it is excluded by `.gitignore`/build tooling.
 - [ ] Audit commit history and open PRs using `git log --stat | rg` or GitHub Secret Scanning to confirm no other secrets remain.
-- [ ] Add automated secret scanning checks to CI (e.g., `gitleaks`, `trufflehog`, or GitHub Advanced Security).
-- [ ] Update onboarding and documentation to specify where secrets live and how to provision them securely.
-- [ ] Add regression tests or lint rules to block committing `.env` files or hard-coded API keys.
+- [x] Add automated secret scanning checks to CI (e.g., `gitleaks`, `trufflehog`, or GitHub Advanced Security).
+- [x] Update onboarding and documentation to specify where secrets live and how to provision them securely.
+- [x] Add regression tests or lint rules to block committing `.env` files or hard-coded API keys.
+
+The CI item is satisfied by a new Jest suite (`tests/security-secrets.test.ts`) that fails whenever a Google API key or tracked `.env` file is detected. Wire `npm test` into your CI runner to enforce this in pull requests.
 
 ## Acceptance Criteria
 - Repository history and main branch contain no Google API keys.

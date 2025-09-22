@@ -4,7 +4,7 @@
     "noEmit": false,
     "types": ["node", "jest"],
     "verbatimModuleSyntax": false,
-    "module": "ESNext",
+    "module": "es2022",
     "moduleResolution": "NodeNext",
     "allowJs": true,
     "esModuleInterop": true

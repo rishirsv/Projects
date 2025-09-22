@@ -1,8 +1,3 @@
----
-description: 
-globs: 
-alwaysApply: false
----
 # Rule: Generating a Task List from a PRD
 
 ## Goal
@@ -13,7 +8,8 @@ To guide an AI assistant in creating a detailed, step-by-step task list in Markd
 
 - **Format:** Markdown (`.md`)
 - **Location:** `/tasks/`
-- **Filename:** `tasks-[prd-file-name].md` (e.g., `tasks-prd-user-profile-editing.md`)
+- Append to the relevent PRD ("prd-file-name.md") under a header "# Tasks"
+
 
 ## Process
 

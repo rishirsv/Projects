@@ -8,6 +8,11 @@
   </head>
   <body>
     <div id="root"></div>
+    <script type="module">
+      if (typeof window !== 'undefined') {
+        window.__WATCH_LATER_IMPORT_META_ENV__ = import.meta.env;
+      }
+    </script>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>

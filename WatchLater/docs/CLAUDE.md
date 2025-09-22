@@ -26,14 +26,14 @@ This is a **YouTube transcript summarizer** with a hybrid client-server architec
 ### Core Architecture
 - **Frontend**: Vite + React + TypeScript (port 5173)
 - **Backend**: Express.js server (port 3001) 
-- **AI Processing**: Google Gemini 2.5 Flash API for summarization
+- **AI Processing**: Pluggable models (Gemini runs in-browser; OpenRouter routes through backend)
 - **Transcript Source**: Supadata API (via backend proxy)
 - **File Storage**: Local filesystem in `/exports/` directory
 
 ### Key Data Flow
 1. **URL Input** → Extract video ID → Backend transcript fetch (Supadata API)
 2. **Transcript Storage** → Save to `exports/transcripts/{videoId}-transcript-{timestamp}.txt`
-3. **AI Processing** → Load prompt from `prompts/Youtube transcripts.md` → Gemini API
+3. **AI Processing** → Load prompt from `prompts/Youtube transcripts.md` → Active model (Gemini via client SDK, OpenRouter via backend proxy)
 4. **Summary Storage** → Save to `exports/summaries/{videoId}-summary-{timestamp}.md`
 
 ### Critical Components
@@ -52,6 +52,7 @@ This is a **YouTube transcript summarizer** with a hybrid client-server architec
 #### External Dependencies
 - **Supadata API**: Requires `SUPADATA_API_KEY` environment variable
 - **Google Gemini**: Requires `VITE_GEMINI_API_KEY` environment variable
+- **OpenRouter** (optional for GPT/Grok models): Requires `OPENROUTER_API_KEY` and `VITE_MODEL_OPTIONS` entries prefixed with `openrouter/`
 - **File System**: Auto-creates `exports/transcripts/` and `exports/summaries/` directories
 
 ## Environment Configuration
@@ -59,8 +60,16 @@ This is a **YouTube transcript summarizer** with a hybrid client-server architec
 ### Required Environment Variables
 Create `.env` file with:
 ```
+# Client-side (browser)
 VITE_GEMINI_API_KEY=your_gemini_api_key
+VITE_MODEL_OPTIONS=gemini-2.5-flash|Gemini 2.5 Flash,openrouter/openai/gpt-4o-mini|GPT-4o Mini (OpenRouter)
+VITE_MODEL_DEFAULT=openrouter/openai/gpt-4o-mini
+
+# Server-side
 SUPADATA_API_KEY=your_supadata_api_key
+OPENROUTER_API_KEY=your_openrouter_api_key
+OPENROUTER_APP_URL=http://localhost:5173
+OPENROUTER_APP_TITLE=WatchLater Summaries
 ```
 
 ### Directory Structure
@@ -98,9 +107,15 @@ Common test URLs in codebase:
 - **Summaries**: `{videoId}-summary-{timestamp}.md`
 - **Timestamps**: ISO format with colons/periods replaced by hyphens
 
+### Model Selection
+- Model options are injected from `VITE_MODEL_OPTIONS` at runtime and cached on `window.__WATCH_LATER_IMPORT_META_ENV__`.
+- Session storage key is namespaced to the current default model so changing `VITE_MODEL_DEFAULT` resets incompatible selections automatically.
+- Gemini models call the Google Generative AI SDK directly from the browser; `openrouter/...` models are proxied through `/api/openrouter/generate`.
+
 ### API Architecture
 - **Frontend → Backend**: All transcript fetching goes through backend proxy
 - **Frontend → Gemini**: Direct API calls for AI processing (API key in frontend env)
+- **Frontend → Backend → OpenRouter**: `/api/openrouter/generate` wraps any `openrouter/...` models with the requisite headers
 - **File Operations**: Backend handles all file I/O operations
 
 ### Error Handling

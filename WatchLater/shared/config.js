@@ -32,3 +32,47 @@ export function resolveSupadataApiKey(env = process.env) {
 
   return { apiKey: normalizedValue, isConfigured: true, source: 'env' };
 }
+
+/**
+ * Resolve the OpenRouter API key from environment variables.
+ *
+ * @param {Record<string, string | undefined>} [env=process.env]
+ * @returns {{ apiKey: string; isConfigured: boolean; source: 'missing' | 'placeholder' | 'env'; }}
+ */
+export function resolveOpenRouterApiKey(env = process.env) {
+  if (!env || typeof env !== 'object') {
+    return { apiKey: '', isConfigured: false, source: 'missing' };
+  }
+
+  const rawValue = env.OPENROUTER_API_KEY;
+  if (typeof rawValue !== 'string') {
+    return { apiKey: '', isConfigured: false, source: 'missing' };
+  }
+
+  const normalizedValue = rawValue.trim().replace(/^['"]|['"]$/g, '');
+  if (!normalizedValue) {
+    return { apiKey: '', isConfigured: false, source: 'placeholder' };
+  }
+
+  return { apiKey: normalizedValue, isConfigured: true, source: 'env' };
+}
+
+/**
+ * Resolve the OpenRouter referer header from environment or fallback to localhost.
+ *
+ * @param {Record<string, string | undefined>} [env=process.env]
+ * @returns {string}
+ */
+export function resolveOpenRouterReferer(env = process.env) {
+  if (!env || typeof env !== 'object') {
+    return 'http://localhost:5173';
+  }
+
+  const value = env.OPENROUTER_APP_URL;
+  if (typeof value !== 'string') {
+    return 'http://localhost:5173';
+  }
+
+  const normalizedValue = value.trim();
+  return normalizedValue || 'http://localhost:5173';
+}

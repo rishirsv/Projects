@@ -1,9 +1,39 @@
 import { GoogleGenerativeAI } from '@google/generative-ai';
 import { hasContent, normalizeContent } from '../shared/content-validation.js';
+import { resolveRuntimeEnv } from '../shared/env';
 import { extractVideoId } from './utils';
 
 // Backend server URL
 const SERVER_URL = 'http://localhost:3001';
+
+function extractFilenameFromDisposition(header?: string | null): string {
+  if (!header) return '';
+
+  const filenameStarMatch = header.match(/filename\*=(?:UTF-8'')?([^;]+)/i);
+  if (filenameStarMatch?.[1]) {
+    try {
+      return decodeURIComponent(filenameStarMatch[1].replace(/"/g, '').trim());
+    } catch {
+      return filenameStarMatch[1].replace(/"/g, '').trim();
+    }
+  }
+
+  const filenameMatch = header.match(/filename="?([^";]+)"?/i);
+  if (filenameMatch?.[1]) {
+    return filenameMatch[1].trim();
+  }
+
+  return '';
+}
+
+async function parsePdfError(response: Response): Promise<string> {
+  try {
+    const data = await response.clone().json();
+    return data.message || data.error || `Server error: ${response.status}`;
+  } catch {
+    return `Server error: ${response.status}`;
+  }
+}
 
 /**
  * Fetch prompt template from backend
@@ -128,28 +158,65 @@ export async function fetchTranscript(videoId: string): Promise<string> {
   }
 }
 
+const DEFAULT_GEMINI_MODEL = 'gemini-2.5-flash';
+
 /**
- * Generate summary using Gemini API with dynamic prompt loading
+ * Generate summary using the selected model/provider.
  */
-export async function generateSummary(transcript: string): Promise<string> {
-  const apiKey = import.meta.env.VITE_GEMINI_API_KEY;
+export async function generateSummary(transcript: string, modelId: string): Promise<string> {
+  const promptTemplate = await fetchPromptTemplate();
+  const prompt = promptTemplate + transcript;
+  const trimmedModel = modelId?.trim() || DEFAULT_GEMINI_MODEL;
+
+  if (trimmedModel.startsWith('openrouter/')) {
+    return generateSummaryViaOpenRouter(trimmedModel, prompt);
+  }
+
+  return generateSummaryViaGemini(trimmedModel, prompt);
+}
+
+async function generateSummaryViaGemini(modelId: string, prompt: string): Promise<string> {
+  const runtimeEnv = resolveRuntimeEnv();
+  const apiKey = runtimeEnv?.VITE_GEMINI_API_KEY;
   if (!apiKey) {
     throw new Error('GEMINI_API_KEY is not configured');
   }
 
   try {
-    // Fetch prompt template dynamically from backend
-    const promptTemplate = await fetchPromptTemplate();
-    const prompt = promptTemplate + transcript;
-
     const genAI = new GoogleGenerativeAI(apiKey);
-    const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
+    const model = genAI.getGenerativeModel({ model: modelId || DEFAULT_GEMINI_MODEL });
 
     const result = await model.generateContent(prompt);
     const response = await result.response;
     return response.text();
   } catch (error) {
     throw new Error(`Failed to generate summary: ${error instanceof Error ? error.message : 'Unknown error'}`);
+  }
+}
+
+async function generateSummaryViaOpenRouter(modelId: string, prompt: string): Promise<string> {
+  try {
+    const response = await fetch(`${SERVER_URL}/api/openrouter/generate`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ modelId, prompt })
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(data.error || 'Failed to generate summary via OpenRouter');
+    }
+
+    if (!data.summary || typeof data.summary !== 'string') {
+      throw new Error('OpenRouter returned an empty response');
+    }
+
+    return data.summary;
+  } catch (error) {
+    throw new Error(`Failed to generate summary via OpenRouter: ${error instanceof Error ? error.message : 'Unknown error'}`);
   }
 }
 
@@ -306,7 +373,10 @@ export async function readSavedTranscript(videoId: string): Promise<{ videoId: s
 /**
  * Generate summary from saved transcript file and auto-save to server
  */
-export async function generateSummaryFromFile(videoId: string): Promise<{ summary: string; savedFile: { filename: string; path: string } }> {
+export async function generateSummaryFromFile(
+  videoId: string,
+  modelId: string
+): Promise<{ summary: string; savedFile: { filename: string; path: string }; modelId: string }> {
   try {
     // First, read the transcript from file
     const transcriptData = await readSavedTranscript(videoId);
@@ -322,14 +392,15 @@ export async function generateSummaryFromFile(videoId: string): Promise<{ summar
     }
     
     // Then generate summary using the file content
-    const summary = await generateSummary(transcriptData.transcript);
-    
+    const summary = await generateSummary(transcriptData.transcript, modelId);
+
     // Auto-save the summary to server file system with title
-    const savedFile = await saveSummaryToServer(videoId, summary, title);
-    
+    const savedFile = await saveSummaryToServer(videoId, summary, title, modelId);
+    const resolvedModel = savedFile.modelId ?? modelId;
+
     console.log(`📝 Generated and saved summary for transcript: ${videoId} → ${savedFile.filename}`);
-    return { summary, savedFile };
-    
+    return { summary, savedFile, modelId: resolvedModel };
+
   } catch (error) {
     console.error('Error generating summary from file:', error);
     throw new Error(`Failed to generate summary from file: ${error instanceof Error ? error.message : 'Unknown error'}`);
@@ -339,7 +410,12 @@ export async function generateSummaryFromFile(videoId: string): Promise<{ summar
 /**
  * Save summary to file system on server
  */
-export async function saveSummaryToServer(videoId: string, summary: string, title?: string): Promise<{ filename: string; path: string }> {
+export async function saveSummaryToServer(
+  videoId: string,
+  summary: string,
+  title?: string,
+  modelId?: string
+): Promise<{ filename: string; path: string; modelId?: string }> {
   if (!hasContent(summary)) {
     throw new Error('Summary is empty; nothing to save.');
   }
@@ -352,17 +428,17 @@ export async function saveSummaryToServer(videoId: string, summary: string, titl
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ videoId, summary: normalizedSummary, title })
+      body: JSON.stringify({ videoId, summary: normalizedSummary, title, modelId })
     });
 
     const data = await response.json();
-    
+
     if (!response.ok) {
       throw new Error(data.error || 'Failed to save summary to server');
     }
 
     console.log(`💾 Summary saved to server: ${data.filename}`);
-    return { filename: data.filename, path: data.path };
+    return { filename: data.filename, path: data.path, modelId: data.modelId ?? modelId };
 
   } catch (error) {
     console.error('Error saving summary to server:', error);
@@ -413,7 +489,9 @@ ${summary}`;
 /**
  * Get all saved summaries from file system
  */
-export async function getSavedSummaries(): Promise<Array<{ filename: string; videoId: string; created: string; modified: string; size: number }>> {
+export async function getSavedSummaries(): Promise<
+  Array<{ filename: string; videoId: string; title?: string | null; created: string; modified: string; size: number }>
+> {
   try {
     const response = await fetch(`${SERVER_URL}/api/summaries`);
     const data = await response.json();
@@ -432,7 +510,9 @@ export async function getSavedSummaries(): Promise<Array<{ filename: string; vid
 /**
  * Read specific summary file from file system
  */
-export async function readSavedSummary(videoId: string): Promise<{ videoId: string; filename: string; summary: string; length: number }> {
+export async function readSavedSummary(
+  videoId: string
+): Promise<{ videoId: string; filename: string; summary: string; length: number; modelId?: string }> {
   try {
     const response = await fetch(`${SERVER_URL}/api/summary-file/${videoId}`);
     const data = await response.json();
@@ -462,9 +542,106 @@ export async function downloadSavedSummary(videoId: string): Promise<void> {
 }
 
 /**
+ * Request PDF export for a saved summary and trigger browser download.
+ */
+export async function downloadSummaryPdf(videoId: string): Promise<string> {
+  try {
+    const response = await fetch(`${SERVER_URL}/api/summary/${videoId}/pdf`);
+
+    if (!response.ok) {
+      const errorMessage = await parsePdfError(response);
+      throw new Error(errorMessage);
+    }
+
+    const blob = await response.blob();
+    const suggestedName = extractFilenameFromDisposition(response.headers.get('Content-Disposition'));
+    const filename = suggestedName || `${videoId}-summary.pdf`;
+
+    const downloadUrl = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = downloadUrl;
+    link.download = filename;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    setTimeout(() => URL.revokeObjectURL(downloadUrl), 0);
+
+    return filename;
+  } catch (error) {
+    console.error('Error exporting summary PDF:', error);
+    const message = error instanceof Error ? error.message : 'Unknown error';
+    throw new Error(`Failed to export PDF: ${message}`);
+  }
+}
+
+export async function deleteAllSummaries(options: { includeTranscripts?: boolean } = {}): Promise<{
+  deletedSummaries: number;
+  deletedTranscripts: number;
+  deletedSummaryFiles?: string[];
+  deletedTranscriptFiles?: string[];
+}> {
+  const params = new URLSearchParams();
+  if (options.includeTranscripts) {
+    params.set('includeTranscripts', 'true');
+  }
+
+  const query = params.toString() ? `?${params.toString()}` : '';
+
+  try {
+    const response = await fetch(`${SERVER_URL}/api/summaries${query}`, {
+      method: 'DELETE'
+    });
+
+    const data = await response.json().catch(() => ({}));
+
+    if (!response.ok) {
+      throw new Error(data.error || data.message || 'Failed to delete summaries');
+    }
+
+    return data;
+  } catch (error) {
+    console.error('Error deleting summaries:', error);
+    throw new Error(`Failed to delete summaries: ${error instanceof Error ? error.message : 'Unknown error'}`);
+  }
+}
+
+export async function deleteSummary(videoId: string, options: { deleteAllVersions?: boolean } = {}): Promise<{
+  deletedCount: number;
+  deletedFiles: string[];
+  deleteAll: boolean;
+}> {
+  const params = new URLSearchParams();
+  if (options.deleteAllVersions) {
+    params.set('all', 'true');
+  }
+
+  const query = params.toString() ? `?${params.toString()}` : '';
+
+  try {
+    const response = await fetch(`${SERVER_URL}/api/summary/${videoId}${query}`, {
+      method: 'DELETE'
+    });
+
+    const data = await response.json().catch(() => ({}));
+
+    if (!response.ok) {
+      throw new Error(data.error || data.message || 'Failed to delete summary');
+    }
+
+    return data;
+  } catch (error) {
+    console.error('Error deleting summary:', error);
+    throw new Error(`Failed to delete summary: ${error instanceof Error ? error.message : 'Unknown error'}`);
+  }
+}
+
+/**
  * Main function to process a YouTube URL and return a summary
  */
-export async function processSummary(url: string): Promise<{ videoId: string; summary: string; transcript: string }> {
+export async function processSummary(
+  url: string,
+  modelId: string
+): Promise<{ videoId: string; summary: string; transcript: string; modelId: string }> {
   // Extract video ID
   const videoId = extractVideoId(url);
   if (!videoId) {
@@ -478,7 +655,7 @@ export async function processSummary(url: string): Promise<{ videoId: string; su
   await saveTranscript(videoId, transcript);
   
   // Generate summary
-  const summary = await generateSummary(transcript);
+  const summary = await generateSummary(transcript, modelId);
   
-  return { videoId, summary, transcript };
+  return { videoId, summary, transcript, modelId };
 }

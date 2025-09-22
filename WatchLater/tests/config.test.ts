@@ -1,4 +1,8 @@
-import { resolveSupadataApiKey } from '../shared/config.js';
+import {
+  resolveOpenRouterApiKey,
+  resolveOpenRouterReferer,
+  resolveSupadataApiKey
+} from '../shared/config.js';
 
 describe('resolveSupadataApiKey', () => {
   it('returns not configured when SUPADATA_API_KEY is missing', () => {
@@ -27,5 +31,38 @@ describe('resolveSupadataApiKey', () => {
       expect(result.apiKey).toBe('');
       expect(result.source).toBe('placeholder');
     }
+  });
+});
+
+describe('resolveOpenRouterApiKey', () => {
+  it('returns not configured when OPENROUTER_API_KEY is missing', () => {
+    const result = resolveOpenRouterApiKey({});
+    expect(result.isConfigured).toBe(false);
+    expect(result.apiKey).toBe('');
+    expect(result.source).toBe('missing');
+  });
+
+  it('normalizes whitespace and quotes for the OpenRouter key', () => {
+    const result = resolveOpenRouterApiKey({ OPENROUTER_API_KEY: "  'sk-demo'  " });
+    expect(result.isConfigured).toBe(true);
+    expect(result.apiKey).toBe('sk-demo');
+  });
+
+  it('flags blank values as placeholders', () => {
+    const result = resolveOpenRouterApiKey({ OPENROUTER_API_KEY: '   ' });
+    expect(result.isConfigured).toBe(false);
+    expect(result.source).toBe('placeholder');
+  });
+});
+
+describe('resolveOpenRouterReferer', () => {
+  it('falls back to localhost when unset', () => {
+    expect(resolveOpenRouterReferer({})).toBe('http://localhost:5173');
+  });
+
+  it('returns trimmed referer when provided', () => {
+    expect(resolveOpenRouterReferer({ OPENROUTER_APP_URL: ' https://watchlater.local ' })).toBe(
+      'https://watchlater.local'
+    );
   });
 });

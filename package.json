@@ -1,0 +1,10 @@
+{
+  "name": "projects-monorepo",
+  "private": true,
+  "scripts": {
+    "start": "npm run start --prefix WatchLater",
+    "dev": "npm run dev --prefix WatchLater",
+    "server": "npm run server --prefix WatchLater",
+    "test": "npm test --prefix WatchLater"
+  }
+}

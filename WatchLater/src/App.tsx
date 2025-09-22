@@ -89,14 +89,7 @@ type ToastState = {
   tone: 'success' | 'error';
 };
 
-const modelRegistry = createModelRegistry(resolveRuntimeEnv());
-const MODEL_STORAGE_KEY = 'watchlater-active-model';
-
-if (modelRegistry.warnings.length > 0) {
-  for (const warning of modelRegistry.warnings) {
-    console.warn(`[model-selector] ${warning}`);
-  }
-}
+const LEGACY_MODEL_STORAGE_KEY = 'watchlater-active-model';
 
 type Stage = {
   id: number;
@@ -121,6 +114,12 @@ const QUEUE_STAGE_LABELS: Record<BatchQueueStage, string> = {
 };
 
 const WatchLater = () => {
+  const modelRegistry = useMemo(() => createModelRegistry(resolveRuntimeEnv()), []);
+  const modelStorageKey = useMemo(
+    () => `watchlater-active-model:${modelRegistry.defaultModel || 'fallback'}`,
+    [modelRegistry.defaultModel]
+  );
+
   const [url, setUrl] = useState('');
   const [status, setStatus] = useState<'idle' | 'processing' | 'complete' | 'error'>('idle');
   const [summary, setSummary] = useState<SummaryData | null>(null);
@@ -143,7 +142,7 @@ const WatchLater = () => {
     }
 
     try {
-      const stored = window.sessionStorage.getItem(MODEL_STORAGE_KEY);
+      const stored = window.sessionStorage.getItem(modelStorageKey);
       if (stored && modelRegistry.options.some(option => option.id === stored)) {
         return stored;
       }
@@ -151,6 +150,11 @@ const WatchLater = () => {
         console.warn(
           `[model-selector] Stored model "${stored}" not found in current options; falling back to "${fallback}".`
         );
+      }
+
+      const legacyStored = window.sessionStorage.getItem(LEGACY_MODEL_STORAGE_KEY);
+      if (legacyStored) {
+        window.sessionStorage.removeItem(LEGACY_MODEL_STORAGE_KEY);
       }
     } catch (storageError) {
       console.warn('[model-selector] Failed to read stored model preference:', storageError);
@@ -163,6 +167,14 @@ const WatchLater = () => {
   const toastTimeoutRef = useRef<number | null>(null);
   const batchImportTriggerRef = useRef<HTMLButtonElement | null>(null);
   const batchQueue = useBatchImportQueue();
+
+  useEffect(() => {
+    if (modelRegistry.warnings.length > 0) {
+      for (const warning of modelRegistry.warnings) {
+        console.warn(`[model-selector] ${warning}`);
+      }
+    }
+  }, [modelRegistry]);
   const {
     state: batchQueueState,
     registerProcessor,
@@ -224,18 +236,19 @@ const WatchLater = () => {
 
     try {
       if (activeModelId) {
-        window.sessionStorage.setItem(MODEL_STORAGE_KEY, activeModelId);
+        window.sessionStorage.setItem(modelStorageKey, activeModelId);
       } else {
-        window.sessionStorage.removeItem(MODEL_STORAGE_KEY);
+        window.sessionStorage.removeItem(modelStorageKey);
       }
+      window.sessionStorage.removeItem(LEGACY_MODEL_STORAGE_KEY);
     } catch (storageError) {
       console.warn('[model-selector] Failed to persist model preference:', storageError);
     }
-  }, [activeModelId]);
+  }, [activeModelId, modelStorageKey]);
 
   const isValidModelId = useCallback(
     (candidate: string) => modelRegistry.options.some(option => option.id === candidate),
-    []
+    [modelRegistry]
   );
 
   const updateActiveModel = useCallback(
@@ -312,6 +325,8 @@ const WatchLater = () => {
       .map((id) => batchQueueState.items[id])
       .filter((item): item is BatchQueueItem => Boolean(item) && item.status !== 'succeeded'),
   [batchQueueState]);
+
+  const completedSummary = status === 'complete' && summary ? summary : null;
 
   useEffect(() => {
     if (batchQueueState.order.length === 0) {
@@ -548,7 +563,7 @@ const WatchLater = () => {
         content: summaryData.summary,
         transcript: '',
         savedFile: summaryData.filename,
-        modelId: summary?.modelId ?? activeModelId,
+        modelId: summaryData.modelId ?? summary?.modelId ?? activeModelId,
         keyTakeaways: extractKeyTakeaways(summaryData.summary),
         tags: extractHashtags(summaryData.summary)
       };
@@ -881,39 +896,50 @@ const WatchLater = () => {
           </section>
 
           <section className="summary-card">
-            {status === 'complete' && summary ? (
-              <>
-                <div className="summary-card-header">
-                  <h2 className="summary-title">{summary.title}</h2>
-                <div className="summary-actions">
-                  <button className="action-icon-button" onClick={handleDownload} title="Download markdown">
-                    <Download size={18} />
-                  </button>
-                  <button
-                    className="action-icon-button"
-                    onClick={handleDownloadPdf}
-                    title="Download PDF"
-                    disabled={pdfExportState.state === 'loading'}
-                  >
-                    {pdfExportState.state === 'loading' ? <Loader2 className="spin" size={18} /> : <FileText size={18} />}
-                  </button>
-                  <button className="action-icon-button" onClick={handleCopy} title="Copy to clipboard">
-                    <Copy size={18} />
-                  </button>
-                  <ModelSelector />
-                  <button className="action-icon-button" onClick={() => handleSummarize(url)} title="Regenerate summary">
-                    <RefreshCw size={18} />
-                  </button>
-                  <button className="action-icon-button" onClick={handleOpenFolder} title="Open local folder">
-                    <ChevronRight size={18} />
-                  </button>
-                </div>
-                </div>
+            <div className="summary-card-header">
+              <h2 className="summary-title">
+                {completedSummary ? completedSummary.title : 'Choose a model to get started'}
+              </h2>
+              <div className="summary-actions">
+                {completedSummary && (
+                  <>
+                    <button className="action-icon-button" onClick={handleDownload} title="Download markdown">
+                      <Download size={18} />
+                    </button>
+                    <button
+                      className="action-icon-button"
+                      onClick={handleDownloadPdf}
+                      title="Download PDF"
+                      disabled={pdfExportState.state === 'loading'}
+                    >
+                      {pdfExportState.state === 'loading' ? <Loader2 className="spin" size={18} /> : <FileText size={18} />}
+                    </button>
+                    <button className="action-icon-button" onClick={handleCopy} title="Copy to clipboard">
+                      <Copy size={18} />
+                    </button>
+                  </>
+                )}
+                <ModelSelector />
+                {completedSummary && (
+                  <>
+                    <button className="action-icon-button" onClick={() => handleSummarize(url)} title="Regenerate summary">
+                      <RefreshCw size={18} />
+                    </button>
+                    <button className="action-icon-button" onClick={handleOpenFolder} title="Open local folder">
+                      <ChevronRight size={18} />
+                    </button>
+                  </>
+                )}
+              </div>
+            </div>
 
+            {completedSummary ? (
+              <>
                 <div className="summary-meta">
-                  <span>Video ID · {summary.videoId}</span>
-                  <span>Author · {summary.author}</span>
-                  <span>Saved file · {summary.savedFile}</span>
+                  <span>Video ID · {completedSummary.videoId}</span>
+                  <span>Author · {completedSummary.author}</span>
+                  <span>Saved file · {completedSummary.savedFile}</span>
+                  {completedSummary.modelId && <span>Model · {completedSummary.modelId}</span>}
                 </div>
 
                 {pdfExportState.state !== 'idle' && (
@@ -922,11 +948,11 @@ const WatchLater = () => {
                   </div>
                 )}
 
-                {summary.keyTakeaways.length > 0 && (
+                {completedSummary.keyTakeaways.length > 0 && (
                   <div className="key-takeaways">
                     <h3>Key takeaways</h3>
                     <ul>
-                      {summary.keyTakeaways.map((takeaway, idx) => (
+                      {completedSummary.keyTakeaways.map((takeaway, idx) => (
                         <li key={idx}>{takeaway}</li>
                       ))}
                     </ul>
@@ -934,12 +960,12 @@ const WatchLater = () => {
                 )}
 
                 <div className="summary-markdown">
-                  <ReactMarkdown>{summary.content}</ReactMarkdown>
+                  <ReactMarkdown>{completedSummary.content}</ReactMarkdown>
                 </div>
 
-                {summary.tags.length > 0 && (
+                {completedSummary.tags.length > 0 && (
                   <div className="summary-tags">
-                    {summary.tags.map((tag, idx) => (
+                    {completedSummary.tags.map((tag, idx) => (
                       <span key={idx} className="tag-chip">
                         {tag}
                       </span>
@@ -947,7 +973,7 @@ const WatchLater = () => {
                   </div>
                 )}
 
-                {summary.transcript && (
+                {completedSummary.transcript && (
                   <details
                     className="transcript-toggle"
                     open={showTranscript}
@@ -957,13 +983,13 @@ const WatchLater = () => {
                       View transcript
                       <ChevronRight size={16} />
                     </summary>
-                    {showTranscript && <div className="transcript-content">{summary.transcript}</div>}
+                    {showTranscript && <div className="transcript-content">{completedSummary.transcript}</div>}
                   </details>
                 )}
               </>
             ) : (
               <div className="empty-state">
-                Paste a YouTube URL above to generate your first Gemini summary. You can revisit any saved recap from the history panel.
+                Paste a YouTube URL above to generate your first summary. You can revisit any saved recap from the history panel.
               </div>
             )}
           </section>

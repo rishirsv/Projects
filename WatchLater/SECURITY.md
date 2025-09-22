@@ -5,6 +5,7 @@ This repo is designed for **local use**. Treat any deployment as risky unless yo
 ## Secrets
 - Do **not** commit real API keys. Use `.env` locally and `.env.example` in git.
 - The `VITE_GEMINI_API_KEY` is exposed to the browser by design; do not deploy this key to a public site.
+- If you add OpenRouter or additional providers via `VITE_MODEL_OPTIONS`, keep those credentials local as well and review their usage policies before sharing builds.
 - Rotate keys immediately if they were ever pushed to a remote.
 
 ## Server hardening (recommended before sharing)
