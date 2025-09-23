@@ -553,7 +553,7 @@ const WatchLater = () => {
     updatePdfExportState({ state: 'loading', message: 'Preparing PDF…' });
 
     try {
-      const filename = await downloadSummaryPdf(summary.videoId);
+      const filename = await downloadSummaryPdf(summary.videoId, summary.title);
       updatePdfExportState({ state: 'success', message: `Downloaded ${filename}` });
     } catch (err) {
       const message = err instanceof Error ? err.message : 'Unable to export PDF';

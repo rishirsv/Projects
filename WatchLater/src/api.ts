@@ -1,7 +1,7 @@
 import { GoogleGenerativeAI } from '@google/generative-ai';
 import { hasContent, normalizeContent } from '../shared/content-validation.js';
 import { resolveRuntimeEnv } from '../shared/env';
-import { extractVideoId } from './utils';
+import { extractVideoId, resolveSummaryPdfFilename } from './utils';
 
 type RequestConfig = {
   signal?: AbortSignal;
@@ -798,14 +798,36 @@ export async function downloadSavedSummary(videoId: string): Promise<void> {
 /**
  * Request PDF export for a saved summary and trigger browser download.
  */
-export async function downloadSummaryPdf(videoId: string, config: RequestConfig = {}): Promise<string> {
+export function downloadSummaryPdf(videoId: string, config?: RequestConfig): Promise<string>;
+export function downloadSummaryPdf(videoId: string, title: string | null | undefined, config?: RequestConfig): Promise<string>;
+export async function downloadSummaryPdf(
+  videoId: string,
+  titleOrConfig?: string | null | RequestConfig,
+  maybeConfig?: RequestConfig
+): Promise<string> {
+  let title: string | null | undefined;
+  let config: RequestConfig | undefined;
+
+  if (typeof titleOrConfig === 'string' || titleOrConfig === null) {
+    title = titleOrConfig;
+    config = maybeConfig ?? {};
+  } else if (typeof titleOrConfig === 'undefined') {
+    title = undefined;
+    config = maybeConfig ?? {};
+  } else {
+    title = undefined;
+    config = (titleOrConfig as RequestConfig) ?? {};
+  }
+
+  const requestConfig: RequestConfig = config ?? {};
+
   try {
     const response = await fetchWithTimeout(
       `${SERVER_URL}/api/summary/${videoId}/pdf`,
       undefined,
       {
-        signal: config.signal,
-        timeoutMs: config.timeoutMs ?? SUMMARY_PDF_TIMEOUT_MS
+        signal: requestConfig.signal,
+        timeoutMs: requestConfig.timeoutMs ?? SUMMARY_PDF_TIMEOUT_MS
       }
     );
 
@@ -816,7 +838,7 @@ export async function downloadSummaryPdf(videoId: string, config: RequestConfig 
 
     const blob = await response.blob();
     const suggestedName = extractFilenameFromDisposition(response.headers.get('Content-Disposition'));
-    const filename = suggestedName || `${videoId}-summary.pdf`;
+    const filename = resolveSummaryPdfFilename(videoId, title, suggestedName);
 
     const downloadUrl = URL.createObjectURL(blob);
     const link = document.createElement('a');
