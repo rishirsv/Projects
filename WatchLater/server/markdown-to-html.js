@@ -49,6 +49,13 @@ const BASE_STYLES = `
     opacity: 0.95;
   }
 
+  .header-subtitle {
+    font-size: 16px;
+    font-weight: 500;
+    margin: 0;
+    opacity: 0.9;
+  }
+
   a {
     color: #3c55f3;
     text-decoration: none;
@@ -274,7 +281,8 @@ function formatTimestamp(timestamp) {
  *  videoId?: string,
  *  generatedAt?: string,
  *  wordCount?: number,
- *  summaryLength?: number
+ *  summaryLength?: number,
+ *  author?: string
  * }} [metadata]
  * @returns {string}
  */
@@ -289,7 +297,8 @@ export function renderSummaryMarkdown(markdownContent, metadata = {}) {
     title = 'Video Summary',
     videoId = 'unknown',
     generatedAt = '',
-    summaryLength
+    summaryLength,
+    author = ''
   } = metadata;
 
   const formattedTimestamp = formatTimestamp(generatedAt);
@@ -311,6 +320,7 @@ export function renderSummaryMarkdown(markdownContent, metadata = {}) {
           <span>PDF Export</span>
         </nav>
         <h1>${escapeHtml(title)}</h1>
+        ${author ? `<p class="header-subtitle">By ${escapeHtml(author)}</p>` : ''}
         <div class="meta-grid">
           <div class="meta-item">
             <span>Video ID</span>

@@ -59,13 +59,14 @@ describe('model-aware API surfaces', () => {
 
     globalThis.fetch = mockFetch;
 
-    const result = await saveSummaryToServer('video123', 'Hello world', 'My Title', 'model-b');
+    const result = await saveSummaryToServer('video123', 'Hello world', 'My Title', 'model-b', 'Creator Name');
 
     expect(mockFetch).toHaveBeenCalledTimes(1);
     const [, requestInit] = mockFetch.mock.calls[0];
     expect(requestInit).toBeDefined();
     const body = JSON.parse((requestInit as RequestInit).body as string);
     expect(body.modelId).toBe('model-b');
+    expect(body.author).toBe('Creator Name');
     expect(result.modelId).toBe('model-b');
   });
 

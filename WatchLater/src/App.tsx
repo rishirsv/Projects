@@ -58,6 +58,7 @@ type SavedSummary = {
   filename: string;
   videoId: string;
   title?: string | null;
+  author?: string | null;
   created?: string;
   modified?: string;
   size?: number;
@@ -89,6 +90,30 @@ type ToastState = {
   message: string;
   tone: 'success' | 'error';
 };
+
+function composeSummaryDocument(summary: SummaryData): string {
+  const lines: string[] = [];
+  const trimmedTitle = summary.title.trim();
+  const trimmedAuthor = summary.author.trim();
+  const trimmedBody = summary.content.trim();
+
+  if (trimmedTitle) {
+    lines.push(`# ${trimmedTitle}`);
+  }
+
+  if (trimmedAuthor) {
+    lines.push(`_by ${trimmedAuthor}_`);
+  }
+
+  if (trimmedBody) {
+    if (lines.length) {
+      lines.push('');
+    }
+    lines.push(trimmedBody);
+  }
+
+  return lines.join('\n\n').replace(/\n{3,}/g, '\n\n');
+}
 
 const LEGACY_MODEL_STORAGE_KEY = 'watchlater-active-model';
 
@@ -275,7 +300,13 @@ const WatchLater = () => {
       const dedupedByVideo = new Map<string, SavedSummary>();
       for (const summaryItem of summaries) {
         if (!dedupedByVideo.has(summaryItem.videoId)) {
-          dedupedByVideo.set(summaryItem.videoId, summaryItem);
+          const normalizedTitle = summaryItem.title?.trim() || null;
+          const normalizedAuthor = summaryItem.author?.trim() || null;
+          dedupedByVideo.set(summaryItem.videoId, {
+            ...summaryItem,
+            title: normalizedTitle,
+            author: normalizedAuthor
+          });
         }
       }
       setSavedSummaries(Array.from(dedupedByVideo.values()));
@@ -350,6 +381,10 @@ const WatchLater = () => {
   [batchQueueState]);
 
   const completedSummary = status === 'complete' && summary ? summary : null;
+  const formattedSummaryDocument = useMemo(
+    () => (completedSummary ? composeSummaryDocument(completedSummary) : ''),
+    [completedSummary]
+  );
 
   useEffect(() => {
     if (batchQueueState.order.length === 0) {
@@ -533,10 +568,10 @@ const WatchLater = () => {
     updatePdfExportState({ state: 'idle' });
   };
 
-  const handleDownload = () => {
+  const handleDownload = useCallback(() => {
     if (!summary) return;
 
-    const blob = new Blob([summary.content], { type: 'text/markdown' });
+    const blob = new Blob([formattedSummaryDocument || summary.content], { type: 'text/markdown' });
     const link = document.createElement('a');
     const downloadUrl = URL.createObjectURL(blob);
     link.href = downloadUrl;
@@ -545,7 +580,7 @@ const WatchLater = () => {
     link.click();
     document.body.removeChild(link);
     URL.revokeObjectURL(downloadUrl);
-  };
+  }, [formattedSummaryDocument, summary]);
 
   const handleDownloadPdf = useCallback(async () => {
     if (!summary) return;
@@ -563,7 +598,7 @@ const WatchLater = () => {
 
   const handleCopy = () => {
     if (!summary) return;
-    navigator.clipboard.writeText(summary.content).catch(err => {
+    navigator.clipboard.writeText(formattedSummaryDocument || summary.content).catch(err => {
       console.error('Copy failed:', err);
     });
   };
@@ -578,11 +613,12 @@ const WatchLater = () => {
       const baseName = summaryData.filename.replace(/-summary-.*\.md$/, '');
       const [, titlePart] = baseName.split('__');
       const derivedTitle = (savedSummary.title ?? titlePart ?? savedSummary.videoId).trim();
+      const resolvedAuthor = savedSummary.author?.trim() || summaryData.author?.trim() || 'Unknown creator';
 
       const displayData: SummaryData = {
         videoId: savedSummary.videoId,
         title: derivedTitle,
-        author: 'Saved summary',
+        author: resolvedAuthor,
         content: summaryData.summary,
         transcript: '',
         savedFile: summaryData.filename,
@@ -1018,7 +1054,6 @@ const WatchLater = () => {
               <>
                 <div className="summary-meta">
                   <span>Video ID · {completedSummary.videoId}</span>
-                  <span>Author · {completedSummary.author}</span>
                   <span>Saved file · {completedSummary.savedFile}</span>
                   {completedSummary.modelId && <span>Model · {completedSummary.modelId}</span>}
                 </div>
@@ -1041,7 +1076,15 @@ const WatchLater = () => {
                 )}
 
                 <div className="summary-markdown">
-                  <ReactMarkdown>{completedSummary.content}</ReactMarkdown>
+                  <article className="summary-article">
+                    <header className="summary-article__header">
+                      <h1 className="summary-article__title">{completedSummary.title}</h1>
+                      {completedSummary.author && (
+                        <p className="summary-article__creator">by {completedSummary.author}</p>
+                      )}
+                    </header>
+                    <ReactMarkdown>{completedSummary.content}</ReactMarkdown>
+                  </article>
                 </div>
 
                 {completedSummary.tags.length > 0 && (
@@ -1165,11 +1208,13 @@ const WatchLater = () => {
                 const displayTitle = (saved.title ?? titlePart ?? saved.videoId).trim();
                 const timestamp = saved.modified ? new Date(saved.modified).toLocaleString() : 'Unknown time';
                 const size = saved.size ? formatKilobytes(saved.size) : '';
+                const creatorName = saved.author?.trim() || 'Unknown creator';
 
                 return (
                   <div key={saved.filename} className="history-item" onClick={() => handleHistoryItemClick(saved)}>
                     <div className="history-item-content">
                       <div className="history-item-title">{displayTitle}</div>
+                      <div className="history-item-author">{creatorName}</div>
                       <div className="history-item-meta">
                         {timestamp} {size && `· ${size}`}
                       </div>

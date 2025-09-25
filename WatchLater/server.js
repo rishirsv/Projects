@@ -98,6 +98,7 @@ function parseSummaryFileContent(fileContent, filename, videoId) {
   const metadata = {
     videoId,
     title: extractMetadataValue(metadataSection, 'Title') || fallbackTitleFromFilename(filename) || `Video ${videoId}`,
+    author: extractMetadataValue(metadataSection, 'Author') || '',
     generatedAt: extractMetadataValue(metadataSection, 'Generated'),
     summaryLength: Number.parseInt(extractMetadataValue(metadataSection, 'Length'), 10) || summaryMarkdown.length
   };
@@ -638,7 +639,7 @@ app.post('/api/openrouter/generate', async (req, res) => {
 
 // Save summary to file system
 app.post('/api/save-summary', (req, res) => {
-  const { videoId, summary, title, modelId } = req.body;
+  const { videoId, summary, title, modelId, author } = req.body;
   
   if (!videoId || typeof summary !== 'string') {
     return res.status(400).json({ error: 'Video ID and summary are required' });
@@ -653,6 +654,7 @@ app.post('/api/save-summary', (req, res) => {
   try {
     const timestamp = new Date().toISOString().replace(/[:.]/g, '-').slice(0, 19);
     const sanitizedTitle = title ? sanitizeTitle(title) : null;
+    const creator = typeof author === 'string' ? author.trim() : '';
     const baseFilename = sanitizedTitle ? `${videoId}__${sanitizedTitle}` : videoId;
 
     const filename = `${baseFilename}-summary-${timestamp}.md`;
@@ -664,6 +666,10 @@ app.post('/api/save-summary', (req, res) => {
 
     if (title) {
       metadataLines.push(`**Title:** ${title}`);
+    }
+
+    if (creator) {
+      metadataLines.push(`**Author:** ${creator}`);
     }
 
     metadataLines.push(`**Generated:** ${generatedAt}`);
@@ -684,7 +690,8 @@ app.post('/api/save-summary', (req, res) => {
       filename,
       path: filePath,
       length: normalizedSummary.length,
-      modelId: selectedModelId
+      modelId: selectedModelId,
+      author: creator || undefined
     });
     
     if (selectedModelId) {
@@ -714,11 +721,27 @@ app.get('/api/summaries', (req, res) => {
         const [prefix] = file.split('-summary-');
         const [videoIdPart, titlePart] = prefix.split('__');
         const videoId = videoIdPart || 'unknown';
-        
+        let author = null;
+        let derivedTitle = titlePart ? titlePart.trim() : null;
+
+        try {
+          const fileContent = fs.readFileSync(filePath, 'utf8');
+          const { metadata } = parseSummaryFileContent(fileContent, file, videoId);
+          if (metadata.title) {
+            derivedTitle = metadata.title.trim();
+          }
+          if (metadata.author) {
+            author = metadata.author.trim() || null;
+          }
+        } catch (parseError) {
+          console.warn(`Failed to parse metadata for summary ${file}:`, parseError);
+        }
+
         return {
           filename: file,
           videoId,
-          title: titlePart || null,
+          title: derivedTitle,
+          author,
           created: stats.ctime,
           modified: stats.mtime,
           size: stats.size
@@ -764,13 +787,15 @@ app.get('/api/summary-file/:videoId', (req, res) => {
     const summary = summaryStart > 4 ? content.substring(summaryStart) : content;
     const metadataSection = summaryStart > 4 ? content.substring(0, summaryStart - 5) : '';
     const modelFromFile = extractMetadataValue(metadataSection, 'Model') || null;
-    
+    const authorFromFile = extractMetadataValue(metadataSection, 'Author') || '';
+
     res.json({
       videoId,
       filename: summaryFile,
       summary,
       length: summary.length,
-      modelId: modelFromFile
+      modelId: modelFromFile,
+      author: authorFromFile ? authorFromFile.trim() : null
     });
     
     console.log(`📖 Read summary file: ${summaryFile}`);
