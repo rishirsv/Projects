@@ -605,9 +605,11 @@ export async function generateSummaryFromFile(
     
     // Try to fetch video metadata for title
     let title = undefined;
+    let author = undefined;
     try {
       const metadata = await fetchVideoMetadata(videoId, config);
       title = metadata.title;
+      author = metadata.author;
       console.log(`📝 Using video title for summary: "${title}"`);
     } catch (metadataError) {
       console.warn('Failed to fetch video metadata for summary, using videoId:', metadataError);
@@ -617,7 +619,7 @@ export async function generateSummaryFromFile(
     const summary = await generateSummary(transcriptData.transcript, modelId, config);
 
     // Auto-save the summary to server file system with title
-    const savedFile = await saveSummaryToServer(videoId, summary, title, modelId, config);
+    const savedFile = await saveSummaryToServer(videoId, summary, title, modelId, author, config);
     const resolvedModel = savedFile.modelId ?? modelId;
 
     console.log(`📝 Generated and saved summary for transcript: ${videoId} → ${savedFile.filename}`);
@@ -640,6 +642,7 @@ export async function saveSummaryToServer(
   summary: string,
   title?: string,
   modelId?: string,
+  author?: string,
   config: RequestConfig = {}
 ): Promise<{ filename: string; path: string; modelId?: string }> {
   if (!hasContent(summary)) {
@@ -656,7 +659,7 @@ export async function saveSummaryToServer(
         headers: {
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify({ videoId, summary: normalizedSummary, title, modelId })
+        body: JSON.stringify({ videoId, summary: normalizedSummary, title, modelId, author })
       },
       {
         signal: config.signal,
@@ -723,7 +726,15 @@ ${summary}`;
 }
 
 export async function getSavedSummaries(config: RequestConfig = {}): Promise<
-  Array<{ filename: string; videoId: string; title?: string | null; created: string; modified: string; size: number }>
+  Array<{
+    filename: string;
+    videoId: string;
+    title?: string | null;
+    author?: string | null;
+    created: string;
+    modified: string;
+    size: number;
+  }>
 > {
   try {
     const response = await fetchWithTimeout(
@@ -756,7 +767,14 @@ export async function getSavedSummaries(config: RequestConfig = {}): Promise<
 export async function readSavedSummary(
   videoId: string,
   config: RequestConfig = {}
-): Promise<{ videoId: string; filename: string; summary: string; length: number; modelId?: string }> {
+): Promise<{
+  videoId: string;
+  filename: string;
+  summary: string;
+  length: number;
+  modelId?: string;
+  author?: string | null;
+}> {
   try {
     const response = await fetchWithTimeout(
       `${SERVER_URL}/api/summary-file/${videoId}`,

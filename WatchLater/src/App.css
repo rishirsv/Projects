@@ -797,6 +797,32 @@
   color: var(--color-text-primary);
 }
 
+.summary-article {
+  display: grid;
+  gap: var(--space-4);
+}
+
+.summary-article__header {
+  display: grid;
+  gap: var(--space-2);
+  margin-bottom: var(--space-2);
+}
+
+.summary-article__title {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 2rem;
+  line-height: 1.2;
+}
+
+.summary-article__creator {
+  margin: 0;
+  font-size: 1rem;
+  color: var(--color-text-secondary);
+  letter-spacing: 0.02em;
+  text-transform: none;
+}
+
 .summary-markdown h1,
 .summary-markdown h2,
 .summary-markdown h3 {
@@ -897,6 +923,11 @@
 
 .history-item-title {
   font-weight: 600;
+}
+
+.history-item-author {
+  font-size: 0.85rem;
+  color: var(--color-text-secondary);
 }
 
 .history-item-meta {

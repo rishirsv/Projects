@@ -217,13 +217,14 @@ const BatchImportModal: React.FC<BatchImportModalProps> = ({
 
       try {
         await Promise.resolve(onSubmit(validRequests));
+        onClose();
       } catch (error) {
         const message =
           error instanceof Error ? error.message : 'Unable to queue imports. Please retry.';
         setSubmissionError(message);
       }
     },
-    [importDisabled, onSubmit, validRequests]
+    [importDisabled, onClose, onSubmit, validRequests]
   );
 
   const handleCancel = useCallback(() => {
