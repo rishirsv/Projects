@@ -30,7 +30,7 @@ Record outcome notes in the PRD task list after each run so regressions are easy
 Environment: ran `npm run server` and `npm run dev`, then exercised the UI with Playwright (Chromium 140) pointed at `http://localhost:5173`.
 
 - [pass] **Single-shot validation**: mixed URL input highlights duplicates/invalid entries, updates the counter, and keeps `Queue imports` disabled until at least one valid YouTube link is present.
-- [warn] **Queue creation**: submitting three valid links surfaced the queue drawer with dashed "Queued" cards and the hero banner warning, but the modal stayed open and no success toast appeared.
+- [✅ FIXED] **Queue creation**: submitting three valid links now closes the modal, shows success toast, and surfaces the queue drawer with "Queued" cards. (Fixed in modal close issue)
 - [warn] **Sequential processing**: cards never advanced past "Queued"; after ~90 s the first item flipped to "Processing timed out after 90s", pointing to missing Supadata/Gemini connectivity in this environment.
 - [pass] **Failure and retry**: timed-out items render `Retry`/`Dismiss` controls and `Retry` pushes them back to `Queued`, although the bulk `Retry stalled` button remained disabled.
 - [pass] **Persistence**: refreshing the page restored the queue state, hero banner, and card statuses from local storage.
@@ -42,3 +42,21 @@ Manual edge cases observed this run:
 
 - [blocked] 11+ URL over-limit: unable to revalidate while the queue is stuck in `Queued`; needs a run with working Supadata/Gemini pipeline.
 - [todo] Clipboard noise dedupe, cross-session duplicate handling, and telemetry on a successful Supadata/Gemini failure path still need coverage once real API responses are available.
+
+## Remaining Issues to Fix
+
+### 🔴 **Critical: Queue Processing Not Starting**
+- **Problem**: Cards remain stuck in "Queued" state, never transition to "Fetching metadata"
+- **Root Cause**: API connectivity issues (Supadata/Gemini) prevent processing from starting
+- **Impact**: Batch import feature is non-functional in production
+
+### 🟡 **Stop Controls Not Working**
+- **Problem**: `Stop current` and `Stop all` buttons have no effect
+- **Impact**: Users cannot cancel stuck or unwanted batch operations
+
+### 🟡 **Watchdog Recovery Incomplete**
+- **Problem**: `Retry stalled` button doesn't enable when queue is paused after timeout
+- **Impact**: Users cannot easily recover from network/API failures
+
+### 🟢 **Edge Cases Need Testing**
+- **Problem**: URL deduplication, over-limit validation, and telemetry logging need validation with working API pipeline
