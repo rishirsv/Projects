@@ -524,6 +524,10 @@ export const useBatchImportQueue = () => {
   );
 
   const enqueue = useCallback((requests: BatchImportRequest[]): EnqueueResult => {
+    if (requests.length === 0) {
+      return { added: [], skipped: [] };
+    }
+
     const uniqueRequests = new Map<string, BatchImportRequest>();
     requests.forEach((request) => {
       if (!uniqueRequests.has(request.videoId)) {
@@ -531,85 +535,83 @@ export const useBatchImportQueue = () => {
       }
     });
 
+    if (uniqueRequests.size === 0) {
+      return { added: [], skipped: [] };
+    }
+
+    const current = stateRef.current;
+    const items = { ...current.items };
+    const order = current.order.slice();
     const added: BatchQueueItem[] = [];
     const skipped: EnqueueResult['skipped'] = [];
 
-    let queueLengthAfter = stateRef.current.order.length;
-    setState((previous) => {
-      if (uniqueRequests.size === 0) {
-        queueLengthAfter = previous.order.length;
-        return previous;
-      }
+    for (const request of uniqueRequests.values()) {
+      const existing = items[request.videoId];
+      if (existing) {
+        const reason: EnqueueSkipReason =
+          existing.status === 'succeeded'
+            ? 'alreadyCompleted'
+            : existing.status === 'processing'
+                ? 'alreadyProcessing'
+                : existing.status === 'failed'
+                    ? 'failedNeedsRetry'
+                    : 'alreadyQueued';
 
-      let changed = false;
-      const items = { ...previous.items };
-      const order = previous.order.slice();
-
-      for (const request of uniqueRequests.values()) {
-        const existing = items[request.videoId];
-        if (existing) {
-          const reason: EnqueueSkipReason =
-            existing.status === 'succeeded'
-              ? 'alreadyCompleted'
-              : existing.status === 'processing'
-                  ? 'alreadyProcessing'
-                  : existing.status === 'failed'
-                      ? 'failedNeedsRetry'
-                      : 'alreadyQueued';
-
-          skipped.push({
-            videoId: request.videoId,
-            url: request.url,
-            reason
-          });
-          continue;
-        }
-
-        const timestamp = nowIso();
-        const item: BatchQueueItem = {
+        skipped.push({
           videoId: request.videoId,
           url: request.url,
-          status: 'queued',
-          stage: 'queued',
-          attempts: 0,
-          createdAt: timestamp,
-          updatedAt: timestamp,
-          stageUpdatedAt: timestamp
-        };
-
-        items[request.videoId] = item;
-        order.push(request.videoId);
-        added.push(item);
-        changed = true;
+          reason
+        });
+        continue;
       }
 
-      if (!changed) {
-        queueLengthAfter = previous.order.length;
-        return previous;
-      }
-
-      const nextState: QueueState = {
-        items,
-        order,
-        activeId: previous.activeId
+      const timestamp = nowIso();
+      const item: BatchQueueItem = {
+        videoId: request.videoId,
+        url: request.url,
+        status: 'queued',
+        stage: 'queued',
+        attempts: 0,
+        createdAt: timestamp,
+        updatedAt: timestamp,
+        stageUpdatedAt: timestamp
       };
 
-      stateRef.current = nextState;
-      queueLengthAfter = nextState.order.length;
-      return nextState;
+      items[request.videoId] = item;
+      order.push(request.videoId);
+      added.push(item);
+    }
+
+    let queueLengthAfter = order.length;
+
+    if (added.length === 0) {
+      if (skipped.length > 0) {
+        logQueueEvent('enqueue', {
+          added: [],
+          skipped: skipped.map((item) => item.videoId),
+          queueLength: queueLengthAfter
+        });
+      }
+      return { added, skipped };
+    }
+
+    const nextState: QueueState = {
+      items,
+      order,
+      activeId: current.activeId
+    };
+
+    queueLengthAfter = nextState.order.length;
+    stateRef.current = nextState;
+    setState(nextState);
+
+    logQueueEvent('enqueue', {
+      added: added.map((item) => item.videoId),
+      skipped: skipped.map((item) => item.videoId),
+      queueLength: queueLengthAfter
     });
 
-    if (added.length > 0 || skipped.length > 0) {
-      logQueueEvent('enqueue', {
-        added: added.map((item) => item.videoId),
-        skipped: skipped.map((item) => item.videoId),
-        queueLength: queueLengthAfter
-      });
-    }
-
-    if (added.length > 0) {
-      processNext();
-    }
+    processNext();
 
     return { added, skipped };
   }, [processNext]);
