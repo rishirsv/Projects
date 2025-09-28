@@ -4,10 +4,11 @@
     "noEmit": false,
     "types": ["node", "jest"],
     "verbatimModuleSyntax": false,
-    "module": "es2022",
-    "moduleResolution": "NodeNext",
+    "module": "ES2022",
+    "moduleResolution": "bundler",
     "allowJs": true,
     "esModuleInterop": true
   },
-  "include": ["src", "tests", "shared"]
+  "include": ["src", "tests", "shared"],
+  "exclude": ["server.js"]
 }

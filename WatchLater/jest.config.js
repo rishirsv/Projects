@@ -4,7 +4,7 @@ export default {
   testMatch: ['**/tests/**/*.test.ts', '**/tests/**/*.test.tsx'],
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx'],
   transform: {
-    '^.+\\.(ts|tsx|js)$': ['ts-jest', { tsconfig: './tsconfig.test.json', useESM: true }],
+    '^.+\\.(ts|tsx|js|jsx)$': ['ts-jest', { tsconfig: './tsconfig.test.json', useESM: true }],
   },
   moduleNameMapper: {
     '^@/(.*)$': '<rootDir>/src/$1',

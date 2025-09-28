@@ -1,7 +1,7 @@
 /** @jest-environment jsdom */
-import { act, type ReactNode } from 'react';
+import { act, type ComponentType, type ReactNode } from 'react';
 import { createRoot, Root } from 'react-dom/client';
-import WatchLater from '../src/App';
+import * as AppModule from '../src/App';
 import * as api from '../src/api';
 import type { RuntimeEnv } from '../shared/env';
 
@@ -80,6 +80,8 @@ describe('Batch import modal', () => {
   });
 
   it('closes automatically after a successful enqueue', async () => {
+    const WatchLater = (AppModule as { default?: ComponentType }).default ?? (AppModule as unknown as ComponentType);
+
     await act(async () => {
       root.render(<WatchLater />);
     });

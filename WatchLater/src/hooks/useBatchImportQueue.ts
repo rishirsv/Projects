@@ -18,6 +18,7 @@ export type BatchProcessorResult =
 
 export type BatchProcessorControls = {
   updateStage: (stage: BatchQueueStage) => void;
+  heartbeat: (stage?: BatchQueueStage) => void;
   signal: AbortSignal;
 };
 
@@ -87,7 +88,15 @@ const VALID_STAGES: BatchQueueStage[] = [
 ];
 
 const nowIso = () => new Date().toISOString();
-const PROCESSING_TIMEOUT_MS = 90_000;
+const DEFAULT_STAGE_TIMEOUT_MS = 90_000;
+const STAGE_TIMEOUT_MS: Record<BatchQueueStage, number> = {
+  queued: 90_000,
+  fetchingMetadata: 60_000,
+  fetchingTranscript: 240_000,
+  generatingSummary: 300_000,
+  completed: 90_000,
+  failed: 90_000
+};
 const WATCHDOG_INTERVAL_MS = 5_000;
 const STOP_HOLD_TOKEN = 'batch-stop';
 const createAbortError = (message: string) => {
@@ -102,9 +111,102 @@ type PersistedQueueItem = Partial<BatchQueueItem> & {
 };
 
 const logQueueEvent = (message: string, payload: Record<string, unknown> = {}) => {
-  if (typeof console !== 'undefined') {
-    console.info(`[batch-import] ${message}`, payload);
+  if (typeof console === 'undefined') {
+    return;
   }
+
+  const enrichedPayload: Record<string, unknown> = { ...payload };
+  if (!('timestamp' in enrichedPayload)) {
+    enrichedPayload.timestamp = new Date().toISOString();
+  }
+
+  console.info(`[batch-import] ${message}`, enrichedPayload);
+};
+
+type QueueInstrumentationEntry = {
+  stage: BatchQueueStage;
+  stageStartedAtMs: number;
+  lastHeartbeatMs: number | null;
+};
+
+const resolveStageStartMs = (item: BatchQueueItem, fallbackMs: number) => {
+  const candidate = item.stageUpdatedAt ?? item.updatedAt ?? item.startedAt ?? item.createdAt;
+  const parsed = candidate ? Date.parse(candidate) : Number.NaN;
+  return Number.isFinite(parsed) ? parsed : fallbackMs;
+};
+
+const createQueueInstrumentor = () => {
+  const entries = new Map<string, QueueInstrumentationEntry>();
+
+  const ensureEntry = (videoId: string, item: BatchQueueItem, nowMs: number) => {
+    let entry = entries.get(videoId);
+    if (!entry) {
+      const stageStartedAtMs = resolveStageStartMs(item, nowMs);
+      entry = {
+        stage: item.stage,
+        stageStartedAtMs,
+        lastHeartbeatMs: null
+      };
+      entries.set(videoId, entry);
+    }
+    return entry;
+  };
+
+  return {
+    recordStage(
+      videoId: string,
+      previousItem: BatchQueueItem,
+      nextStage: BatchQueueStage,
+      nowMs: number
+    ): Record<string, unknown> {
+      const entry = ensureEntry(videoId, previousItem, nowMs);
+      const previousStage = entry.stage;
+      const durationMs = nowMs - entry.stageStartedAtMs;
+      entry.stage = nextStage;
+      entry.stageStartedAtMs = nowMs;
+      entry.lastHeartbeatMs = nowMs;
+      return {
+        timestamp: new Date(nowMs).toISOString(),
+        previousStage,
+        stageDurationMs: durationMs >= 0 ? durationMs : undefined
+      };
+    },
+    recordHeartbeat(
+      videoId: string,
+      currentItem: BatchQueueItem,
+      nowMs: number
+    ): Record<string, unknown> {
+      const entry = ensureEntry(videoId, currentItem, nowMs);
+      const stageElapsedMs = nowMs - entry.stageStartedAtMs;
+      const heartbeatGapMs =
+        entry.lastHeartbeatMs === null ? null : nowMs - entry.lastHeartbeatMs;
+      entry.lastHeartbeatMs = nowMs;
+      return {
+        timestamp: new Date(nowMs).toISOString(),
+        stage: entry.stage,
+        stageElapsedMs: stageElapsedMs >= 0 ? stageElapsedMs : undefined,
+        heartbeatGapMs: heartbeatGapMs !== null && heartbeatGapMs >= 0 ? heartbeatGapMs : undefined
+      };
+    },
+    snapshot(videoId: string, nowMs: number) {
+      const entry = entries.get(videoId);
+      if (!entry) {
+        return null;
+      }
+      const stageElapsedMs = nowMs - entry.stageStartedAtMs;
+      const heartbeatGapMs =
+        entry.lastHeartbeatMs === null ? null : nowMs - entry.lastHeartbeatMs;
+      return {
+        stage: entry.stage,
+        stageElapsedMs: stageElapsedMs >= 0 ? stageElapsedMs : undefined,
+        heartbeatGapMs: heartbeatGapMs !== null && heartbeatGapMs >= 0 ? heartbeatGapMs : undefined,
+        timestamp: new Date(nowMs).toISOString()
+      };
+    },
+    reset(videoId: string) {
+      entries.delete(videoId);
+    }
+  };
 };
 
 type PersistedQueueState = {
@@ -266,6 +368,7 @@ export const useBatchImportQueue = () => {
   const activeJobRef = useRef<ActiveJob | null>(null);
   const watchdogTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const lastTimeoutNotifiedRef = useRef<string | null>(null);
+  const instrumentationRef = useRef(createQueueInstrumentor());
   const [isPaused, setIsPaused] = useState(false);
   const [isStopRequested, setIsStopRequested] = useState(false);
 
@@ -300,7 +403,8 @@ export const useBatchImportQueue = () => {
   }, [state]);
 
   const markSuccess = useCallback((videoId: string, stage: BatchQueueStage = 'completed') => {
-    const timestamp = nowIso();
+    const eventTime = Date.now();
+    const timestamp = new Date(eventTime).toISOString();
     setState((previous) => {
       const current = previous.items[videoId];
       if (!current) {
@@ -329,10 +433,20 @@ export const useBatchImportQueue = () => {
       const activeId = previous.activeId === videoId ? null : previous.activeId;
       const nextState: QueueState = { ...previous, items, activeId };
       stateRef.current = nextState;
+      const snapshot = instrumentationRef.current.snapshot(videoId, eventTime);
+      instrumentationRef.current.reset(videoId);
+
+      const startedAtMs = current.startedAt ? Date.parse(current.startedAt) : Number.NaN;
+      const totalDurationMs = Number.isFinite(startedAtMs) ? eventTime - startedAtMs : undefined;
+
       logQueueEvent('job-succeeded', {
         videoId,
         queueLength: nextState.order.length,
-        completedAt: timestamp
+        completedAt: timestamp,
+        totalDurationMs: totalDurationMs !== undefined && totalDurationMs >= 0 ? totalDurationMs : undefined,
+        lastStageElapsedMs: snapshot?.stageElapsedMs,
+        lastHeartbeatGapMs: snapshot?.heartbeatGapMs,
+        finalStage: stage
       });
       return nextState;
     });
@@ -340,7 +454,8 @@ export const useBatchImportQueue = () => {
 
   const markFailure = useCallback(
     (videoId: string, errorMessage: string, stage: BatchQueueStage = 'failed') => {
-      const timestamp = nowIso();
+      const eventTime = Date.now();
+      const timestamp = new Date(eventTime).toISOString();
       setState((previous) => {
         const current = previous.items[videoId];
         if (!current) {
@@ -368,11 +483,76 @@ export const useBatchImportQueue = () => {
         const activeId = previous.activeId === videoId ? null : previous.activeId;
         const nextState: QueueState = { ...previous, items, activeId };
         stateRef.current = nextState;
+        const snapshot = instrumentationRef.current.snapshot(videoId, eventTime);
+        instrumentationRef.current.reset(videoId);
+
+        const startedAtMs = current.startedAt ? Date.parse(current.startedAt) : Number.NaN;
+        const totalDurationMs = Number.isFinite(startedAtMs) ? eventTime - startedAtMs : undefined;
+
         logQueueEvent('job-failed', {
           videoId,
           queueLength: nextState.order.length,
-          error: errorMessage
+          error: errorMessage,
+          totalDurationMs: totalDurationMs !== undefined && totalDurationMs >= 0 ? totalDurationMs : undefined,
+          lastStageElapsedMs: snapshot?.stageElapsedMs,
+          lastHeartbeatGapMs: snapshot?.heartbeatGapMs,
+          failedStage: stage
         });
+        return nextState;
+      });
+    },
+    []
+  );
+
+  const commitStageUpdate = useCallback(
+    (
+      videoId: string,
+      stage: BatchQueueStage | undefined,
+      { refreshOnly = false }: { refreshOnly?: boolean } = {}
+    ) => {
+      const eventTime = Date.now();
+      const eventIso = new Date(eventTime).toISOString();
+
+      setState((previous) => {
+        const current = previous.items[videoId];
+        if (!current) {
+          return previous;
+        }
+
+        const nextStage = refreshOnly || stage === undefined ? current.stage : stage;
+
+        const nextItem: BatchQueueItem = {
+          ...current,
+          stage: nextStage,
+          updatedAt: eventIso,
+          stageUpdatedAt: eventIso
+        };
+
+        if (
+          nextItem.stage === current.stage &&
+          nextItem.stageUpdatedAt === current.stageUpdatedAt &&
+          nextItem.updatedAt === current.updatedAt
+        ) {
+          return previous;
+        }
+
+        const items = { ...previous.items, [videoId]: nextItem };
+        const nextState: QueueState = { ...previous, items };
+        stateRef.current = nextState;
+
+        const instrumentationDetails =
+          !refreshOnly && nextStage !== current.stage
+            ? instrumentationRef.current.recordStage(videoId, current, nextStage, eventTime)
+            : instrumentationRef.current.recordHeartbeat(videoId, current, eventTime);
+
+        const basePayload = { videoId, stage: nextStage, ...instrumentationDetails };
+
+        if (!refreshOnly && nextStage !== current.stage) {
+          logQueueEvent('job-stage', basePayload);
+        } else {
+          logQueueEvent('job-heartbeat', basePayload);
+        }
+
         return nextState;
       });
     },
@@ -383,29 +563,13 @@ export const useBatchImportQueue = () => {
     (videoId: string, controller: AbortController): BatchProcessorControls => ({
       signal: controller.signal,
       updateStage: (stage: BatchQueueStage) => {
-        setState((previous) => {
-          const current = previous.items[videoId];
-          if (!current || current.stage === stage) {
-            return previous;
-          }
-
-          const timestamp = nowIso();
-          const nextItem: BatchQueueItem = {
-            ...current,
-            stage,
-            updatedAt: timestamp,
-            stageUpdatedAt: timestamp
-          };
-
-          const items = { ...previous.items, [videoId]: nextItem };
-          const nextState: QueueState = { ...previous, items };
-          stateRef.current = nextState;
-          logQueueEvent('job-stage', { videoId, stage });
-          return nextState;
-        });
+        commitStageUpdate(videoId, stage);
+      },
+      heartbeat: (stage?: BatchQueueStage) => {
+        commitStageUpdate(videoId, stage, { refreshOnly: true });
       }
     }),
-    []
+    [commitStageUpdate]
   );
 
   const processNext = useCallback(() => {
@@ -621,25 +785,12 @@ export const useBatchImportQueue = () => {
     []
   );
 
-  const updateStage = useCallback((videoId: string, stage: BatchQueueStage) => {
-    setState((previous) => {
-      const current = previous.items[videoId];
-      if (!current || current.stage === stage) {
-        return previous;
-      }
-
-      const updated: BatchQueueItem = {
-        ...current,
-        stage,
-        updatedAt: nowIso()
-      };
-
-      const items = { ...previous.items, [videoId]: updated };
-      const nextState: QueueState = { ...previous, items };
-      stateRef.current = nextState;
-      return nextState;
-    });
-  }, []);
+  const updateStage = useCallback(
+    (videoId: string, stage: BatchQueueStage) => {
+      commitStageUpdate(videoId, stage);
+    },
+    [commitStageUpdate]
+  );
 
   const setProcessingHold = useCallback(
     (token: string, shouldHold: boolean) => {
@@ -669,6 +820,8 @@ export const useBatchImportQueue = () => {
 
   const retryItem = useCallback(
     (videoId: string) => {
+      const eventTime = Date.now();
+      const eventIso = new Date(eventTime).toISOString();
       setState((previous) => {
         const current = previous.items[videoId];
         if (!current || current.status === 'queued') {
@@ -680,8 +833,8 @@ export const useBatchImportQueue = () => {
           status: 'queued',
           stage: 'queued',
           error: undefined,
-          updatedAt: nowIso(),
-          stageUpdatedAt: nowIso(),
+          updatedAt: eventIso,
+          stageUpdatedAt: eventIso,
           startedAt: undefined
         };
 
@@ -690,6 +843,8 @@ export const useBatchImportQueue = () => {
         stateRef.current = nextState;
         return nextState;
       });
+
+      instrumentationRef.current.reset(videoId);
 
       processNext();
     },
@@ -710,6 +865,7 @@ export const useBatchImportQueue = () => {
       stateRef.current = nextState;
       return nextState;
     });
+    instrumentationRef.current.reset(videoId);
   }, []);
 
   const clearCompleted = useCallback(() => {
@@ -768,7 +924,8 @@ export const useBatchImportQueue = () => {
       const stoppedActive = stopActive(reason);
 
       let affected: string[] = [];
-      const timestamp = nowIso();
+      const eventTime = Date.now();
+      const timestamp = new Date(eventTime).toISOString();
 
       setState((previous) => {
         const items = { ...previous.items };
@@ -784,6 +941,7 @@ export const useBatchImportQueue = () => {
         for (const id of affected) {
           const current = items[id];
           if (!current) continue;
+          instrumentationRef.current.reset(id);
           items[id] = {
             ...current,
             status: 'failed',
@@ -820,7 +978,8 @@ export const useBatchImportQueue = () => {
       }
 
       let recovered = false;
-      const timestamp = nowIso();
+      const eventTime = Date.now();
+      const timestamp = new Date(eventTime).toISOString();
 
       setState((previous) => {
         const current = previous.items[targetId];
@@ -845,6 +1004,7 @@ export const useBatchImportQueue = () => {
           activeId: previous.activeId === targetId ? null : previous.activeId
         };
         stateRef.current = nextState;
+        instrumentationRef.current.reset(targetId);
         recovered = true;
         return nextState;
       });
@@ -904,8 +1064,10 @@ export const useBatchImportQueue = () => {
         return;
       }
 
-      const elapsed = Date.now() - stageTime;
-      if (elapsed < PROCESSING_TIMEOUT_MS) {
+      const timeoutMs = STAGE_TIMEOUT_MS[item.stage] ?? DEFAULT_STAGE_TIMEOUT_MS;
+      const nowMs = Date.now();
+      const elapsed = nowMs - stageTime;
+      if (elapsed < timeoutMs) {
         return;
       }
 
@@ -914,11 +1076,15 @@ export const useBatchImportQueue = () => {
       }
 
       lastTimeoutNotifiedRef.current = activeId;
-      const reason = `Processing timed out after ${Math.round(PROCESSING_TIMEOUT_MS / 1000)}s`;
+      const reason = `Processing timed out in stage "${item.stage}" after ${Math.round(timeoutMs / 1000)}s`;
+      const snapshot = instrumentationRef.current.snapshot(activeId, nowMs);
       logQueueEvent('watchdog-timeout', {
         videoId: activeId,
         stage: item.stage,
-        elapsedMs: elapsed
+        elapsedMs: elapsed,
+        timeoutMs,
+        stageElapsedMs: snapshot?.stageElapsedMs,
+        lastHeartbeatGapMs: snapshot?.heartbeatGapMs
       });
 
       const job = activeJobRef.current;

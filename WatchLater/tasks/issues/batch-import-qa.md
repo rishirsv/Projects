@@ -22,6 +22,7 @@ This playbook walks through the scenarios that exercised the new batch import wo
 - Include whitespace, blank lines, and clipboard noise—only real video IDs should survive dedupe.
 - Queue the same video twice across sessions to confirm the second attempt is skipped with an appropriate toast.
 - Trigger a Supadata or Gemini failure and inspect the console for the `[batch-import]` telemetry logs (enqueue, job-stage, job-failed/succeeded), verifying they carry useful metadata for monitoring.
+- [info] Transcript fallback: when Supadata omits transcript text the API now retries English and any caption languages Supadata advertises, surfacing the attempted codes in both the server logs and UI error copy. Capture the language list in QA notes if a video still fails.
 
 Record outcome notes in the PRD task list after each run so regressions are easy to spot.
 
@@ -31,12 +32,12 @@ Environment: ran `npm run server` and `npm run dev`, then exercised the UI with 
 
 - [pass] **Single-shot validation**: mixed URL input highlights duplicates/invalid entries, updates the counter, and keeps `Queue imports` disabled until at least one valid YouTube link is present.
 - [✅ FIXED] **Queue creation**: submitting three valid links now closes the modal, shows success toast, and surfaces the queue drawer with "Queued" cards. (Fixed in modal close issue)
-- [warn] **Sequential processing**: cards never advanced past "Queued"; after ~90 s the first item flipped to "Processing timed out after 90s", pointing to missing Supadata/Gemini connectivity in this environment.
+- [blocked] **Sequential processing**: cards still stall at "Queued" here because Supadata/Gemini credentials were unavailable, but the queue now stretches watchdog limits per stage and emits heartbeats during long API calls. Re-run once real API responses are reachable to confirm cards advance through each stage.
 - [pass] **Failure and retry**: timed-out items render `Retry`/`Dismiss` controls and `Retry` pushes them back to `Queued`, although the bulk `Retry stalled` button remained disabled.
 - [pass] **Persistence**: refreshing the page restored the queue state, hero banner, and card statuses from local storage.
 - [pass] **Concurrency guard**: the single-summary `Summarize video` button stays disabled and the hero copy warns that batch processing is in progress while the queue is non-empty.
 - [blocked] **Stop controls**: `Stop current` never enabled and `Stop all` had no observable effect because no job reached an active processing state.
-- [warn] **Watchdog recovery**: `[batch-import] watchdog-timeout` and `job-failed` console logs fire on the timeout, but `Retry stalled` does not enable itself for the paused queue.
+- [warn] **Watchdog recovery**: `[batch-import] watchdog-timeout` and `job-failed` events still surface when API calls hang, but the queue now records the attempted language/timeout data and the staged watchdog runs at 5 s intervals with extended windows. `Retry stalled` should enable after the queue pauses—verify on the next run with real Supadata connectivity.
 
 Manual edge cases observed this run:
 
@@ -60,3 +61,10 @@ Manual edge cases observed this run:
 
 ### 🟢 **Edge Cases Need Testing**
 - **Problem**: URL deduplication, over-limit validation, and telemetry logging need validation with working API pipeline
+            
+## Task List (Updated 2025-03-17)
+- [x] Instrument client queue logging with heartbeats, stage durations, and watchdog metadata.
+- [x] Harden Supadata transcript parsing with fallback heuristics and unit coverage.
+- [x] Resolve ts-jest configuration and TSX typing so modal close + heartbeat specs compile and run.
+- [ ] Add regression coverage for Supadata retry chains and extended queue timeouts.
+- [ ] Document reproduction timeline and verification evidence once automated tests pass.

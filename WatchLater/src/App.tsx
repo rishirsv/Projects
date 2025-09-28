@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useCallback, useMemo } from 'react';
+import { useState, useEffect, useRef, useCallback, useMemo, type FormEvent, type MouseEvent } from 'react';
 import ReactMarkdown from 'react-markdown';
 import {
   Download,
@@ -137,6 +137,13 @@ const QUEUE_STAGE_LABELS: Record<BatchQueueStage, string> = {
   generatingSummary: 'Generating summary',
   completed: 'Completed',
   failed: 'Failed'
+};
+
+const HEARTBEAT_INTERVAL_MS = 15_000;
+const BATCH_STAGE_TIMEOUTS: Partial<Record<BatchQueueStage, number>> = {
+  fetchingMetadata: 60_000,
+  fetchingTranscript: 240_000,
+  generatingSummary: 300_000
 };
 
 const WatchLater = () => {
@@ -323,31 +330,84 @@ const WatchLater = () => {
   }, [loadSavedSummaries]);
 
   useEffect(() => {
-    const processor: BatchProcessor = async (item, { updateStage, signal }) => {
+    const processor: BatchProcessor = async (item, { updateStage, heartbeat, signal }) => {
       let metadata: Awaited<ReturnType<typeof fetchVideoMetadata>> | null = null;
 
-      try {
-        const ensureActive = () => {
-          if (!signal.aborted) {
-            return;
+      const ensureActive = () => {
+        if (!signal.aborted) {
+          return;
+        }
+        const reason = signal.reason;
+        throw reason instanceof Error ? reason : new Error('Batch stopped by user');
+      };
+
+      const runWithHeartbeat = async <T,>(
+        stage: BatchQueueStage,
+        task: () => Promise<T>
+      ): Promise<T> => {
+        ensureActive();
+        let intervalId: ReturnType<typeof setInterval> | null = null;
+
+        const stop = () => {
+          if (intervalId !== null) {
+            clearInterval(intervalId);
+            intervalId = null;
           }
-          const reason = signal.reason;
-          throw reason instanceof Error ? reason : new Error('Batch stopped by user');
         };
 
+        const tick = () => {
+          if (signal.aborted) {
+            stop();
+            return;
+          }
+          heartbeat(stage);
+        };
+
+        heartbeat(stage);
+        intervalId = setInterval(tick, HEARTBEAT_INTERVAL_MS);
+
+        try {
+          const result = await task();
+          ensureActive();
+          return result;
+        } finally {
+          stop();
+        }
+      };
+
+      try {
         updateStage('fetchingMetadata');
         try {
-          metadata = await fetchVideoMetadata(item.videoId, { signal });
+          metadata = await runWithHeartbeat('fetchingMetadata', () =>
+            fetchVideoMetadata(item.videoId, {
+              signal,
+              timeoutMs: BATCH_STAGE_TIMEOUTS.fetchingMetadata
+            })
+          );
         } catch (metadataError) {
           console.warn('Batch metadata fetch failed:', metadataError);
         }
 
         updateStage('fetchingTranscript');
-        const transcriptText = await fetchTranscript(item.videoId, { signal });
-        await saveTranscript(item.videoId, transcriptText, false, metadata?.title, { signal });
+        const transcriptText = await runWithHeartbeat('fetchingTranscript', () =>
+          fetchTranscript(item.videoId, {
+            signal,
+            timeoutMs: BATCH_STAGE_TIMEOUTS.fetchingTranscript
+          })
+        );
+        await saveTranscript(item.videoId, transcriptText, false, metadata?.title, {
+          signal,
+          timeoutMs: BATCH_STAGE_TIMEOUTS.fetchingTranscript
+        });
+        ensureActive();
 
         updateStage('generatingSummary');
-        await generateSummaryFromFile(item.videoId, activeModelId, { signal });
+        await runWithHeartbeat('generatingSummary', () =>
+          generateSummaryFromFile(item.videoId, activeModelId, {
+            signal,
+            timeoutMs: BATCH_STAGE_TIMEOUTS.generatingSummary
+          })
+        );
 
         updateStage('completed');
         ensureActive();
@@ -758,7 +818,7 @@ const WatchLater = () => {
   };
 
   const handleHistoryItemDelete = (
-    event: React.MouseEvent<HTMLButtonElement>,
+    event: MouseEvent<HTMLButtonElement>,
     saved: SavedSummary,
     title: string
   ) => {
@@ -771,7 +831,7 @@ const WatchLater = () => {
   const isReturningUser = summaryCount > 0;
   const isSummarizeDisabled = !isYouTubeUrl(url) || isProcessing || hasPendingBatch;
 
-  const handleSubmit = (event: React.FormEvent) => {
+  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     handleSummarize(url);
   };

@@ -2,6 +2,12 @@
 
 WatchLater turns any YouTube URL into a polished markdown brief using the AI model of your choice. Phase 3 delivers a Tactiq-inspired interface with glassmorphic cards, animated progress, and instant history recall—all running locally through a lightweight Node + React stack.
 
+## System Overview
+- Local-first architecture: Vite + React frontend orchestrates Gemini in-browser while an Express 5 server handles Supadata transcript fetches, OpenRouter proxying, and filesystem persistence (`src/main.tsx`, `server.js`).
+- Filesystem storage is the source of truth. Summaries and transcripts live under `exports/` with title-aware filenames, and the PDF pipeline renders Markdown via `markdown-it` + Puppeteer.
+- Shared utilities in `shared/` keep configuration, environment resolution, and sanitization consistent between client and server modules.
+- Batch processing relies on a resilient queue hook (`src/hooks/useBatchImportQueue.ts`) that persists to `localStorage`, supports watchdog timeouts, and coordinates with UI controls.
+
 ## Product Goals & User Stories
 ### Goals
 - Deliver a readable video summary within 10 seconds of pasting a valid URL.
@@ -110,6 +116,25 @@ Frontend (Vite/React/TS)
 6. Client saves summary via `/api/save-summary`.
 7. User downloads Markdown or PDF; the PDF route renders the latest summary with `markdown-it` and Puppeteer.
 
+#### API Surface
+| Method | Path | Purpose |
+| --- | --- | --- |
+| GET | `/health` | Basic readiness probe exposing Supadata configuration state |
+| GET | `/api/video-metadata/:videoId` | Fetch title, author, and thumbnail via YouTube oEmbed |
+| POST | `/api/transcript` | Retrieve transcript text from Supadata with language fallbacks |
+| POST | `/api/save-transcript` | Persist transcript file with metadata header |
+| GET | `/api/transcripts` | List saved transcript files |
+| GET | `/api/transcript-file/:videoId` | Return latest transcript content for a video |
+| POST | `/api/summarize/:videoId` | Package transcript for client-side AI processing |
+| POST | `/api/openrouter/generate` | Proxy OpenRouter chat completions when using server-side models |
+| POST | `/api/save-summary` | Persist Markdown summary and metadata |
+| GET | `/api/summaries` | List saved summaries with derived titles/authors |
+| GET | `/api/summary-file/:videoId` | Return latest summary Markdown |
+| GET | `/api/summary/:videoId/pdf` | Render latest summary to PDF via Puppeteer |
+| DELETE | `/api/summaries` | Delete all summaries (and optional transcripts) |
+| DELETE | `/api/summary/:videoId` | Delete latest or all summaries for a video |
+| POST | `/api/generate-summary/:videoId` | Return transcript + prompt bundle for frontend Gemini runs |
+
 ### Storage Model
 - `exports/transcripts/*.txt` – Transcript with a short frontmatter header.
 - `exports/summaries/*.md` – Markdown summary keyed by `${videoId}__${sanitizedTitle}`.
@@ -127,20 +152,44 @@ Frontend (Vite/React/TS)
 - Filename sanitization trims obvious hazards but can mis-handle typographic quotes; a refactor is planned.
 
 ### Repository Layout
+| Path | Purpose | Key References |
+| --- | --- | --- |
+| `src/` | React application, routing, batch queue, and model selector | `src/App.tsx`, `src/api.ts`, `src/hooks/useBatchImportQueue.ts` |
+| `server.js` | Express entry point exposing transcript/summary/PDF routes and OpenRouter proxy | `server.js` |
+| `server/` | Markdown → HTML renderer and Puppeteer PDF worker | `server/markdown-to-html.js`, `server/pdf-renderer.js` |
+| `shared/` | Cross-tier utilities for config, env detection, sanitization | `shared/config.js`, `shared/env.ts`, `shared/title-sanitizer.js` |
+| `exports/` | Filesystem persistence for transcripts and summaries (auto-created) | `exports/summaries/`, `exports/transcripts/` |
+| `tests/` | Jest + ts-jest specs covering API, queue, renderer flows | `tests/pdf-route.test.ts`, `tests/batch-queue.test.tsx` |
+| `docs/` | Contributor guides, QA playbooks, assistant instructions | `docs/CLAUDE.md`, `docs/TEST_INSTRUCTIONS.md` |
+| `prompts/` | Markdown prompt templates served by the backend | `prompts/Youtube transcripts.md` |
+| `start.sh` | Convenience script launching API and Vite dev server together | `start.sh` |
+
 ```
 repo-root/
-├── docs/                  # PRD, design notes, UI assets
-├── exports/               # Generated transcripts (.txt) & summaries (.md)
-├── prompts/               # Prompt templates (Markdown)
-├── server.js              # Express API proxy (Supadata + file IO)
-├── server/                # Markdown renderer + Puppeteer helpers
-├── src/                   # Vite/React frontend
-│   ├── App.tsx            # Hero, pipeline, history drawer
-│   ├── api.ts             # Client ↔ server bridge (fetch, save, metadata)
-│   ├── App.css            # Glassmorphism system + layout
-│   └── index.css          # Design tokens & global gradients
-└── start.sh               # Launch Express + Vite together
+├── docs/
+├── exports/
+├── prompts/
+├── server.js
+├── server/
+├── shared/
+├── src/
+├── tasks/
+└── start.sh
 ```
+
+## Technology Stack
+- **Runtime**: Node.js 20+ with ES module support.
+- **Frontend**: React 19, Vite 7, React Markdown, Lucide icons, Google Generative AI SDK.
+- **Backend**: Express 5 with cors/dotenv helpers, Supadata transcript integration, OpenRouter proxy, and Puppeteer-based PDF rendering.
+- **Storage**: Local filesystem directories `exports/summaries` and `exports/transcripts` managed by the server.
+- **Build & Tooling**: TypeScript project references, ESLint flat config, Vite bundler, Jest + ts-jest for tests.
+
+## Security & Performance Notes
+- Restrict `cors()` to trusted origins via `ALLOWED_ORIGINS` and consider rate limiting before deploying beyond localhost.
+- Synchronous `fs` writes inside request handlers (`server.js`) are simple but block the event loop; migrate heavy disk operations to `fs.promises` when scaling.
+- `src/App.tsx` concentrates much of the UI logic—plan to decompose into feature modules for maintainability and targeted testing.
+- Guard client-exposed keys: Gemini must stay local-only, but OpenRouter or other sensitive providers should flow through server proxies.
+- Add CI automation (lint + test) to catch regressions, mirroring the local commands documented above.
 
 ## Phase 3 UI Recap
 - Gradient hero with pill input and trust badges (see `docs/ui-phase3-redesign.md`).

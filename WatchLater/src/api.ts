@@ -11,8 +11,8 @@ type RequestConfig = {
 const DEFAULT_FETCH_TIMEOUT_MS = 30_000;
 const PROMPT_TIMEOUT_MS = 10_000;
 const METADATA_TIMEOUT_MS = 15_000;
-const TRANSCRIPT_TIMEOUT_MS = 60_000;
-const SAVE_TRANSCRIPT_TIMEOUT_MS = 45_000;
+const TRANSCRIPT_TIMEOUT_MS = 180_000;
+const SAVE_TRANSCRIPT_TIMEOUT_MS = 60_000;
 const SUMMARY_SAVE_TIMEOUT_MS = 45_000;
 const OPENROUTER_TIMEOUT_MS = 120_000;
 const SUMMARY_PDF_TIMEOUT_MS = 60_000;
@@ -88,7 +88,7 @@ const throwIfAborted = (signal?: AbortSignal) => {
   }
 };
 
-const settleWithSignal = async <T>(promise: Promise<T>, signal?: AbortSignal): Promise<T> => {
+const settleWithSignal = async <T,>(promise: Promise<T>, signal?: AbortSignal): Promise<T> => {
   if (!signal) {
     return promise;
   }
@@ -278,11 +278,21 @@ export async function fetchTranscript(videoId: string, config: RequestConfig = {
     const data = await response.json();
 
     if (!response.ok) {
-      throw new Error(data.error || `Server error: ${response.status}`);
+      const serverMessage =
+        (typeof data === 'object' && data && (data.message || data.error)) ||
+        `Server error: ${response.status}`;
+      const available = Array.isArray(data?.availableLanguages) ? data.availableLanguages : [];
+      const suffix = available.length > 0 ? ` Available languages: ${available.join(', ')}.` : '';
+      throw new Error(`${serverMessage}${suffix}`);
     }
 
     if (!data.success || !data.transcript) {
-      throw new Error('No transcript available for this video.');
+      const serverMessage =
+        (typeof data === 'object' && data && (data.message || data.error)) ||
+        'No transcript available for this video.';
+      const available = Array.isArray(data?.availableLanguages) ? data.availableLanguages : [];
+      const suffix = available.length > 0 ? ` Available languages: ${available.join(', ')}.` : '';
+      throw new Error(`${serverMessage}${suffix}`);
     }
 
     console.log(`Transcript received: ${data.length} characters, ${data.items} items`);

@@ -17,3 +17,42 @@ Prefer imperative commit titles following the existing short style (`fix:`, `cho
 
 ## Security & Configuration Tips
 Keep secrets in local `.env` files only; never commit API keys or tokens. Audit Express and Puppeteer updates in `WatchLater/server/` for injection or SSRF risks, and scrub user input before rendering or exporting.
+
+## WatchLater Architecture Cheat Sheet
+- **Topology**: Vite/React frontend (Gemini in-browser) + Express 5 server on Node 20 that proxies Supadata transcripts, OpenRouter generations, and manages filesystem persistence (`WatchLater/src`, `WatchLater/server.js`).
+- **Persistence**: No database. Markdown summaries and transcripts live under `WatchLater/exports/` with sanitized, title-aware filenames. PDF rendering pipes Markdown through `markdown-it` + Puppeteer.
+- **Shared Utilities**: `WatchLater/shared/` hosts config/env/title helpers consumed by both tiers for consistent sanitization and environment handling.
+- **Batch Queue**: `WatchLater/src/hooks/useBatchImportQueue.ts` maintains queue state, watchdog timers, and localStorage persistence for batch imports.
+
+### Key Directories & Files
+- `WatchLater/src/App.tsx` – end-to-end UI workflow, including stage progression, batch controls, downloads, and error handling.
+- `WatchLater/src/api.ts` – client transport layer (timeouts, Gemini, OpenRouter, download helpers).
+- `WatchLater/server.js` – Express routes for metadata, transcripts, summaries, PDF streaming, and deletion.
+- `WatchLater/server/` – Markdown renderer and Puppeteer PDF worker modules.
+- `WatchLater/tests/` – Jest + ts-jest suites covering queue logic, renderer output, and API expectations.
+
+### API Surface (server.js)
+| Method | Path | Purpose |
+| --- | --- | --- |
+| GET | `/health` | Readiness info + Supadata key flag |
+| GET | `/api/video-metadata/:videoId` | YouTube oEmbed metadata |
+| POST | `/api/transcript` | Supadata transcript fetch with language retries |
+| POST | `/api/save-transcript` | Store transcript file |
+| GET | `/api/transcripts` | List transcript files |
+| GET | `/api/transcript-file/:videoId` | Latest transcript content |
+| POST | `/api/summarize/:videoId` | Prep transcript payload for AI |
+| POST | `/api/openrouter/generate` | Proxy OpenRouter completions |
+| POST | `/api/save-summary` | Persist Markdown summary |
+| GET | `/api/summaries` | List summaries w/ derived metadata |
+| GET | `/api/summary-file/:videoId` | Latest summary Markdown |
+| GET | `/api/summary/:videoId/pdf` | Render summary to PDF |
+| DELETE | `/api/summaries` | Bulk delete summaries (+ transcripts opt.) |
+| DELETE | `/api/summary/:videoId` | Delete latest/all summaries by ID |
+| POST | `/api/generate-summary/:videoId` | Prompt + transcript bundle for Gemini |
+
+### Ops & Improvement Notes
+- Restrict CORS via `ALLOWED_ORIGINS` and add rate limiting before exposing publicly.
+- Prefer `fs.promises` for heavy file I/O in `server.js` to avoid blocking the event loop when scaling.
+- Plan a refactor of `src/App.tsx` into smaller feature components/hooks for readability and targeted testing.
+- Keep Gemini keys browser-only; route other sensitive providers exclusively through server proxies.
+- Wire CI (lint + test) to match local guardrails documented in `WatchLater/README.md`.
