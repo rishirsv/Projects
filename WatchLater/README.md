@@ -151,7 +151,7 @@ Frontend (Vite/React/TS)
 ### Repository Layout
 | Path | Purpose | Key References |
 | --- | --- | --- |
-| `src/` | React application and model selector | `src/App.tsx`, `src/api.ts` |
+| `src/` | React application and model selector | `src/App.tsx`, `src/api.ts`, `src/components/` |
 | `server.js` | Express entry point exposing transcript/summary/PDF routes and OpenRouter proxy | `server.js` |
 | `server/` | Markdown → HTML renderer and Puppeteer PDF worker | `server/markdown-to-html.js`, `server/pdf-renderer.js` |
 | `shared/` | Cross-tier utilities for config, env detection, sanitization | `shared/config.js`, `shared/env.ts`, `shared/title-sanitizer.js` |
@@ -184,7 +184,7 @@ repo-root/
 ## Security & Performance Notes
 - Restrict `cors()` to trusted origins via `ALLOWED_ORIGINS` and consider rate limiting before deploying beyond localhost.
 - Synchronous `fs` writes inside request handlers (`server.js`) are simple but block the event loop; migrate heavy disk operations to `fs.promises` when scaling.
-- `src/App.tsx` concentrates much of the UI logic—plan to decompose into feature modules for maintainability and targeted testing.
+- `src/App.tsx` orchestrates state, effects, and handlers, while presentational components live under `src/components/` for maintainability and targeted testing.
 - Guard client-exposed keys: Gemini must stay local-only, but OpenRouter or other sensitive providers should flow through server proxies.
 - Add CI automation (lint + test) to catch regressions, mirroring the local commands documented above.
 
