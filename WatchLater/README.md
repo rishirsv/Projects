@@ -6,7 +6,7 @@ WatchLater turns any YouTube URL into a polished markdown brief using the AI mod
 - Local-first architecture: Vite + React frontend orchestrates Gemini in-browser while an Express 5 server handles Supadata transcript fetches, OpenRouter proxying, and filesystem persistence (`src/main.tsx`, `server.js`).
 - Filesystem storage is the source of truth. Summaries and transcripts live under `exports/` with title-aware filenames, and the PDF pipeline renders Markdown via `markdown-it` + Puppeteer.
 - Shared utilities in `shared/` keep configuration, environment resolution, and sanitization consistent between client and server modules.
-- Batch processing relies on a resilient queue hook (`src/hooks/useBatchImportQueue.ts`) that persists to `localStorage`, supports watchdog timeouts, and coordinates with UI controls.
+- Batch import capability has been removed. The app focuses on fast, reliable single‑URL summaries.
 
 ## Product Goals & User Stories
 ### Goals
@@ -81,11 +81,8 @@ ALLOWED_ORIGINS=http://localhost:5173
 
 The summary toolbar exposes a gradient "Model" selector beside the refresh button. The dropdown is populated from `VITE_MODEL_OPTIONS` at runtime, and the selected entry is kept in session storage (scoped to the active default) so you can iterate quickly when comparing providers. Gemini models run directly in the browser using `VITE_GEMINI_API_KEY`. Any `openrouter/...` model—including Grok 4—routes through the Express server with `OPENROUTER_API_KEY`, and the saved Markdown records the model used for easy auditing.
 
-### Batch import workflow
-- Tap the **Batch Import** pill in the toolbar to open a modal that accepts up to ten YouTube URLs at once. Paste freely—the input trims whitespace, deduplicates IDs, and blocks submission until at least one valid link remains.
-- After submission, the history drawer shows one dashed card per queued video with live stage badges (Queued → Fetching metadata → Fetching transcript → Generating summary → Completed). Failed entries surface the error message and offer **Retry**/**Dismiss** controls.
-- Single-video runs temporarily pause the batch processor; likewise, the modal is disabled while a manual summary is active so the Supadata/Gemini pipeline never double-books credentials.
-- Queue state is persisted to `localStorage`. Refreshing the page mid-run rehydrates the cards, resumes processing automatically, and emits `[batch-import] …` telemetry logs in the dev console for quick ad-hoc monitoring.
+### Batch import
+This release removes the batch import feature and associated queue UI. The app now focuses on fast, reliable single‑video summaries.
 
 ### Common scripts
 - `npm run start` – run API + Vite together (dev)
@@ -154,12 +151,12 @@ Frontend (Vite/React/TS)
 ### Repository Layout
 | Path | Purpose | Key References |
 | --- | --- | --- |
-| `src/` | React application, routing, batch queue, and model selector | `src/App.tsx`, `src/api.ts`, `src/hooks/useBatchImportQueue.ts` |
+| `src/` | React application and model selector | `src/App.tsx`, `src/api.ts` |
 | `server.js` | Express entry point exposing transcript/summary/PDF routes and OpenRouter proxy | `server.js` |
 | `server/` | Markdown → HTML renderer and Puppeteer PDF worker | `server/markdown-to-html.js`, `server/pdf-renderer.js` |
 | `shared/` | Cross-tier utilities for config, env detection, sanitization | `shared/config.js`, `shared/env.ts`, `shared/title-sanitizer.js` |
 | `exports/` | Filesystem persistence for transcripts and summaries (auto-created) | `exports/summaries/`, `exports/transcripts/` |
-| `tests/` | Jest + ts-jest specs covering API, queue, renderer flows | `tests/pdf-route.test.ts`, `tests/batch-queue.test.tsx` |
+| `tests/` | Jest + ts-jest specs covering API and renderer flows | `tests/pdf-route.test.ts` |
 | `docs/` | Contributor guides, QA playbooks, assistant instructions | `docs/CLAUDE.md`, `docs/TEST_INSTRUCTIONS.md` |
 | `prompts/` | Markdown prompt templates served by the backend | `prompts/Youtube transcripts.md` |
 | `start.sh` | Convenience script launching API and Vite dev server together | `start.sh` |
@@ -206,7 +203,6 @@ Screenshots referenced in README:
 
 ## Reference Material
 - `docs/CLAUDE.md` – assistant setup + architecture snapshot
-- `docs/batch-import-qa.md` – manual QA checklist for the batch import pipeline
 - `docs/prd-pdf-download.md` – requirements for the PDF export feature
 - `docs/ui-phase3-redesign.md` – discovery notes, design tokens, textual mockups
 - `docs/TEST_INSTRUCTIONS.md` – quick verification steps for summaries

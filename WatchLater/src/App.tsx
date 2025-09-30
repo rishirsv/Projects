@@ -15,9 +15,7 @@ import {
   Clock,
   ShieldCheck,
   Loader2,
-  Trash,
-  AlertTriangle,
-  PauseCircle
+  Trash
 } from 'lucide-react';
 import {
   fetchTranscript,
@@ -32,11 +30,7 @@ import {
 } from './api';
 import { extractVideoId } from './utils';
 import './App.css';
-import BatchImportModal, { type BatchImportRequest } from './components/BatchImportModal';
-import {
-  useBatchImportQueue
-} from './hooks/useBatchImportQueue';
-import type { BatchQueueItem, BatchProcessor, BatchQueueStage } from './hooks/useBatchImportQueue';
+// Batch import feature removed
 import { createModelRegistry } from './config/model-registry';
 import { resolveRuntimeEnv } from '../shared/env';
 import { ActiveModelProvider } from './context/model-context';
@@ -130,21 +124,7 @@ const STAGES: Stage[] = [
   { id: 4, title: 'Save', description: 'Markdown summary archived locally' }
 ];
 
-const QUEUE_STAGE_LABELS: Record<BatchQueueStage, string> = {
-  queued: 'Queued',
-  fetchingMetadata: 'Fetching metadata',
-  fetchingTranscript: 'Fetching transcript',
-  generatingSummary: 'Generating summary',
-  completed: 'Completed',
-  failed: 'Failed'
-};
-
-const HEARTBEAT_INTERVAL_MS = 15_000;
-const BATCH_STAGE_TIMEOUTS: Partial<Record<BatchQueueStage, number>> = {
-  fetchingMetadata: 60_000,
-  fetchingTranscript: 240_000,
-  generatingSummary: 300_000
-};
+// Batch import constants removed
 
 const WatchLater = () => {
   const modelRegistry = useMemo(() => createModelRegistry(resolveRuntimeEnv()), []);
@@ -165,8 +145,7 @@ const WatchLater = () => {
   const [deleteModal, setDeleteModal] = useState<DeleteModalState>({ mode: 'none' });
   const [deleteModalError, setDeleteModalError] = useState('');
   const [toast, setToast] = useState<ToastState | null>(null);
-  const [isBatchImportOpen, setIsBatchImportOpen] = useState(false);
-  const [isBatchImportSubmitting, setIsBatchImportSubmitting] = useState(false);
+  // Batch import state removed
   const [activeModelId, setActiveModelId] = useState<string>(() => {
     const fallback = modelRegistry.defaultModel;
 
@@ -198,8 +177,7 @@ const WatchLater = () => {
   const inputRef = useRef<HTMLInputElement | null>(null);
   const pdfStatusTimeoutRef = useRef<number | null>(null);
   const toastTimeoutRef = useRef<number | null>(null);
-  const batchImportTriggerRef = useRef<HTMLButtonElement | null>(null);
-  const batchQueue = useBatchImportQueue();
+  // Batch import hooks removed
 
   useEffect(() => {
     if (modelRegistry.warnings.length > 0) {
@@ -208,23 +186,7 @@ const WatchLater = () => {
       }
     }
   }, [modelRegistry]);
-  const {
-    state: batchQueueState,
-    registerProcessor,
-    enqueue: enqueueBatchRequests,
-    retryItem: retryBatchItem,
-    removeItem: removeBatchItem,
-    stats: batchQueueStats,
-    setProcessingHold: setBatchQueueHold,
-    stopActive: stopBatchProcessing,
-    stopAll: stopAllBatchProcessing,
-    resumeProcessing: resumeBatchProcessing,
-    recoverStalled: recoverStalledBatch,
-    isStopRequested: isBatchStopRequested
-  } = batchQueue;
-
-  const pendingBatchCount = batchQueueStats.processing + batchQueueStats.queued;
-  const hasPendingBatch = pendingBatchCount > 0;
+  // Batch import queue removed
 
   const updatePdfExportState = useCallback((next: PdfExportState) => {
     if (pdfStatusTimeoutRef.current) {
@@ -329,116 +291,20 @@ const WatchLater = () => {
     inputRef.current?.focus();
   }, [loadSavedSummaries]);
 
+  // Cleanup legacy batch import storage leftovers
   useEffect(() => {
-    const processor: BatchProcessor = async (item, { updateStage, heartbeat, signal }) => {
-      let metadata: Awaited<ReturnType<typeof fetchVideoMetadata>> | null = null;
-
-      const ensureActive = () => {
-        if (!signal.aborted) {
-          return;
-        }
-        const reason = signal.reason;
-        throw reason instanceof Error ? reason : new Error('Batch stopped by user');
-      };
-
-      const runWithHeartbeat = async <T,>(
-        stage: BatchQueueStage,
-        task: () => Promise<T>
-      ): Promise<T> => {
-        ensureActive();
-        let intervalId: ReturnType<typeof setInterval> | null = null;
-
-        const stop = () => {
-          if (intervalId !== null) {
-            clearInterval(intervalId);
-            intervalId = null;
-          }
-        };
-
-        const tick = () => {
-          if (signal.aborted) {
-            stop();
-            return;
-          }
-          heartbeat(stage);
-        };
-
-        heartbeat(stage);
-        intervalId = setInterval(tick, HEARTBEAT_INTERVAL_MS);
-
-        try {
-          const result = await task();
-          ensureActive();
-          return result;
-        } finally {
-          stop();
-        }
-      };
-
-      try {
-        updateStage('fetchingMetadata');
-        try {
-          metadata = await runWithHeartbeat('fetchingMetadata', () =>
-            fetchVideoMetadata(item.videoId, {
-              signal,
-              timeoutMs: BATCH_STAGE_TIMEOUTS.fetchingMetadata
-            })
-          );
-        } catch (metadataError) {
-          console.warn('Batch metadata fetch failed:', metadataError);
-        }
-
-        updateStage('fetchingTranscript');
-        const transcriptText = await runWithHeartbeat('fetchingTranscript', () =>
-          fetchTranscript(item.videoId, {
-            signal,
-            timeoutMs: BATCH_STAGE_TIMEOUTS.fetchingTranscript
-          })
-        );
-        await saveTranscript(item.videoId, transcriptText, false, metadata?.title, {
-          signal,
-          timeoutMs: BATCH_STAGE_TIMEOUTS.fetchingTranscript
-        });
-        ensureActive();
-
-        updateStage('generatingSummary');
-        await runWithHeartbeat('generatingSummary', () =>
-          generateSummaryFromFile(item.videoId, activeModelId, {
-            signal,
-            timeoutMs: BATCH_STAGE_TIMEOUTS.generatingSummary
-          })
-        );
-
-        updateStage('completed');
-        ensureActive();
-        await loadSavedSummaries();
-        const title = metadata?.title ? `“${metadata.title}”` : item.videoId;
-        showToast(`Summary ready: ${title}`, 'success');
-        return { status: 'succeeded', stage: 'completed' };
-      } catch (error) {
-        if (error instanceof Error && error.name === 'AbortError') {
-          console.warn('Batch processing aborted:', error.message);
-          return {
-            status: 'failed',
-            stage: 'failed',
-            error: error.message || 'Batch stopped by user'
-          };
-        }
-        const message = error instanceof Error ? error.message : 'Batch import failed';
-        console.error('Batch processing error:', error);
-        return { status: 'failed', stage: 'failed', error: message };
+    try {
+      if (typeof window !== 'undefined' && window.localStorage) {
+        window.localStorage.removeItem('watchlater-batch-import-queue');
       }
-    };
+    } catch {
+      // ignore storage errors
+    }
+  }, []);
 
-    registerProcessor(processor);
-    return () => registerProcessor(null);
-  }, [activeModelId, loadSavedSummaries, registerProcessor, showToast]);
+  // Batch processor registration removed
 
-  const queueItems = useMemo<BatchQueueItem[]>(() =>
-    batchQueueState.order
-      .map((id) => batchQueueState.items[id])
-      .filter((item): item is BatchQueueItem => Boolean(item) && item.status !== 'succeeded'),
-  [batchQueueState]);
+  // Batch queue state removed
 
   const completedSummary = status === 'complete' && summary ? summary : null;
   const formattedSummaryDocument = useMemo(
@@ -446,93 +312,17 @@ const WatchLater = () => {
     [completedSummary]
   );
 
-  useEffect(() => {
-    if (batchQueueState.order.length === 0) {
-      return;
-    }
-
-    for (const videoId of batchQueueState.order) {
-      const pending = batchQueueState.items[videoId];
-      if (pending?.status === 'succeeded') {
-        removeBatchItem(videoId);
-      }
-    }
-  }, [batchQueueState, removeBatchItem]);
+  // Batch queue cleanup removed
 
   const isYouTubeUrl = useCallback((text: string) => {
     return /(?:youtube\.com\/watch\?v=|youtu\.be\/)([^&\n?]+)/.test(text);
   }, []);
 
-  const renderQueueItem = useCallback((item: BatchQueueItem) => {
-    const stageLabel = QUEUE_STAGE_LABELS[item.stage] ?? 'Processing';
-    const isFailed = item.status === 'failed';
-    const isProcessingItem = item.status === 'processing';
-    const stageIcon = isFailed ? (
-      <AlertTriangle size={14} />
-    ) : isProcessingItem ? (
-      <Loader2 size={14} className="spin" />
-    ) : (
-      <Clock size={14} />
-    );
-    const createdAt = new Date(item.createdAt);
-    const addedLabel = Number.isNaN(createdAt.getTime())
-      ? ''
-      : createdAt.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-
-    return (
-      <div key={`queue-${item.videoId}`} className={`history-item queue ${item.status}`}>
-        <div className="history-item-content">
-          <div className="history-item-title">{item.videoId}</div>
-          {addedLabel && (
-            <div className="queue-item-meta">
-              <Clock size={14} />
-              <span>Added {addedLabel}</span>
-            </div>
-          )}
-          {isFailed && item.error && <div className="queue-item-error">{item.error}</div>}
-        </div>
-        <div className="history-item-actions">
-          {isFailed ? (
-            <>
-              <button
-                type="button"
-                className="history-item-action"
-                onClick={() => retryBatchItem(item.videoId)}
-              >
-                Retry
-              </button>
-              <button
-                type="button"
-                className="history-item-action ghost"
-                onClick={() => removeBatchItem(item.videoId)}
-              >
-                Dismiss
-              </button>
-            </>
-          ) : (
-            <span className={`history-item-status ${item.status}`}>
-              {stageIcon}
-              <span>{stageLabel}</span>
-            </span>
-          )}
-        </div>
-      </div>
-    );
-  }, [removeBatchItem, retryBatchItem]);
+  // Batch queue item renderer removed
 
   const handleSummarize = useCallback(
     async (urlToProcess = url) => {
       if (!isYouTubeUrl(urlToProcess) || status === 'processing') return;
-
-      if (hasPendingBatch) {
-        showToast(
-          'Batch import queue is running. Wait for it to finish before starting a single summary.',
-          'error'
-        );
-        return;
-      }
-
-      setBatchQueueHold('single-import', true);
 
       updatePdfExportState({ state: 'idle' });
       setStatus('processing');
@@ -586,15 +376,14 @@ const WatchLater = () => {
         setCurrentStage(0);
         console.error('Summarization error:', err);
       } finally {
-        setBatchQueueHold('single-import', false);
+        // no-op
       }
     },
     [
       activeModelId,
-      hasPendingBatch,
+      
       isYouTubeUrl,
       loadSavedSummaries,
-      setBatchQueueHold,
       showToast,
       status,
       updatePdfExportState,
@@ -829,116 +618,16 @@ const WatchLater = () => {
   const summaryCount = savedSummaries.length;
   const isProcessing = status === 'processing';
   const isReturningUser = summaryCount > 0;
-  const isSummarizeDisabled = !isYouTubeUrl(url) || isProcessing || hasPendingBatch;
+  const isSummarizeDisabled = !isYouTubeUrl(url) || isProcessing;
 
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     handleSummarize(url);
   };
 
-  const handleBatchImportClick = () => {
-    setIsBatchImportSubmitting(false);
-    setIsBatchImportOpen(true);
-  };
+  // Batch import modal handlers removed
 
-  const handleBatchImportClose = useCallback(() => {
-    setIsBatchImportOpen(false);
-    setIsBatchImportSubmitting(false);
-
-    if (typeof window !== 'undefined') {
-      window.requestAnimationFrame(() => {
-        batchImportTriggerRef.current?.focus();
-      });
-    }
-  }, [batchImportTriggerRef]);
-
-  const handleBatchImportSubmit = useCallback(
-    async (requests: BatchImportRequest[]) => {
-      setIsBatchImportSubmitting(true);
-      try {
-        const result = enqueueBatchRequests(requests);
-
-        if (result.added.length === 0) {
-          const reason = result.skipped[0]?.reason;
-          const message =
-            reason === 'alreadyCompleted'
-              ? 'Those videos already have completed summaries.'
-              : reason === 'failedNeedsRetry'
-                  ? 'Use retry on failed videos from the queue before re-queuing.'
-                  : 'Those videos are already in the batch queue.';
-          throw new Error(message);
-        }
-
-        handleBatchImportClose();
-        const addedCount = result.added.length;
-        const skippedCount = result.skipped.length;
-        const parts = [`${addedCount} ${addedCount === 1 ? 'video' : 'videos'} queued`];
-        if (skippedCount > 0) {
-          parts.push(`${skippedCount} duplicate${skippedCount === 1 ? '' : 's'} skipped`);
-        }
-        showToast(parts.join(' · '), 'success');
-      } finally {
-        setIsBatchImportSubmitting(false);
-      }
-    },
-    [enqueueBatchRequests, handleBatchImportClose, showToast]
-  );
-
-  const activeBatchId = batchQueueState.activeId;
-  const activeBatchItem = activeBatchId ? batchQueueState.items[activeBatchId] ?? null : null;
-  const activeStageLabel = activeBatchItem ? QUEUE_STAGE_LABELS[activeBatchItem.stage] ?? activeBatchItem.stage : null;
-  const queueStatusText = `${batchQueueStats.processing} processing · ${batchQueueStats.queued} queued`;
-
-  const handleStopActiveBatch = useCallback(() => {
-    const stopped = stopBatchProcessing('Stopped current batch');
-    if (stopped) {
-      showToast('Stopped the current batch item. Resume when ready.', 'error');
-    } else {
-      showToast('No active batch item to stop.', 'error');
-    }
-  }, [showToast, stopBatchProcessing]);
-
-  const handleStopAllBatches = useCallback(() => {
-    if (pendingBatchCount === 0) {
-      showToast('No queued videos to stop.', 'error');
-      return;
-    }
-
-    let confirmed = true;
-    try {
-      confirmed =
-        typeof window === 'undefined' || typeof window.confirm !== 'function'
-          ? true
-          : window.confirm('Stop all queued videos and mark them as failed?');
-    } catch (error) {
-      console.warn('Stop-all confirmation unavailable, defaulting to proceed.', error);
-      confirmed = true;
-    }
-
-    if (!confirmed) {
-      return;
-    }
-
-    const stopped = stopAllBatchProcessing('Stopped batch queue');
-    if (stopped) {
-      showToast('Batch queue stopped. Resume or retry items from the list.', 'error');
-    }
-  }, [pendingBatchCount, showToast, stopAllBatchProcessing]);
-
-  const handleResumeBatchQueue = useCallback(() => {
-    resumeBatchProcessing();
-    showToast('Batch queue resumed.', 'success');
-  }, [resumeBatchProcessing, showToast]);
-
-  const handleRecoverBatch = useCallback(() => {
-    const targetId = activeBatchId ?? undefined;
-    const recovered = recoverStalledBatch(targetId);
-    if (recovered) {
-      showToast('Stalled batch item moved back to the queue.', 'success');
-    } else {
-      showToast('No stalled batch item to recover.', 'error');
-    }
-  }, [activeBatchId, recoverStalledBatch, showToast]);
+  // Batch queue controls removed
 
   return (
     <ActiveModelProvider
@@ -952,24 +641,7 @@ const WatchLater = () => {
           <span className="header-badge">Phase 3</span>
         </div>
         <div className="header-actions">
-          <button
-            ref={batchImportTriggerRef}
-            type="button"
-            className="batch-import-button"
-            onClick={handleBatchImportClick}
-            aria-haspopup="dialog"
-            aria-expanded={isBatchImportOpen}
-            disabled={isProcessing}
-            title={
-              isProcessing
-                ? 'Finish the current summary before starting a batch import'
-                : batchQueueStats.total > 0
-                    ? `Open batch import · ${pendingBatchCount} pending`
-                    : 'Open batch import'
-            }
-          >
-            Batch Import
-          </button>
+          {/* Batch Import button removed */}
           <div className="header-secondary-actions">
             <span className="header-badge">Saved · {summaryCount}</span>
             <button className="action-icon-button" onClick={loadSavedSummaries} title="Refresh history">
@@ -1014,13 +686,7 @@ const WatchLater = () => {
             {isProcessing ? 'Working…' : 'Summarize video'}
           </button>
         </form>
-        {hasPendingBatch && (
-          <div className="hero-queue-warning" role="status">
-            {isBatchStopRequested
-              ? `Batch import queue is paused (${pendingBatchCount} pending). Resume when ready or retry items individually.`
-              : `Batch import queue is running (${pendingBatchCount} pending). Single summaries resume once it finishes.`}
-          </div>
-        )}
+        {/* Batch queue warning removed */}
         <div className="hero-proof-points">
           <span>
             <ShieldCheck size={16} color="#46e0b1" /> Private, local-first pipeline
@@ -1198,67 +864,8 @@ const WatchLater = () => {
             </div>
           </div>
           <div className="history-list">
-            {pendingBatchCount > 0 && (
-              <div className="queue-controls" role="region" aria-live="polite">
-                <div className="queue-controls-header">
-                  <div className="queue-controls-status">
-                    {isBatchStopRequested ? (
-                      <PauseCircle size={16} />
-                    ) : (
-                      <Loader2 size={16} className={batchQueueStats.processing > 0 ? 'spin' : ''} />
-                    )}
-                    <span>
-                      {queueStatusText}
-                      {isBatchStopRequested ? ' · Paused' : ''}
-                    </span>
-                  </div>
-                  {activeBatchItem && (
-                    <div className="queue-active-meta">
-                      Active: <strong>{activeBatchItem.videoId}</strong>
-                      {activeStageLabel ? ` · ${activeStageLabel}` : ''}
-                    </div>
-                  )}
-                </div>
-                <div className="queue-controls-actions">
-                  <button
-                    type="button"
-                    className="history-item-action"
-                    onClick={handleStopActiveBatch}
-                    disabled={!activeBatchId}
-                  >
-                    Stop current
-                  </button>
-                  <button
-                    type="button"
-                    className="history-item-action danger"
-                    onClick={handleStopAllBatches}
-                    disabled={pendingBatchCount === 0}
-                  >
-                    Stop all
-                  </button>
-                  {isBatchStopRequested && (
-                    <button
-                      type="button"
-                      className="history-item-action"
-                      onClick={handleResumeBatchQueue}
-                    >
-                      Resume
-                    </button>
-                  )}
-                  <button
-                    type="button"
-                    className="history-item-action ghost"
-                    onClick={handleRecoverBatch}
-                    disabled={!activeBatchId}
-                  >
-                    Retry stalled
-                  </button>
-                </div>
-              </div>
-            )}
-            {queueItems.length > 0 && queueItems.map((item) => renderQueueItem(item))}
             {loadingSummaries && <div className="empty-state">Refreshing history…</div>}
-            {!loadingSummaries && savedSummaries.length === 0 && queueItems.length === 0 && (
+            {!loadingSummaries && savedSummaries.length === 0 && (
               <div className="empty-state">Summaries will appear here after your first run.</div>
             )}
             {!loadingSummaries &&
@@ -1302,12 +909,7 @@ const WatchLater = () => {
         </div>
       )}
 
-      <BatchImportModal
-        open={isBatchImportOpen}
-        onClose={handleBatchImportClose}
-        onSubmit={handleBatchImportSubmit}
-        isSubmitting={isBatchImportSubmitting}
-      />
+      {/* Batch import modal removed */}
 
       {deleteModal.mode !== 'none' && (
         <div className="modal-overlay" role="dialog" aria-modal="true">

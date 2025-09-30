@@ -7,23 +7,22 @@
 - Primary implementation languages are TypeScript on the client and modern ES modules on the server, with strict compiler settings (`tsconfig.app.json:4`, `server.js:1`).
 
 ## 2. Detailed Directory Structure Analysis
-- `src/`: React application entrypoint, UI workflow, and hooks. `src/App.tsx` drives the end-to-end summarization experience, batch queue controls, and state management (`src/App.tsx:1`). `src/api.ts` centralizes fetch helpers, Gemini/OpenRouter adapters, and download utilities (`src/api.ts:1`). Hooks and context under `src/hooks` and `src/context` expose shared queue/model state across components (`src/hooks/useBatchImportQueue.ts:1`, `src/context/model-context.tsx:1`).
+- `src/`: React application entrypoint and UI workflow. `src/App.tsx` drives the end-to-end summarization experience and state management (`src/App.tsx:1`). `src/api.ts` centralizes fetch helpers, Gemini/OpenRouter adapters, and download utilities (`src/api.ts:1`). Context under `src/context` exposes model selection state across components (`src/context/model-context.tsx:1`).
 - `server.js`: Single Express application that bootstraps directories, enforces metadata parsing, and defines REST endpoints for metadata, transcripts, summaries, PDF exports, and deletion (`server.js:210`, `server.js:281`, `server.js:833`).
 - `server/`: Supporting modules for rendering markdown to HTML and streaming PDFs via Puppeteer, encapsulating styles and renderer lifecycle management (`server/markdown-to-html.js:1`, `server/pdf-renderer.js:1`).
 - `shared/`: Utilities shared between frontend and backend such as config resolution, environment detection, and title/content sanitizers to ensure consistent filenames and validation (`shared/config.js:1`, `shared/env.ts:1`, `shared/title-sanitizer.js:1`).
 - `prompts/`: Markdown prompt templates used to seed AI requests; currently includes the base transcript prompt referenced by the API (`prompts/Youtube transcripts.md`, `server.js:545`).
 - `exports/`: Filesystem storage for generated transcripts and summaries; directories are ensured at startup, making the file system the persistence layer (`server.js:198`).
-- `tests/`: Jest + ts-jest suites spanning API contracts, batch queue logic, and PDF generation with shared environment setup (`tests/pdf-route.test.ts:1`, `tests/setup-env.js:1`).
+- `tests/`: Jest + ts-jest suites spanning API contracts and PDF generation with shared environment setup (`tests/pdf-route.test.ts:1`, `tests/setup-env.js:1`).
 - `docs/`: Contributor-facing guidance and workflows, including architecture notes for assistants and manual QA instructions (`docs/CLAUDE.md:1`, `docs/TEST_INSTRUCTIONS.md:1`).
-- `tasks/`: Product requirement documents and issue write-ups used to guide feature planning (e.g., `tasks/prd-batch-import.md`).
+- `tasks/`: Product requirement documents and issue write-ups used to guide feature planning.
 - Root assets such as `start.sh` ease local orchestration, while `public/` and `dist/` host static assets and build output for the client (`start.sh:1`, `public/vite.svg`, `dist/index.html`).
 
 ## 3. File-by-File Breakdown
 **Core Application Files**
 - `server.js`: Express routes for health, metadata, transcripts, summaries, PDF downloads, OpenRouter proxy, and cleanup logic, relying on filesystem reads/writes and shared sanitizers (`server.js:281`, `server.js:295`, `server.js:384`, `server.js:833`, `server.js:1005`).
 - `src/api.ts`: Client transport layer handling timeouts, abort signals, prompt retrieval, Gemini SDK usage, REST calls, and download helpers (`src/api.ts:1`, `src/api.ts:156`).
-- `src/App.tsx`: Primary React component that coordinates URL validation, stage progress, batch import modal, model registry integration, downloads, and deletion flows (`src/App.tsx:1`, `src/App.tsx:149`).
-- `src/hooks/useBatchImportQueue.ts`: Persistent queue manager with heartbeat, timeout detection, and localStorage hydration to stabilize batch imports (`src/hooks/useBatchImportQueue.ts:1`, `src/hooks/useBatchImportQueue.ts:73`).
+- `src/App.tsx`: Primary React component that coordinates URL validation, stage progress, model registry integration, downloads, and deletion flows (`src/App.tsx:1`, `src/App.tsx:149`).
 
 **Configuration Files**
 - `package.json`: Scripts for dev/build/test, dependency declarations for React, Express, Puppeteer, and testing libraries (`package.json:6`, `package.json:15`).
@@ -44,7 +43,7 @@
 - Styling is managed through `App.css` and `index.css`, referenced by the main app entrypoints (`src/App.tsx:34`, `src/main.tsx:3`).
 
 **Testing**
-- PDF streaming, batch queue resilience, and API contracts covered via Jest specs (`tests/pdf-route.test.ts:1`, `tests/batch-queue.test.tsx`, `tests/api-model-selection.test.ts`).
+- PDF streaming and API contracts covered via Jest specs (`tests/pdf-route.test.ts:1`, `tests/api-model-selection.test.ts`).
 - Test environment seeds global env variables to simulate runtime configuration (`tests/setup-env.js:3`).
 
 **Documentation**
@@ -79,10 +78,10 @@ All endpoints are unauthenticated, CORS-enabled, and expect JSON payloads; respo
 
 ## 5. Architecture Deep Dive
 - **Request Lifecycle**: Frontend extracts a video ID, queries video metadata, requests a transcript, and calls Gemini/OpenRouter based on the selected model, then posts the resulting Markdown back for storage (`src/App.tsx:23`, `src/api.ts:122`, `server.js:295`, `server.js:384`, `server.js:833`).
-- **Data Flow**: Filesystem storage acts as the source of truth; summaries and transcripts are saved with sanitized filenames and later served back to the UI, which caches queue state in `localStorage` (`shared/title-sanitizer.js:17`, `src/utils.ts:17`, `server.js:905`, `src/hooks/useBatchImportQueue.ts:73`).
+- **Data Flow**: Filesystem storage acts as the source of truth; summaries and transcripts are saved with sanitized filenames and later served back to the UI (`shared/title-sanitizer.js:17`, `src/utils.ts:17`, `server.js:905`).
 - **Shared Modules**: Both tiers import the same sanitization and config helpers to avoid divergence (“shared” directory), while React context provides a global model registry derived from environment variables (`shared/config.js:1`, `shared/env.ts:1`, `src/config/model-registry.ts:1`, `src/context/active-model-context.ts:1`).
 - **PDF Rendering Pipeline**: Server renders Markdown to HTML with `markdown-it`, injects styling, then serializes to PDF through a bounded Puppeteer queue with concurrency/timeouts (`server/markdown-to-html.js:1`, `server/pdf-renderer.js:1`, `server.js:1005`).
-- **Batch Processing**: Queue hook maintains job states, retries, and heartbeats, syncing to storage to recover after refresh (`src/hooks/useBatchImportQueue.ts:90`).
+<!-- Batch Processing removed: the app focuses on single‑URL summaries. -->
 
 ## 6. Environment & Setup Analysis
 - Required environment variables documented for both client (`VITE_GEMINI_API_KEY`, `VITE_MODEL_OPTIONS`, `VITE_MODEL_DEFAULT`) and server (`SUPADATA_API_KEY`, `OPENROUTER_API_KEY`, ports/CORS) (`.env.example:5`, `.env.example:17`, `.env.example:25`).
@@ -121,4 +120,3 @@ All endpoints are unauthenticated, CORS-enabled, and expect JSON payloads; respo
 - **Large React Component**: `src/App.tsx` centralizes most UI logic (`src/App.tsx:1`), making maintenance harder; refactor into smaller feature components and hooks to improve readability and testing.
 - **Environment Management**: Client-side exposure of `VITE_GEMINI_API_KEY` is documented but risky for production (`.env.example:5`); emphasize server-side proxies for sensitive providers and consider feature-flagging model access.
 - **Operational Visibility**: No CI, lint, or test automation is configured; add GitHub Actions or similar to run `npm run lint` and `npm test` on pushes for baseline quality assurance (`package.json:9`).
-
