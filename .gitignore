@@ -36,3 +36,6 @@ coverage/
 *.tmp
 *.temp
 
+# Generated exports (summaries and transcripts)
+WatchLater/exports/
+
