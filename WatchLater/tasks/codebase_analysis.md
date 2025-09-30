@@ -7,7 +7,7 @@
 - Primary implementation languages are TypeScript on the client and modern ES modules on the server, with strict compiler settings (`tsconfig.app.json:4`, `server.js:1`).
 
 ## 2. Detailed Directory Structure Analysis
-- `src/`: React application entrypoint and UI workflow. `src/App.tsx` drives the end-to-end summarization experience and state management (`src/App.tsx:1`). `src/api.ts` centralizes fetch helpers, Gemini/OpenRouter adapters, and download utilities (`src/api.ts:1`). Context under `src/context` exposes model selection state across components (`src/context/model-context.tsx:1`).
+- `src/`: React application entrypoint and UI workflow. `src/App.tsx` orchestrates the summarization workflow while delegating presentational rendering to components in `src/components/` (`src/App.tsx:1`). `src/api.ts` centralizes fetch helpers, Gemini/OpenRouter adapters, and download utilities (`src/api.ts:1`). Context under `src/context` exposes model selection state across components (`src/context/model-context.tsx:1`).
 - `server.js`: Single Express application that bootstraps directories, enforces metadata parsing, and defines REST endpoints for metadata, transcripts, summaries, PDF exports, and deletion (`server.js:210`, `server.js:281`, `server.js:833`).
 - `server/`: Supporting modules for rendering markdown to HTML and streaming PDFs via Puppeteer, encapsulating styles and renderer lifecycle management (`server/markdown-to-html.js:1`, `server/pdf-renderer.js:1`).
 - `shared/`: Utilities shared between frontend and backend such as config resolution, environment detection, and title/content sanitizers to ensure consistent filenames and validation (`shared/config.js:1`, `shared/env.ts:1`, `shared/title-sanitizer.js:1`).
@@ -22,7 +22,7 @@
 **Core Application Files**
 - `server.js`: Express routes for health, metadata, transcripts, summaries, PDF downloads, OpenRouter proxy, and cleanup logic, relying on filesystem reads/writes and shared sanitizers (`server.js:281`, `server.js:295`, `server.js:384`, `server.js:833`, `server.js:1005`).
 - `src/api.ts`: Client transport layer handling timeouts, abort signals, prompt retrieval, Gemini SDK usage, REST calls, and download helpers (`src/api.ts:1`, `src/api.ts:156`).
-- `src/App.tsx`: Primary React component that coordinates URL validation, stage progress, model registry integration, downloads, and deletion flows (`src/App.tsx:1`, `src/App.tsx:149`).
+- `src/App.tsx`: Primary React orchestrator that coordinates URL validation, stage progress, model registry integration, downloads, and deletion flows while composing extracted presentational components (`src/App.tsx:1`, `src/App.tsx:149`).
 
 **Configuration Files**
 - `package.json`: Scripts for dev/build/test, dependency declarations for React, Express, Puppeteer, and testing libraries (`package.json:6`, `package.json:15`).
@@ -117,6 +117,6 @@ All endpoints are unauthenticated, CORS-enabled, and expect JSON payloads; respo
 ## 9. Key Insights & Recommendations
 - **Security Hardening**: CORS currently allows all origins (`server.js:281`); restrict to trusted hosts and add rate limiting before exposing the API publicly (`SECURITY.md:7`).
 - **Filesystem I/O**: Synchronous `fs` operations inside request handlers can block the event loop under load (`server.js:878`); migrate to async `fs.promises` and consider batching writes.
-- **Large React Component**: `src/App.tsx` centralizes most UI logic (`src/App.tsx:1`), making maintenance harder; refactor into smaller feature components and hooks to improve readability and testing.
+- **UI Composition**: `src/App.tsx` now focuses on orchestration, with render-heavy sections extracted into memoized components under `src/components/`; continue monitoring for further feature-level splits if state management grows.
 - **Environment Management**: Client-side exposure of `VITE_GEMINI_API_KEY` is documented but risky for production (`.env.example:5`); emphasize server-side proxies for sensitive providers and consider feature-flagging model access.
 - **Operational Visibility**: No CI, lint, or test automation is configured; add GitHub Actions or similar to run `npm run lint` and `npm test` on pushes for baseline quality assurance (`package.json:9`).

@@ -39,7 +39,8 @@ This is a **YouTube transcript summarizer** with a hybrid client-server architec
 ### Critical Components
 
 #### Frontend (`src/`)
-- **App.tsx**: Main React component with full UI workflow (transcript fetching, summarization, file management)
+- **App.tsx**: Orchestrator component handling state, async flows, and wiring extracted presentational components
+- **components/**: Memoized presentational pieces (header, hero, pipeline, summary viewer, history panel, delete modal, toast)
 - **api.ts**: All API integration (backend calls, Gemini AI, file operations)
 - **utils.ts**: YouTube URL parsing and utility functions
 
@@ -85,7 +86,7 @@ prompts/
 
 ### Adding New Features
 1. **API Changes**: Update both `src/api.ts` (frontend) and `server.js` (backend)
-2. **UI Changes**: Modify `src/App.tsx` (single-component architecture)
+2. **UI Changes**: Update `src/App.tsx` orchestration and the relevant components under `src/components/`
 3. **AI Prompts**: Edit `prompts/Youtube transcripts.md` (no code changes needed)
 
 ### Testing Video IDs
@@ -129,6 +130,6 @@ Common test URLs in codebase:
 - 🔄 **UI Polish**: Functional but could use visual improvements
 
 ### Known Technical Debt
-- Single-component architecture in `App.tsx` (could be split)
+- App.tsx orchestrates logic while presentational components now live under `src/components/`
 - YouTube Data API v3 integration needed for video title-based file naming
 - Test interface mixed with production UI (needs separation)

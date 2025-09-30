@@ -1,22 +1,4 @@
-import { useState, useEffect, useRef, useCallback, useMemo, type FormEvent, type MouseEvent } from 'react';
-import ReactMarkdown from 'react-markdown';
-import {
-  Download,
-  Copy,
-  RefreshCw,
-  ChevronRight,
-  FileText,
-  Circle,
-  CheckCircle,
-  History,
-  Search,
-  ArrowRight,
-  Sparkles,
-  Clock,
-  ShieldCheck,
-  Loader2,
-  Trash
-} from 'lucide-react';
+import { useState, useEffect, useRef, useCallback, useMemo, type FormEvent } from 'react';
 import {
   fetchTranscript,
   saveTranscript,
@@ -34,88 +16,30 @@ import './App.css';
 import { createModelRegistry } from './config/model-registry';
 import { resolveRuntimeEnv } from '../shared/env';
 import { ActiveModelProvider } from './context/model-context';
-import ModelSelector from './components/ModelSelector';
-
-type SummaryData = {
-  videoId: string;
-  title: string;
-  author: string;
-  content: string;
-  transcript: string;
-  savedFile: string;
-  modelId: string;
-  keyTakeaways: string[];
-  tags: string[];
-};
-
-type SavedSummary = {
-  filename: string;
-  videoId: string;
-  title?: string | null;
-  author?: string | null;
-  created?: string;
-  modified?: string;
-  size?: number;
-};
-
-type PdfExportState = {
-  state: 'idle' | 'loading' | 'success' | 'error';
-  message?: string;
-};
-
-type DeleteModalState =
-  | { mode: 'none' }
-  | {
-      mode: 'clearAll';
-      includeTranscripts: boolean;
-      input: string;
-      submitting: boolean;
-    }
-  | {
-      mode: 'single';
-      videoId: string;
-      title: string;
-      deleteAllVersions: boolean;
-      input: string;
-      submitting: boolean;
-    };
-
-type ToastState = {
-  message: string;
-  tone: 'success' | 'error';
-};
-
-function composeSummaryDocument(summary: SummaryData): string {
-  const lines: string[] = [];
-  const trimmedTitle = summary.title.trim();
-  const trimmedAuthor = summary.author.trim();
-  const trimmedBody = summary.content.trim();
-
-  if (trimmedTitle) {
-    lines.push(`# ${trimmedTitle}`);
-  }
-
-  if (trimmedAuthor) {
-    lines.push(`_by ${trimmedAuthor}_`);
-  }
-
-  if (trimmedBody) {
-    if (lines.length) {
-      lines.push('');
-    }
-    lines.push(trimmedBody);
-  }
-
-  return lines.join('\n\n').replace(/\n{3,}/g, '\n\n');
-}
+import { useToast } from './hooks/useToast';
+import { usePdfExport } from './hooks/usePdfExport';
+import { Toast } from './components/Toast';
+import { AppHeader } from './components/AppHeader';
+import { HeroSection } from './components/HeroSection';
+import { ProgressPipeline } from './components/ProgressPipeline';
+import { SummaryActions } from './components/SummaryActions';
+import { SummaryViewer } from './components/SummaryViewer';
+import { HistoryPanel } from './components/HistoryPanel';
+import { DeleteModal } from './components/DeleteModal';
+import { ErrorBanner } from './components/ErrorBanner';
+import {
+  composeSummaryDocument,
+  extractKeyTakeaways,
+  extractHashtags
+} from './utils/summary';
+import type {
+  SummaryData,
+  SavedSummary,
+  DeleteModalState,
+  Stage
+} from './types/summary';
 
 const LEGACY_MODEL_STORAGE_KEY = 'watchlater-active-model';
-
-type Stage = {
-  id: number;
-  title: string;
-  description: string;
-};
 
 const STAGES: Stage[] = [
   { id: 1, title: 'Metadata', description: 'Video title & channel info' },
@@ -141,10 +65,10 @@ const WatchLater = () => {
   const [error, setError] = useState('');
   const [savedSummaries, setSavedSummaries] = useState<SavedSummary[]>([]);
   const [loadingSummaries, setLoadingSummaries] = useState(false);
-  const [pdfExportState, setPdfExportState] = useState<PdfExportState>({ state: 'idle' });
+  const { pdfExportState, setPdfExportState: updatePdfExportState } = usePdfExport();
   const [deleteModal, setDeleteModal] = useState<DeleteModalState>({ mode: 'none' });
   const [deleteModalError, setDeleteModalError] = useState('');
-  const [toast, setToast] = useState<ToastState | null>(null);
+  const { toast, showToast } = useToast();
   // Batch import state removed
   const [activeModelId, setActiveModelId] = useState<string>(() => {
     const fallback = modelRegistry.defaultModel;
@@ -175,8 +99,6 @@ const WatchLater = () => {
     return fallback;
   });
   const inputRef = useRef<HTMLInputElement | null>(null);
-  const pdfStatusTimeoutRef = useRef<number | null>(null);
-  const toastTimeoutRef = useRef<number | null>(null);
   // Batch import hooks removed
 
   useEffect(() => {
@@ -187,47 +109,6 @@ const WatchLater = () => {
     }
   }, [modelRegistry]);
   // Batch import queue removed
-
-  const updatePdfExportState = useCallback((next: PdfExportState) => {
-    if (pdfStatusTimeoutRef.current) {
-      window.clearTimeout(pdfStatusTimeoutRef.current);
-      pdfStatusTimeoutRef.current = null;
-    }
-
-    setPdfExportState(next);
-
-    if (next.state === 'success') {
-      pdfStatusTimeoutRef.current = window.setTimeout(() => {
-        setPdfExportState({ state: 'idle' });
-        pdfStatusTimeoutRef.current = null;
-      }, 4000);
-    }
-  }, []);
-
-  const showToast = useCallback((message: string, tone: 'success' | 'error' = 'success') => {
-    if (toastTimeoutRef.current) {
-      window.clearTimeout(toastTimeoutRef.current);
-      toastTimeoutRef.current = null;
-    }
-
-    setToast({ message, tone });
-
-    toastTimeoutRef.current = window.setTimeout(() => {
-      setToast(null);
-      toastTimeoutRef.current = null;
-    }, 4000);
-  }, []);
-
-  useEffect(() => {
-    return () => {
-      if (pdfStatusTimeoutRef.current) {
-        window.clearTimeout(pdfStatusTimeoutRef.current);
-      }
-      if (toastTimeoutRef.current) {
-        window.clearTimeout(toastTimeoutRef.current);
-      }
-    };
-  }, []);
 
   useEffect(() => {
     if (typeof window === 'undefined') {
@@ -384,7 +265,6 @@ const WatchLater = () => {
       
       isYouTubeUrl,
       loadSavedSummaries,
-      showToast,
       status,
       updatePdfExportState,
       url
@@ -487,12 +367,12 @@ const WatchLater = () => {
     }
   };
 
-  const openClearAllModal = () => {
+  const openClearAllModal = useCallback(() => {
     setDeleteModal({ mode: 'clearAll', includeTranscripts: false, input: '', submitting: false });
     setDeleteModalError('');
-  };
+  }, []);
 
-  const openSingleDeleteModal = (videoId: string, title: string) => {
+  const openSingleDeleteModal = useCallback((videoId: string, title: string) => {
     setDeleteModal({
       mode: 'single',
       videoId,
@@ -502,7 +382,7 @@ const WatchLater = () => {
       submitting: false
     });
     setDeleteModalError('');
-  };
+  }, []);
 
   const closeDeleteModal = () => {
     setDeleteModal({ mode: 'none' });
@@ -606,14 +486,12 @@ const WatchLater = () => {
     }
   };
 
-  const handleHistoryItemDelete = (
-    event: MouseEvent<HTMLButtonElement>,
-    saved: SavedSummary,
-    title: string
-  ) => {
-    event.stopPropagation();
-    openSingleDeleteModal(saved.videoId, title || saved.videoId);
-  };
+  const handleHistoryItemDelete = useCallback(
+    (saved: SavedSummary, title: string) => {
+      openSingleDeleteModal(saved.videoId, title || saved.videoId);
+    },
+    [openSingleDeleteModal]
+  );
 
   const summaryCount = savedSummaries.length;
   const isProcessing = status === 'processing';
@@ -625,6 +503,10 @@ const WatchLater = () => {
     handleSummarize(url);
   };
 
+  const handleRegenerate = useCallback(() => handleSummarize(url), [handleSummarize, url]);
+  const handleTranscriptToggle = useCallback((open: boolean) => setShowTranscript(open), [setShowTranscript]);
+  const handleUrlChange = useCallback((value: string) => setUrl(value), []);
+
   // Batch import modal handlers removed
 
   // Batch queue controls removed
@@ -634,415 +516,95 @@ const WatchLater = () => {
       value={{ activeModelId, setActiveModelId: updateActiveModel, registry: modelRegistry }}
     >
       <div className="app-shell">
-      <header className="app-header">
-        <div className="header-brand">
-          <SignalGlyph animated={isProcessing} />
-          <span>WatchLater</span>
-          <span className="header-badge">Phase 3</span>
-        </div>
-        <div className="header-actions">
-          {/* Batch Import button removed */}
-          <div className="header-secondary-actions">
-            <span className="header-badge">Saved · {summaryCount}</span>
-            <button className="action-icon-button" onClick={loadSavedSummaries} title="Refresh history">
-              {loadingSummaries ? <Loader2 className="spin" size={18} /> : <RefreshCw size={18} />}
-            </button>
-          </div>
-        </div>
-      </header>
+        <AppHeader
+          isProcessing={isProcessing}
+          summaryCount={summaryCount}
+          loadingSummaries={loadingSummaries}
+          onRefresh={loadSavedSummaries}
+        />
 
-      <section className="hero-card">
-        <div className="hero-topline">
-          <Sparkles size={16} /> Instant AI summaries without uploads
-        </div>
-        <h1 className="hero-title">
-          Learn faster with <span>Gemini-powered</span> recaps.
-        </h1>
-        <p className="hero-description">
-          {isReturningUser
-            ? `Welcome back! Your ${summaryCount} saved ${summaryCount === 1 ? 'summary is' : 'summaries are'} waiting in history.`
-            : 'Paste any YouTube link and receive a richly formatted markdown summary in seconds. Your transcript stays on your machine—perfect for deep work and research workflows.'}
-        </p>
-        <form className="hero-form" onSubmit={handleSubmit}>
-          <label className="hero-input-wrapper">
-            <Search size={18} className="hero-input-icon" />
-            <input
-              ref={inputRef}
-              type="text"
-              value={url}
-              onChange={(event) => setUrl(event.target.value)}
-              placeholder="https://www.youtube.com/watch?v=…"
-              className="hero-input"
-              disabled={isProcessing}
+        <HeroSection
+          isProcessing={isProcessing}
+          isReturningUser={isReturningUser}
+          summaryCount={summaryCount}
+          url={url}
+          isSummarizeDisabled={isSummarizeDisabled}
+          inputRef={inputRef}
+          onSubmit={handleSubmit}
+          onCancel={handleCancel}
+          onUrlChange={handleUrlChange}
+        />
+
+        <div className="workspace">
+          <div className="workspace-primary">
+            <ProgressPipeline
+              stages={STAGES}
+              currentStage={currentStage}
+              status={status}
             />
-            {isProcessing && (
-              <button type="button" onClick={handleCancel} className="hero-cancel">
-                Cancel
-              </button>
-            )}
-          </label>
-          <button type="submit" className="hero-submit" disabled={isSummarizeDisabled}>
-            {isProcessing ? <Loader2 className="spin" size={18} /> : <ArrowRight size={18} />}
-            {isProcessing ? 'Working…' : 'Summarize video'}
-          </button>
-        </form>
-        {/* Batch queue warning removed */}
-        <div className="hero-proof-points">
-          <span>
-            <ShieldCheck size={16} color="#46e0b1" /> Private, local-first pipeline
-          </span>
-          <span>
-            <Clock size={16} color="#7f5bff" /> Under 10 seconds per recap
-          </span>
-          <span>
-            <Sparkles size={16} color="#46e0b1" /> {summaryCount} summaries saved
-          </span>
-        </div>
-      </section>
 
-      <div className="workspace">
-        <div className="workspace-primary">
-          <section className="progress-card">
-            <div className="progress-header">
-              <div className="progress-title">
-                {isProcessing ? <Loader2 className="spin" size={18} /> : <Sparkles size={18} color="#46e0b1" />}
-                <span>Processing pipeline</span>
-              </div>
-              {status === 'complete' && <span className="status-pill">✓ Summary saved</span>}
-            </div>
-            <div className="progress-grid">
-              {STAGES.map((stage) => {
-                const stepClass =
-                  currentStage === stage.id
-                    ? 'progress-step active'
-                    : currentStage > stage.id
-                      ? 'progress-step complete'
-                      : 'progress-step';
-
-                return (
-                  <div key={stage.id} className={stepClass}>
-                    <div>
-                      {currentStage > stage.id ? (
-                        <CheckCircle size={18} color="#46e0b1" />
-                      ) : currentStage === stage.id ? (
-                        <Loader2 className="spin" size={18} color="#46e0b1" />
-                      ) : (
-                        <Circle size={18} color="#524a6f" />
-                      )}
-                    </div>
-                    <h4>{stage.title}</h4>
-                    <p>{stage.description}</p>
-                  </div>
-                );
-              })}
-            </div>
-          </section>
-
-          <section className="summary-card">
-            <div className="summary-card-header">
-              <h2 className="summary-title">
-                {completedSummary ? completedSummary.title : 'Choose a model to get started'}
-              </h2>
-              <div className="summary-actions">
-                {completedSummary && (
-                  <>
-                    <button className="action-icon-button" onClick={handleDownload} title="Download markdown">
-                      <Download size={18} />
-                    </button>
-                    <button
-                      className="action-icon-button"
-                      onClick={handleDownloadPdf}
-                      title="Download PDF"
-                      disabled={pdfExportState.state === 'loading'}
-                    >
-                      {pdfExportState.state === 'loading' ? <Loader2 className="spin" size={18} /> : <FileText size={18} />}
-                    </button>
-                    <button className="action-icon-button" onClick={handleCopy} title="Copy to clipboard">
-                      <Copy size={18} />
-                    </button>
-                  </>
-                )}
-                <ModelSelector />
-                {completedSummary && (
-                  <>
-                    <button className="action-icon-button" onClick={() => handleSummarize(url)} title="Regenerate summary">
-                      <RefreshCw size={18} />
-                    </button>
-                    <button className="action-icon-button" onClick={handleOpenFolder} title="Open local folder">
-                      <ChevronRight size={18} />
-                    </button>
-                  </>
-                )}
-              </div>
-            </div>
-
-            {completedSummary ? (
-              <>
-                <div className="summary-meta">
-                  <span>Video ID · {completedSummary.videoId}</span>
-                  <span>Saved file · {completedSummary.savedFile}</span>
-                  {completedSummary.modelId && <span>Model · {completedSummary.modelId}</span>}
-                </div>
-
-                {pdfExportState.state !== 'idle' && (
-                  <div className={`summary-feedback ${pdfExportState.state}`}>
-                    {pdfExportState.state === 'loading' ? 'Preparing PDF…' : pdfExportState.message}
-                  </div>
-                )}
-
-                {completedSummary.keyTakeaways.length > 0 && (
-                  <div className="key-takeaways">
-                    <h3>Key takeaways</h3>
-                    <ul>
-                      {completedSummary.keyTakeaways.map((takeaway, idx) => (
-                        <li key={idx}>{takeaway}</li>
-                      ))}
-                    </ul>
-                  </div>
-                )}
-
-                <div className="summary-markdown">
-                  <article className="summary-article">
-                    <header className="summary-article__header">
-                      <h1 className="summary-article__title">{completedSummary.title}</h1>
-                      {completedSummary.author && (
-                        <p className="summary-article__creator">by {completedSummary.author}</p>
-                      )}
-                    </header>
-                    <ReactMarkdown>{completedSummary.content}</ReactMarkdown>
-                  </article>
-                </div>
-
-                {completedSummary.tags.length > 0 && (
-                  <div className="summary-tags">
-                    {completedSummary.tags.map((tag, idx) => (
-                      <span key={idx} className="tag-chip">
-                        {tag}
-                      </span>
-                    ))}
-                  </div>
-                )}
-
-                {completedSummary.transcript && (
-                  <details
-                    className="transcript-toggle"
-                    open={showTranscript}
-                    onToggle={(event) => setShowTranscript((event.target as HTMLDetailsElement).open)}
-                  >
-                    <summary>
-                      View transcript
-                      <ChevronRight size={16} />
-                    </summary>
-                    {showTranscript && <div className="transcript-content">{completedSummary.transcript}</div>}
-                  </details>
-                )}
-              </>
-            ) : (
-              <div className="empty-state">
-                Paste a YouTube URL above to generate your first summary. You can revisit any saved recap from the history panel.
-              </div>
-            )}
-          </section>
-        </div>
-
-        <aside className="history-panel">
-          <div className="history-header">
-            <div className="hero-topline" style={{ letterSpacing: 0 }}>
-              <History size={18} /> Saved summaries
-            </div>
-            <div className="history-actions">
-              <button className="action-icon-button" onClick={loadSavedSummaries} title="Refresh list">
-                {loadingSummaries ? <Loader2 className="spin" size={18} /> : <RefreshCw size={18} />}
-              </button>
-              <button
-                className="action-icon-button danger"
-                onClick={openClearAllModal}
-                title="Clear all summaries"
-              >
-                <Trash size={18} />
-              </button>
-            </div>
-          </div>
-          <div className="history-list">
-            {loadingSummaries && <div className="empty-state">Refreshing history…</div>}
-            {!loadingSummaries && savedSummaries.length === 0 && (
-              <div className="empty-state">Summaries will appear here after your first run.</div>
-            )}
-            {!loadingSummaries &&
-              savedSummaries.map((saved) => {
-                const baseName = saved.filename.replace(/-summary-.*\.md$/, '');
-                const [, titlePart] = baseName.split('__');
-                const displayTitle = (saved.title ?? titlePart ?? saved.videoId).trim();
-                const timestamp = saved.modified ? new Date(saved.modified).toLocaleString() : 'Unknown time';
-                const size = saved.size ? formatKilobytes(saved.size) : '';
-                const creatorName = saved.author?.trim() || 'Unknown creator';
-
-                return (
-                  <div key={saved.filename} className="history-item" onClick={() => handleHistoryItemClick(saved)}>
-                    <div className="history-item-content">
-                      <div className="history-item-title">{displayTitle}</div>
-                      <div className="history-item-author">{creatorName}</div>
-                      <div className="history-item-meta">
-                        {timestamp} {size && `· ${size}`}
-                      </div>
-                    </div>
-                    <button
-                      className="history-item-delete"
-                      title="Delete summary"
-                      onClick={(event) => handleHistoryItemDelete(event, saved, displayTitle)}
-                    >
-                      <Trash size={16} />
-                    </button>
-                  </div>
-                );
-              })}
-          </div>
-        </aside>
-      </div>
-
-      {status === 'error' && (
-        <div className="error-banner">
-          <div><strong>Something went wrong.</strong> {error}</div>
-          <button onClick={() => setStatus('idle')} style={{ marginTop: '12px', color: 'inherit', opacity: 0.8 }}>
-            Dismiss
-          </button>
-        </div>
-      )}
-
-      {/* Batch import modal removed */}
-
-      {deleteModal.mode !== 'none' && (
-        <div className="modal-overlay" role="dialog" aria-modal="true">
-          <div className="modal">
-            <h3>
-              {deleteModal.mode === 'clearAll'
-                ? 'Delete all summaries?'
-                : `Delete summary for "${deleteModal.title}"?`}
-            </h3>
-            <p className="modal-description">
-              {deleteModal.mode === 'clearAll'
-                ? 'This removes every saved summary. Transcripts stay put unless you include them below.'
-                : deleteModal.deleteAllVersions
-                    ? 'This removes every saved summary for this video.'
-                    : 'This removes the most recent summary for this video.'}
-            </p>
-
-            {deleteModal.mode === 'clearAll' && (
-              <label className="modal-checkbox">
-                <input
-                  type="checkbox"
-                  checked={deleteModal.includeTranscripts}
-                  onChange={(event) => toggleIncludeTranscripts(event.target.checked)}
-                  disabled={deleteModal.submitting}
+            <section className="summary-card">
+              <div className="summary-card-header">
+                <h2 className="summary-title">
+                  {completedSummary ? completedSummary.title : 'Choose a model to get started'}
+                </h2>
+                <SummaryActions
+                  summary={completedSummary}
+                  pdfState={pdfExportState}
+                  onDownloadMd={handleDownload}
+                  onDownloadPdf={handleDownloadPdf}
+                  onCopy={handleCopy}
+                  onRegenerate={handleRegenerate}
+                  onOpenFolder={handleOpenFolder}
                 />
-                Include transcripts (.txt)
-              </label>
-            )}
+              </div>
 
-            {deleteModal.mode === 'single' && (
-              <label className="modal-checkbox">
-                <input
-                  type="checkbox"
-                  checked={deleteModal.deleteAllVersions}
-                  onChange={(event) => toggleDeleteAllVersions(event.target.checked)}
-                  disabled={deleteModal.submitting}
+              {completedSummary ? (
+                <SummaryViewer
+                  summary={completedSummary}
+                  pdfState={pdfExportState}
+                  showTranscript={showTranscript}
+                  onToggleTranscript={handleTranscriptToggle}
                 />
-                Delete all saved versions for this video
-              </label>
-            )}
-
-            <label className="modal-input-label">
-              Type <span>DELETE</span> to confirm
-              <input
-                type="text"
-                value={deleteModal.input}
-                onChange={(event) => updateDeleteModalInput(event.target.value)}
-                onKeyDown={(event) => {
-                  if (event.key === 'Enter') {
-                    event.preventDefault();
-                    handleConfirmDelete();
-                  }
-                }}
-                disabled={deleteModal.submitting}
-              />
-            </label>
-
-            {deleteModalError && <div className="modal-error">{deleteModalError}</div>}
-
-            <div className="modal-actions">
-              <button type="button" onClick={closeDeleteModal} disabled={deleteModal.submitting}>
-                Cancel
-              </button>
-              <button
-                type="button"
-                className="modal-delete-button"
-                onClick={handleConfirmDelete}
-                disabled={
-                  deleteModal.submitting || deleteModal.input.trim().toUpperCase() !== 'DELETE'
-                }
-              >
-                {deleteModal.submitting ? 'Deleting…' : 'Delete'}
-              </button>
-            </div>
+              ) : (
+                <div className="empty-state">
+                  Paste a YouTube URL above to generate your first summary. You can revisit any saved recap from the history panel.
+                </div>
+              )}
+            </section>
           </div>
-        </div>
-      )}
 
-      {toast && <div className={`toast ${toast.tone}`}>{toast.message}</div>}
+          <HistoryPanel
+            items={savedSummaries}
+            loading={loadingSummaries}
+            onRefresh={loadSavedSummaries}
+            onClearAll={openClearAllModal}
+            onSelect={handleHistoryItemClick}
+            onDelete={handleHistoryItemDelete}
+          />
+        </div>
+
+        {status === 'error' && (
+          <ErrorBanner message={error} onDismiss={() => setStatus('idle')} />
+        )}
+
+        {/* Batch import modal removed */}
+
+        <DeleteModal
+          state={deleteModal}
+          error={deleteModalError}
+          onCancel={closeDeleteModal}
+          onConfirm={handleConfirmDelete}
+          onChangeInput={updateDeleteModalInput}
+          onToggleIncludeTranscripts={toggleIncludeTranscripts}
+          onToggleDeleteAllVersions={toggleDeleteAllVersions}
+        />
+
+        <Toast toast={toast} />
       </div>
     </ActiveModelProvider>
   );
 };
 
-const SignalGlyph = ({ animated }: { animated: boolean }) => (
-  <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <defs>
-      <linearGradient id="signalGradient" x1="4" y1="28" x2="28" y2="4" gradientUnits="userSpaceOnUse">
-        <stop stopColor="#7f5bff" />
-        <stop offset="1" stopColor="#46e0b1" />
-      </linearGradient>
-    </defs>
-    <rect x="6" y="10" width="5" height="12" rx="2" fill="url(#signalGradient)" opacity="0.45" />
-    <rect x="13.5" y="7" width="5" height="18" rx="2" fill="url(#signalGradient)" opacity="0.7" />
-    <rect x="21" y="4" width="5" height="24" rx="2" fill="url(#signalGradient)" opacity="0.95" />
-    <circle
-      cx="16"
-      cy="27"
-      r="3"
-      fill="#46e0b1"
-      style={animated ? { filter: 'drop-shadow(0 0 8px rgba(70, 224, 177, 0.8))' } : undefined}
-    />
-  </svg>
-);
-
-function extractKeyTakeaways(summaryText: string) {
-  const lines = summaryText.split('\n');
-  const takeaways: string[] = [];
-  let inTakeawaysSection = false;
-
-  for (const line of lines) {
-    if (line.toLowerCase().includes('key takeaways') || line.toLowerCase().includes('key takeaway') || line.toLowerCase().includes('key points')) {
-      inTakeawaysSection = true;
-      continue;
-    }
-    if (inTakeawaysSection && (line.trim().startsWith('-') || line.trim().startsWith('•') || /^\d+[.)]/.test(line.trim()))) {
-      takeaways.push(line.trim().replace(/^[-•\d.)\s]+/, ''));
-    }
-    if (inTakeawaysSection && line.trim() === '' && takeaways.length > 0) {
-      break;
-    }
-  }
-
-  return takeaways.slice(0, 4);
-}
-
-function extractHashtags(summaryText: string) {
-  const hashtagMatches = summaryText.match(/#[\w-]+/g);
-  return hashtagMatches ? hashtagMatches.slice(0, 3) : [];
-}
-
-function formatKilobytes(bytes: number) {
-  return `${Math.max(1, Math.round(bytes / 1024))} KB`;
-}
 
 export default WatchLater;
