@@ -44,9 +44,9 @@ class MockResponse
 describe('Summary deletion endpoints', () => {
   const videoId = 'deleteTest123';
   const otherVideoId = 'deleteFriend456';
-  const summaryOlder = `${videoId}__Sample-video-summary-2024-01-01T00-00-00.md`;
-  const summaryNewer = `${videoId}__Sample-video-summary-2024-02-01T00-00-00.md`;
-  const otherSummary = `${otherVideoId}__Another-video-summary-2024-03-01T00-00-00.md`;
+  const summaryOlder = `Sample-video-Creator-summary-${videoId}-2024-01-01T00-00-00.md`;
+  const summaryNewer = `Sample-video-Creator-summary-${videoId}-2024-02-01T00-00-00.md`;
+  const otherSummary = `Another-video-Guest-summary-${otherVideoId}-2024-03-01T00-00-00.md`;
   const transcriptName = `${videoId}__Sample-video-transcript-2024-01-01T00-00-00.txt`;
 
   const ensureDirs = async () => {
@@ -59,7 +59,7 @@ describe('Summary deletion endpoints', () => {
     const summaryFiles = await fs.promises.readdir(summariesDir);
     await Promise.all(
       summaryFiles
-        .filter((file) => file.startsWith(videoId) || file.startsWith(otherVideoId))
+        .filter((file) => file.includes(`-summary-${videoId}`) || file.includes(`-summary-${otherVideoId}`))
         .map((file) => fs.promises.rm(path.join(summariesDir, file), { force: true }))
     );
     const transcriptFiles = await fs.promises.readdir(transcriptsDir);

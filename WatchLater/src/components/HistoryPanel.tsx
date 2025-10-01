@@ -42,8 +42,8 @@ const HistoryPanelComponent = ({
       {!loading &&
         items.map((saved) => {
           const baseName = saved.filename.replace(/-summary-.*\.md$/, '');
-          const [, titlePart] = baseName.split('__');
-          const displayTitle = (saved.title ?? titlePart ?? saved.videoId).trim();
+          const fallbackTitle = baseName.replace(/__/, ' ').replace(/[-_]+/g, ' ').trim();
+          const displayTitle = ((saved.title ?? fallbackTitle) || saved.videoId).trim();
           const timestamp = saved.modified ? new Date(saved.modified).toLocaleString() : 'Unknown time';
           const size = saved.size ? formatKilobytes(saved.size) : '';
           const creatorName = saved.author?.trim() || 'Unknown creator';

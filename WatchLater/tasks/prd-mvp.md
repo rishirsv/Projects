@@ -106,3 +106,40 @@ repo-root/
 
 - `tasks/prd-video-title-integration.md` — Title-based file naming and metadata integration requirements.
 - `tasks/prd-pdf-download.md` — PDF export workflow for saved summaries.
+
+# Tasks
+
+## Pre‑flight
+- [ ] Create feature branch `feat/mvp-direct-mode` and run `npm ci && npm run lint && npm test -- --runInBand && npm run build`.
+
+## Phase A — Direct Mode Flag
+- [ ] Add `VITE_DIRECT_MODE=true|false` to `.env.example`; default `false`.
+- [ ] In client boot, resolve runtime env and expose a `directMode` boolean.
+
+## Phase B — Client‑Only Transcript Fetch
+- [ ] Add optional client path using `youtube-transcript` (browser) to fetch transcript when `directMode` is true.
+- [ ] Keep existing server path as default; preserve response normalization and errors.
+
+## Phase C — Client‑Only Save (Optional)
+- [ ] When `directMode` is true, add an option to save files via the File System Access API behind a UI toggle, in addition to current server save.
+- [ ] Respect title‑based filenames; sanitize and timestamp consistently with server.
+
+## Phase D — Prompt & Model
+- [ ] Continue using Gemini in‑browser path (existing `@google/generative-ai` usage) with `VITE_GEMINI_API_KEY`.
+- [ ] Ensure no server dependency in the happy path when `directMode` is enabled.
+
+## Phase E — UI Surfacing
+- [ ] Add a small badge in the header indicating “Direct Mode” when enabled, with tooltip explaining limitations.
+- [ ] If transcript fetch fails client‑side due to CORS/age‑restrictions, fall back to server mode automatically with a toast.
+
+## Phase F — Tests & Validation
+- [ ] Unit: environment resolution, feature gating, and filename generation parity.
+- [ ] Manual QA: run end‑to‑end in direct mode; verify no server calls for transcript/summary save when opted in.
+
+## Rollout & Backout
+- [ ] Single PR gated by feature flag; default off.
+- [ ] Backout by disabling the flag; no code path exercised in production.
+
+## Done When
+- [ ] A user can summarize a public video fully in the browser with no server calls when `VITE_DIRECT_MODE=true`.
+- [ ] File naming matches server convention; fallbacks keep UX resilient.

@@ -54,7 +54,7 @@ describe('WatchLater deletion UI flows', () => {
       .spyOn(api, 'getSavedSummaries')
       .mockResolvedValueOnce([
         {
-          filename: 'video1__Title-summary-2024-01-01T00-00-00.md',
+          filename: 'Sample-Title-Creator-summary-video1-2024-01-01T00-00-00.md',
           videoId: 'video1',
           title: 'Sample Title',
           created: new Date().toISOString(),
@@ -113,7 +113,7 @@ describe('WatchLater deletion UI flows', () => {
       .spyOn(api, 'getSavedSummaries')
       .mockResolvedValueOnce([
         {
-          filename: 'video2__Another-summary-2024-01-01T00-00-00.md',
+          filename: 'Another-Title-Guest-summary-video2-2024-01-01T00-00-00.md',
           videoId: 'video2',
           title: 'Another Title',
           created: new Date().toISOString(),
@@ -125,7 +125,11 @@ describe('WatchLater deletion UI flows', () => {
 
     const deleteSummarySpy = jest
       .spyOn(api, 'deleteSummary')
-      .mockResolvedValue({ deletedCount: 1, deletedFiles: ['video2__Another-summary-2024-01-01T00-00-00.md'], deleteAll: false });
+      .mockResolvedValue({
+        deletedCount: 1,
+        deletedFiles: ['Another-Title-Guest-summary-video2-2024-01-01T00-00-00.md'],
+        deleteAll: false
+      });
 
     await act(async () => {
       root.render(<WatchLater />);

@@ -10,7 +10,7 @@ import {
   deleteSummary,
   deleteAllSummaries
 } from './api';
-import { extractVideoId } from './utils';
+import { extractVideoId, isYouTubeUrl as isRecognizedYouTubeUrl } from './utils';
 import './App.css';
 // Batch import feature removed
 import { createModelRegistry } from './config/model-registry';
@@ -44,7 +44,7 @@ const LEGACY_MODEL_STORAGE_KEY = 'watchlater-active-model';
 const STAGES: Stage[] = [
   { id: 1, title: 'Metadata', description: 'Video title & channel info' },
   { id: 2, title: 'Transcript', description: 'Supadata fetch & storage' },
-  { id: 3, title: 'AI Processing', description: 'Gemini prompt orchestration' },
+  { id: 3, title: 'AI Processing', description: 'Multi-model prompt orchestration' },
   { id: 4, title: 'Save', description: 'Markdown summary archived locally' }
 ];
 
@@ -143,6 +143,17 @@ const WatchLater = () => {
     [isValidModelId]
   );
 
+  const resolveModelLabel = useCallback(
+    (modelId?: string | null) => {
+      if (!modelId) {
+        return undefined;
+      }
+      const option = modelRegistry.options.find(candidate => candidate.id === modelId);
+      return option?.label ?? modelId;
+    },
+    [modelRegistry.options]
+  );
+
   const loadSavedSummaries = useCallback(async () => {
     setLoadingSummaries(true);
     try {
@@ -194,16 +205,18 @@ const WatchLater = () => {
   );
 
   // Batch queue cleanup removed
-
-  const isYouTubeUrl = useCallback((text: string) => {
-    return /(?:youtube\.com\/watch\?v=|youtu\.be\/)([^&\n?]+)/.test(text);
-  }, []);
-
-  // Batch queue item renderer removed
-
   const handleSummarize = useCallback(
     async (urlToProcess = url) => {
-      if (!isYouTubeUrl(urlToProcess) || status === 'processing') return;
+      if (status === 'processing') {
+        return;
+      }
+
+      if (!isRecognizedYouTubeUrl(urlToProcess)) {
+        setError('Please enter a valid YouTube link or video ID.');
+        setStatus('error');
+        setCurrentStage(0);
+        return;
+      }
 
       updatePdfExportState({ state: 'idle' });
       setStatus('processing');
@@ -236,6 +249,9 @@ const WatchLater = () => {
 
         setCurrentStage(4);
 
+        const resolvedModelId = result.modelId || activeModelId;
+        const resolvedModelLabel = resolveModelLabel(resolvedModelId);
+
         const summaryData: SummaryData = {
           videoId: extractedVideoId,
           title: metadata?.title || `Video ${extractedVideoId}`,
@@ -243,7 +259,8 @@ const WatchLater = () => {
           content: result.summary,
           transcript: transcriptText,
           savedFile: result.savedFile.filename,
-          modelId: result.modelId,
+          modelId: resolvedModelId,
+          modelLabel: resolvedModelLabel,
           keyTakeaways: extractKeyTakeaways(result.summary),
           tags: extractHashtags(result.summary)
         };
@@ -260,15 +277,7 @@ const WatchLater = () => {
         // no-op
       }
     },
-    [
-      activeModelId,
-      
-      isYouTubeUrl,
-      loadSavedSummaries,
-      status,
-      updatePdfExportState,
-      url
-    ]
+    [activeModelId, loadSavedSummaries, resolveModelLabel, status, updatePdfExportState, url]
   );
 
   useEffect(() => {
@@ -278,7 +287,7 @@ const WatchLater = () => {
 
       setTimeout(() => {
         const pastedText = target.value;
-        if (isYouTubeUrl(pastedText) && status === 'idle') {
+        if (isRecognizedYouTubeUrl(pastedText) && status === 'idle') {
           setUrl(pastedText);
           setTimeout(() => handleSummarize(pastedText), 50);
         }
@@ -288,7 +297,7 @@ const WatchLater = () => {
     const input = inputRef.current;
     input?.addEventListener('paste', handlePaste);
     return () => input?.removeEventListener('paste', handlePaste);
-  }, [handleSummarize, isYouTubeUrl, status]);
+  }, [handleSummarize, status]);
 
   const handleCancel = () => {
     setStatus('idle');
@@ -340,9 +349,12 @@ const WatchLater = () => {
     try {
       const summaryData = await readSavedSummary(savedSummary.videoId);
       const baseName = summaryData.filename.replace(/-summary-.*\.md$/, '');
-      const [, titlePart] = baseName.split('__');
-      const derivedTitle = (savedSummary.title ?? titlePart ?? savedSummary.videoId).trim();
+      const fallbackTitle = baseName.replace(/__/, ' ').replace(/[-_]+/g, ' ').trim();
+      const derivedTitle = ((savedSummary.title ?? fallbackTitle) || savedSummary.videoId).trim();
       const resolvedAuthor = savedSummary.author?.trim() || summaryData.author?.trim() || 'Unknown creator';
+
+      const resolvedModelId = summaryData.modelId ?? summary?.modelId ?? activeModelId;
+      const resolvedModelLabel = resolveModelLabel(resolvedModelId);
 
       const displayData: SummaryData = {
         videoId: savedSummary.videoId,
@@ -351,7 +363,8 @@ const WatchLater = () => {
         content: summaryData.summary,
         transcript: '',
         savedFile: summaryData.filename,
-        modelId: summaryData.modelId ?? summary?.modelId ?? activeModelId,
+        modelId: resolvedModelId,
+        modelLabel: resolvedModelLabel,
         keyTakeaways: extractKeyTakeaways(summaryData.summary),
         tags: extractHashtags(summaryData.summary)
       };
@@ -496,7 +509,7 @@ const WatchLater = () => {
   const summaryCount = savedSummaries.length;
   const isProcessing = status === 'processing';
   const isReturningUser = summaryCount > 0;
-  const isSummarizeDisabled = !isYouTubeUrl(url) || isProcessing;
+  const isSummarizeDisabled = !isRecognizedYouTubeUrl(url) || isProcessing;
 
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -546,7 +559,7 @@ const WatchLater = () => {
             <section className="summary-card">
               <div className="summary-card-header">
                 <h2 className="summary-title">
-                  {completedSummary ? completedSummary.title : 'Choose a model to get started'}
+                  {completedSummary ? completedSummary.title : 'Your summary will appear here'}
                 </h2>
                 <SummaryActions
                   summary={completedSummary}

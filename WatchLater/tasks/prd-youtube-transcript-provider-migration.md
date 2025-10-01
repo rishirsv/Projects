@@ -124,3 +124,54 @@ flowchart LR
 - Language: Always attempt `en-US` for YouTube Transcript; do not implement other language fallbacks.
 - Logging: Include provider attempts and final provider used; no PII constraints.
 - Scope: Do not document or implement additional providers now.
+
+# Tasks
+
+## Pre‑flight
+- [ ] Create feature branch `feat/transcript-provider-migration` and run `npm ci && npm run lint && npm test -- --runInBand && npm run build`.
+
+## Phase 1 — Provider Interface & Registry
+- [ ] Add `server/transcript-providers/types.d.ts` (or inline JSDoc) describing result union.
+- [ ] Create `server/transcript-providers/index.js` exposing `selectProvider(mode)` and `fetchTranscriptOrchestrated(videoId)`.
+- [ ] Accept env `TRANSCRIPT_PROVIDER=auto|youtube|supadata` with default `auto`.
+
+## Phase 2 — Supadata Extraction
+- [ ] Move current Supadata logic from `server.js` into `server/transcript-providers/supadata.js` implementing the interface.
+- [ ] Keep existing retry/backoff; map responses to unified shape, including `availableLangs`.
+
+## Phase 3 — YouTube Transcript Provider
+- [ ] Implement `server/transcript-providers/youtube-transcript.js` using `youtube-transcript` lib.
+- [ ] Force `en-US`; join segments to plain text; return `availableLangs` when exposed.
+- [ ] Handle common empty/error cases; no secrets required.
+
+## Phase 4 — Orchestrator & Route Wiring
+- [ ] Update `/api/transcript` to call registry:
+  - [ ] `auto`: try YouTube → on `empty`/`error`, try Supadata; return first success or mapped error.
+  - [ ] `youtube` or `supadata`: call chosen provider only.
+- [ ] Preserve current response JSON for client compatibility.
+
+## Phase 5 — Health & Logging
+- [ ] Extend `/health` with `{ transcriptProviderMode, primary, fallback }` while retaining `supadataConfigured`.
+- [ ] Log `{ providerAttempt, providerUsed, durationMs, language, chars }` per request.
+
+## Phase 6 — Tests
+- [ ] Unit: provider success/empty/error; orchestrator behavior under each mode.
+- [ ] Integration: `/api/transcript` returns identical shape for both providers; error mapping verified.
+- [ ] Mock `youtube-transcript` to avoid network; do not require Supadata key for tests.
+
+## Phase 7 — Docs & Env
+- [ ] Update `.env.example` with `TRANSCRIPT_PROVIDER` and notes about rollback.
+- [ ] README section: provider modes, limitations, and troubleshooting.
+
+## Validation
+- [ ] Manual: run sample videos with each mode; verify outputs and fallbacks.
+- [ ] Lint/tests/build pass.
+
+## Rollout & Backout
+- [ ] Single PR acceptable if focused; alternatively split extraction and orchestrator.
+- [ ] Backout by setting `TRANSCRIPT_PROVIDER=supadata`; code paths remain intact.
+
+## Done When
+- [ ] Default `auto` mode works without Supadata configured for many public videos.
+- [ ] Response shape and client behavior unchanged.
+- [ ] Rollback is a 1‑line env change plus restart.

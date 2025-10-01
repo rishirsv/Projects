@@ -86,3 +86,44 @@ Add **quality dials** to the UI so users control **summary length**, **style**, 
   - [ ] 5.1 Unit: substitution (placeholders, escaping, long transcripts)
   - [ ] 5.2 Integration: ensure selected prefs affect outputs
 
+# Tasks
+
+## Pre‑flight
+- [ ] Create feature branch `feat/quality-dials` and run `npm ci && npm run lint && npm test -- --runInBand && npm run build`.
+
+## Phase A — Preferences Model & Context
+- [ ] Define `SummaryPrefs` in `src/types/summary.ts` (length, style, model, templateId?).
+- [ ] Add `src/context/PrefsContext.tsx` with `localStorage` persistence and sane defaults.
+- [ ] Provide context at app root; expose hooks `usePrefs`, `usePrefsUpdate`.
+
+## Phase B — Prompt Templates
+- [ ] Author six base templates in `prompts/templates/summary-<length>-<style>.md`.
+- [ ] Add server prompt loader: extend `GET /api/prompt` to accept `length` and `style` query params and cache files by key.
+- [ ] Keep current default prompt path as fallback when params missing or files absent.
+
+## Phase C — UI Controls
+- [ ] Create `src/components/QualityDials.tsx` with two segmented controls (Length, Style).
+- [ ] Integrate near the URL form; reflect current prefs; accessible labels; keyboard navigation.
+- [ ] Optionally add a summary chip showing active profile.
+
+## Phase D — Pipeline Integration
+- [ ] Update `src/api.ts/fetchPromptTemplate` to request `length`/`style` from prefs and pass to model generation.
+- [ ] Include `templateId` and dial values when saving summary (metadata header lines in `server.js`): `**Template:**`, `**Length:**`, `**Style:**`.
+- [ ] Ensure batch/refresh flows reuse the current prefs.
+
+## Phase E — Tests & Validation
+- [ ] Unit: template loader (server) caches and falls back on missing files.
+- [ ] Unit: context persistence across reload; defaults on empty storage.
+- [ ] Integration: changing dials changes prompt and affects saved metadata.
+- [ ] Manual QA: switch combinations, run summaries, verify header metadata and UI stability.
+
+## Rollout & Backout
+- [ ] PR 1: `feat(prompts): dial templates + server loader`.
+- [ ] PR 2: `feat(ui): quality dials + prefs context`.
+- [ ] PR 3: `feat(pipeline): save dial metadata + tests`.
+- [ ] Backout by reverting PR 2/3; server keeps default prompt behavior.
+
+## Done When
+- [ ] Users can pick length/style; settings persist locally.
+- [ ] Summaries are generated using chosen templates; metadata records the selection.
+- [ ] Defaults and fallbacks preserve current behavior when templates are missing.

@@ -1,0 +1,210 @@
+# Page snapshot
+
+```yaml
+- generic [ref=e3]:
+  - banner [ref=e4]:
+    - generic [ref=e5]:
+      - img [ref=e6]
+      - generic [ref=e11]: WatchLater
+      - generic [ref=e12]: Phase 3
+    - generic [ref=e14]:
+      - generic [ref=e15]: Saved · 18
+      - button "Refresh history" [ref=e16] [cursor=pointer]:
+        - img [ref=e17] [cursor=pointer]
+  - generic [ref=e22]:
+    - generic [ref=e23]:
+      - generic [ref=e24]:
+        - img [ref=e25]
+        - text: Instant AI summaries without uploads
+      - generic "Choose summarization model" [ref=e27] [cursor=pointer]:
+        - generic [ref=e28] [cursor=pointer]: Model
+        - combobox "Model" [ref=e29] [cursor=pointer]:
+          - option "Gemini 2.5 Flash" [selected]
+          - option "Grok 4 Fast (OpenRouter)"
+        - img
+    - heading "Learn faster with multi-model AI recaps." [level=1] [ref=e30]:
+      - text: Learn faster with
+      - generic [ref=e31]: multi-model AI
+      - text: recaps.
+    - paragraph [ref=e32]: Welcome back! Your 18 saved summaries are waiting in history.
+    - generic [ref=e33]:
+      - generic [ref=e34]:
+        - img [ref=e35]
+        - textbox [active] [ref=e38]
+      - button "Summarize video" [disabled] [ref=e39]:
+        - img [ref=e40]
+        - text: Summarize video
+    - generic [ref=e42]:
+      - generic [ref=e43]:
+        - img [ref=e44]
+        - text: Private, local-first pipeline
+      - generic [ref=e47]:
+        - img [ref=e48]
+        - text: Under 10 seconds per recap
+      - generic [ref=e51]:
+        - img [ref=e52]
+        - text: 18 summaries saved
+  - generic [ref=e54]:
+    - generic [ref=e55]:
+      - generic [ref=e56]:
+        - generic [ref=e58]:
+          - img [ref=e59]
+          - generic [ref=e61]: Processing pipeline
+        - generic [ref=e62]:
+          - generic [ref=e63]:
+            - img [ref=e65]
+            - heading "Metadata" [level=4] [ref=e67]
+            - paragraph [ref=e68]: Video title & channel info
+          - generic [ref=e69]:
+            - img [ref=e71]
+            - heading "Transcript" [level=4] [ref=e73]
+            - paragraph [ref=e74]: Supadata fetch & storage
+          - generic [ref=e75]:
+            - img [ref=e77]
+            - heading "AI Processing" [level=4] [ref=e79]
+            - paragraph [ref=e80]: Multi-model prompt orchestration
+          - generic [ref=e81]:
+            - img [ref=e83]
+            - heading "Save" [level=4] [ref=e85]
+            - paragraph [ref=e86]: Markdown summary archived locally
+      - generic [ref=e87]:
+        - heading "Your summary will appear here" [level=2] [ref=e89]
+        - generic [ref=e90]: Paste a YouTube URL above to generate your first summary. You can revisit any saved recap from the history panel.
+    - complementary [ref=e91]:
+      - generic [ref=e92]:
+        - generic [ref=e93]:
+          - img [ref=e94]
+          - text: Saved summaries
+        - generic [ref=e98]:
+          - button "Refresh list" [ref=e99] [cursor=pointer]:
+            - img [ref=e100] [cursor=pointer]
+          - button "Clear all summaries" [ref=e105] [cursor=pointer]:
+            - img [ref=e106] [cursor=pointer]
+      - generic [ref=e109]:
+        - generic [ref=e110] [cursor=pointer]:
+          - generic [ref=e111] [cursor=pointer]:
+            - generic [ref=e112] [cursor=pointer]: How to Get Ahead of 99% of People (Discipline Isn't Enough)
+            - generic [ref=e113] [cursor=pointer]: Ali Abdaal
+            - generic [ref=e114] [cursor=pointer]: 9/30/2025, 10:09:11 PM · 27 KB
+          - button "Delete summary":
+            - img
+        - generic [ref=e115] [cursor=pointer]:
+          - generic [ref=e116] [cursor=pointer]:
+            - generic [ref=e117] [cursor=pointer]: We Have Seen This Before
+            - generic [ref=e118] [cursor=pointer]: Unknown creator
+            - generic [ref=e119] [cursor=pointer]: 9/30/2025, 10:09:11 PM · 16 KB
+          - button "Delete summary":
+            - img
+        - generic [ref=e120] [cursor=pointer]:
+          - generic [ref=e121] [cursor=pointer]:
+            - generic [ref=e122] [cursor=pointer]: 10 Photography Mistakes I See All Beginners Make
+            - generic [ref=e123] [cursor=pointer]: Unknown creator
+            - generic [ref=e124] [cursor=pointer]: 9/30/2025, 10:09:11 PM · 13 KB
+          - button "Delete summary":
+            - img
+        - generic [ref=e125] [cursor=pointer]:
+          - generic [ref=e126] [cursor=pointer]:
+            - generic [ref=e127] [cursor=pointer]: How to Effortlessly Enter DEEP WORK on Command
+            - generic [ref=e128] [cursor=pointer]: Unknown creator
+            - generic [ref=e129] [cursor=pointer]: 9/30/2025, 10:09:11 PM · 16 KB
+          - button "Delete summary":
+            - img
+        - generic [ref=e130] [cursor=pointer]:
+          - generic [ref=e131] [cursor=pointer]:
+            - generic [ref=e132] [cursor=pointer]: How to Lock in SO HARD people don't recognize you
+            - generic [ref=e133] [cursor=pointer]: Alex Costa
+            - generic [ref=e134] [cursor=pointer]: 9/30/2025, 10:09:11 PM · 17 KB
+          - button "Delete summary":
+            - img
+        - generic [ref=e135] [cursor=pointer]:
+          - generic [ref=e136] [cursor=pointer]:
+            - generic [ref=e137] [cursor=pointer]: Being retarded makes 99% of women like you
+            - generic [ref=e138] [cursor=pointer]: Unknown creator
+            - generic [ref=e139] [cursor=pointer]: 9/30/2025, 10:09:11 PM · 11 KB
+          - button "Delete summary":
+            - img
+        - generic [ref=e140] [cursor=pointer]:
+          - generic [ref=e141] [cursor=pointer]:
+            - generic [ref=e142] [cursor=pointer]: The Psychology of Pleasing Women
+            - generic [ref=e143] [cursor=pointer]: Mike Israetel
+            - generic [ref=e144] [cursor=pointer]: 9/30/2025, 10:09:11 PM · 18 KB
+          - button "Delete summary":
+            - img
+        - generic [ref=e145] [cursor=pointer]:
+          - generic [ref=e146] [cursor=pointer]:
+            - generic [ref=e147] [cursor=pointer]: "The secret to better AI prototypes: Why Tinder's CPO starts with JSON, not design | Ravi Mehta"
+            - generic [ref=e148] [cursor=pointer]: How I AI
+            - generic [ref=e149] [cursor=pointer]: 9/30/2025, 10:09:11 PM · 19 KB
+          - button "Delete summary":
+            - img
+        - generic [ref=e150] [cursor=pointer]:
+          - generic [ref=e151] [cursor=pointer]:
+            - generic [ref=e152] [cursor=pointer]: how to ACTUALLY lock in
+            - generic [ref=e153] [cursor=pointer]: TIM OLUKANNI
+            - generic [ref=e154] [cursor=pointer]: 9/30/2025, 10:09:11 PM · 17 KB
+          - button "Delete summary":
+            - img
+        - generic [ref=e155] [cursor=pointer]:
+          - generic [ref=e156] [cursor=pointer]:
+            - generic [ref=e157] [cursor=pointer]: Rick Astley - Never Gonna Give You Up (Official Video) (4K Remaster)
+            - generic [ref=e158] [cursor=pointer]: Rick Astley
+            - generic [ref=e159] [cursor=pointer]: 9/30/2025, 10:09:11 PM · 8 KB
+          - button "Delete summary":
+            - img
+        - generic [ref=e160] [cursor=pointer]:
+          - generic [ref=e161] [cursor=pointer]:
+            - generic [ref=e162] [cursor=pointer]: "go ghost: upgrade your life in silence"
+            - generic [ref=e163] [cursor=pointer]: Purpose Driven
+            - generic [ref=e164] [cursor=pointer]: 9/30/2025, 10:09:11 PM · 13 KB
+          - button "Delete summary":
+            - img
+        - generic [ref=e165] [cursor=pointer]:
+          - generic [ref=e166] [cursor=pointer]:
+            - generic [ref=e167] [cursor=pointer]: How to Change Your Life
+            - generic [ref=e168] [cursor=pointer]: Unknown creator
+            - generic [ref=e169] [cursor=pointer]: 9/30/2025, 10:09:11 PM · 5 KB
+          - button "Delete summary":
+            - img
+        - generic [ref=e170] [cursor=pointer]:
+          - generic [ref=e171] [cursor=pointer]:
+            - generic [ref=e172] [cursor=pointer]: "Inside Claude Code: How an AI Native Team Actually Works | Cat Wu"
+            - generic [ref=e173] [cursor=pointer]: Peter Yang
+            - generic [ref=e174] [cursor=pointer]: 9/30/2025, 10:09:11 PM · 22 KB
+          - button "Delete summary":
+            - img
+        - generic [ref=e175] [cursor=pointer]:
+          - generic [ref=e176] [cursor=pointer]:
+            - generic [ref=e177] [cursor=pointer]: How To Reinvent Your Life In 4 Months (My Full Step-By-Step Process) | Cal Newport
+            - generic [ref=e178] [cursor=pointer]: Unknown creator
+            - generic [ref=e179] [cursor=pointer]: 9/30/2025, 10:09:11 PM · 20 KB
+          - button "Delete summary":
+            - img
+        - generic [ref=e180] [cursor=pointer]:
+          - generic [ref=e181] [cursor=pointer]:
+            - generic [ref=e182] [cursor=pointer]: Give me 20 Minutes and I'll Give You Back 20 Years of Your Life
+            - generic [ref=e183] [cursor=pointer]: Alex Hormozi
+            - generic [ref=e184] [cursor=pointer]: 9/30/2025, 10:09:11 PM · 17 KB
+          - button "Delete summary":
+            - img
+        - generic [ref=e185] [cursor=pointer]:
+          - generic [ref=e186] [cursor=pointer]:
+            - generic [ref=e187] [cursor=pointer]: The "right way" to vibe code (engineers, please watch)
+            - generic [ref=e188] [cursor=pointer]: Unknown creator
+            - generic [ref=e189] [cursor=pointer]: 9/30/2025, 10:09:11 PM · 11 KB
+          - button "Delete summary":
+            - img
+        - generic [ref=e190] [cursor=pointer]:
+          - generic [ref=e191] [cursor=pointer]:
+            - generic [ref=e192] [cursor=pointer]: 12 Rules to Change Your Life in 12 Months
+            - generic [ref=e193] [cursor=pointer]: Captain Sinbad
+            - generic [ref=e194] [cursor=pointer]: 9/30/2025, 10:09:11 PM · 22 KB
+          - button "Delete summary":
+            - img
+        - generic [ref=e195] [cursor=pointer]:
+          - generic [ref=e196] [cursor=pointer]:
+            - generic [ref=e197] [cursor=pointer]: Naval Ravikant and Cory Levy at Internapalooza
+            - generic [ref=e198] [cursor=pointer]: Unknown creator
+            - generic [ref=e199] [cursor=pointer]: 9/30/2025, 10:09:11 PM · 15 KB
+          - button "Delete summary":
+            - img
+```

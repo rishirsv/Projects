@@ -25,7 +25,7 @@ npm run dev      # port 5173
 - Watch stages progress (Fetch transcript → Save transcript → Generate summary → Save summary).
 - Confirm files written:
   - `exports/transcripts/<videoId>__<sanitizedTitle>-transcript-<timestamp>.txt`
-  - `exports/summaries/<videoId>__<sanitizedTitle>-summary-<timestamp>.md`
+  - `exports/summaries/<sanitizedTitle>-<sanitizedAuthor?>-summary-<videoId>-<timestamp>.md`
 - Toggle the **Model** selector to Grok 4 Fast and regenerate; confirm file metadata records the chosen model.
 
 ## Error cases

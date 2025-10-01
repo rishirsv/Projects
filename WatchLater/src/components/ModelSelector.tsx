@@ -2,7 +2,11 @@ import React from 'react';
 import { ChevronDown } from 'lucide-react';
 import { useActiveModel } from '../hooks/use-active-model';
 
-const ModelSelector: React.FC = () => {
+type ModelSelectorProps = {
+  variant?: 'primary' | 'subtle';
+};
+
+const ModelSelector: React.FC<ModelSelectorProps> = ({ variant = 'primary' }) => {
   const { activeModelId, setActiveModelId, registry } = useActiveModel();
   const { options } = registry;
 
@@ -11,7 +15,7 @@ const ModelSelector: React.FC = () => {
   }
 
   return (
-    <label className="model-selector" title="Choose summarization model">
+    <label className={`model-selector model-selector--${variant}`} title="Choose summarization model">
       <span className="model-selector__caption">Model</span>
       <select
         className="model-selector__select"

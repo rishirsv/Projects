@@ -100,3 +100,50 @@ This feature automatically discovers **new videos** added to a **user‑chosen Y
   - [ ] 7.1 Add scheduler (cron locally; Cloud Scheduler in cloud)
   - [ ] 7.2 Logging & alerts for failures
 
+# Tasks
+
+## Pre‑flight
+- [ ] Create feature branch `feat/rss-weekly-batch` and run `npm ci && npm run lint && npm test -- --runInBand && npm run build`.
+
+## Phase A — Settings & Config
+- [ ] Define schema and file `exports/settings.json` with `{ playlistIds, email, schedule, maxItems }`.
+- [ ] Server helpers to read/write settings with validation; add `GET/POST /api/settings` for UI later.
+
+## Phase B — RSS Fetch & Parse
+- [ ] Add `server/lib/rss.js` to fetch `https://www.youtube.com/feeds/videos.xml?playlist_id=...` with timeout/retry.
+- [ ] Parse XML to `{ videoId, title, publishedAt, channelTitle, link }`; unit test edge cases.
+
+## Phase C — Index Store
+- [ ] Implement `server/lib/index-store.js` managing `exports/index.json` with atomic writes and schema version.
+- [ ] Functions: `getAll()`, `get(videoId)`, `upsert(entry)`, `markProcessed(videoId)`.
+
+## Phase D — Batch Orchestration
+- [ ] Add `server/jobs/rss-sync.js` that diffs new items vs index, then for each new `videoId` runs transcript → summary → save.
+- [ ] Honor `maxItems` safety cap; collect results and failures with reasons.
+
+## Phase E — Digest Generation & Email
+- [ ] Write weekly digest to `exports/digests/YYYY-WW.md` with list of processed videos and snippets.
+- [ ] Add `server/lib/email.js` with SES or SMTP; send when `email` configured; otherwise skip.
+
+## Phase F — Endpoint & Security
+- [ ] Add `GET /jobs/sync-rss` route returning summary JSON; require `X-Cron-Token` if configured.
+- [ ] Log `{ runId, newCount, processedCount, failed }`.
+
+## Phase G — Client Hooks (Optional)
+- [ ] Minimal UI: Settings inputs, “Run Sync Now”, and a “This Week” shelf (see companion PRD) behind a feature flag.
+
+## Tests & Validation
+- [ ] Unit: RSS parser, index store operations, digest builder.
+- [ ] Integration: End‑to‑end sync with a fixture feed; verify files and index updated.
+- [ ] Manual QA: repeated runs process only new items; digest unique per ISO week.
+
+## Rollout & Backout
+- [ ] PR 1: `feat(rss): parser + index store`.
+- [ ] PR 2: `feat(rss): batch orchestrator + endpoint`.
+- [ ] PR 3: `feat(rss): digest + email + docs`.
+- [ ] Backout by disabling endpoint and leaving index untouched.
+
+## Done When
+- [ ] Weekly job processes new playlist items, saves summaries, updates index.
+- [ ] Digest file and optional email produced after each run.
+- [ ] Re‑running without new items performs no work and changes nothing.

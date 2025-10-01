@@ -92,3 +92,66 @@ Host the WatchLater app on **Google Cloud Run** so it’s accessible **only to m
   - [ ] 7.1 Build & push image via Cloud Build or local docker
   - [ ] 7.2 `gcloud run deploy` with required flags; test end‑to‑end
 
+# Tasks
+
+## Pre‑flight
+- [ ] Ensure clean working tree; create feature branch `feat/cloud-run-single-user`.
+- [ ] From `WatchLater/`: `npm ci && npm run lint && npm test -- --runInBand && npm run build`.
+- [ ] Confirm `.env.example` contains all keys referenced below.
+
+## Phase A — Containerization & Runtime Config
+- [ ] Add multi‑stage `Dockerfile` (Node 20): build Vite client, copy `dist/` and run `server.js`.
+- [ ] Read `$PORT` in `server.js` and bind Express to it; keep `/health` fast.
+- [ ] Serve static UI: `express.static('dist')` with fallback to `index.html`.
+- [ ] Add `VITE_SERVER_URL` support in client; default to `http://localhost:3001`, override in prod.
+- [ ] Create `infra/cloudrun.yaml` example with env vars, CPU/memory, min instances = 0, concurrency, timeouts.
+
+## Phase B — Storage Provider Abstraction
+- [ ] Introduce `server/storage/StorageProvider.js` (interface: `read`, `write`, `list`, `remove`, `urlFor`).
+- [ ] Implement `server/storage/LocalFsStorage.js` using current `exports/` layout.
+- [ ] Implement `server/storage/GcsStorage.js` using `@google-cloud/storage` with bucket from env.
+- [ ] Replace direct `fs` access in routes with provider calls (summaries, transcripts, listings, deletes, PDFs read).
+- [ ] Add small serializer for atomic writes (temp file + rename) to both providers.
+
+## Phase C — Authentication (Single‑User)
+- [ ] Client: `src/auth/firebase.ts` to initialize Firebase and fetch ID token.
+- [ ] Server: `server/auth/verifyFirebaseToken.js` to verify token, check allow‑listed email(s) from env.
+- [ ] Middleware: protect all API routes except `/health` and static assets; return 401/403 with clear JSON.
+- [ ] Client: attach `Authorization: Bearer <idToken>` header to all API calls in `src/api.ts` when configured.
+
+## Phase D — Jobs & Scheduler Hook
+- [ ] Add `GET /jobs/sync-rss` endpoint (idempotent) delegating to shared sync logic (see RSS PRD).
+- [ ] Validate `X-Cron-Token` (env) or require Cloud Scheduler IAM; log job run id + counts.
+- [ ] Document Cloud Scheduler setup in `docs/` with sample curl.
+
+## Phase E — Config, Secrets, and Env
+- [ ] Wire `.env`/process env for: `GCS_BUCKET`, `ALLOWED_EMAILS`, `VITE_SERVER_URL`, `OPENROUTER_API_KEY`, `SUPADATA_API_KEY`.
+- [ ] Add Secret Manager notes to `docs/` and environment mapping for Cloud Run.
+
+## Phase F — Observability
+- [ ] Add request ID middleware; log JSON with `{ requestId, route, status, durationMs }`.
+- [ ] Log storage provider used and object keys, not contents.
+- [ ] Surface `/health` JSON with `{ storage: 'gcs'|'local', auth: 'enabled'|'disabled' }`.
+
+## Validation — Automated
+- [ ] `npm run lint`, `npm test -- --runInBand`, `npm run build` pass locally and in container.
+- [ ] Container `docker build` completes; `docker run -p 3001:3001` serves UI + API.
+
+## Validation — Manual QA
+- [ ] Smoke test all routes behind auth; unauthorized returns 401/403.
+- [ ] Switch providers via env and verify reads/writes in local vs GCS.
+- [ ] Verify `/jobs/sync-rss` guarded and idempotent; logs include counts.
+- [ ] Deploy to Cloud Run; confirm cold start acceptable and UI/API functional end‑to‑end.
+
+## Rollout & Backout
+- [ ] PR 1: `feat(cloud): containerize app + static serve`.
+- [ ] PR 2: `feat(cloud): storage provider abstraction (local+gcs)`.
+- [ ] PR 3: `feat(cloud): firebase auth (single user)`.
+- [ ] PR 4: `feat(cloud): scheduler endpoint + docs`.
+- [ ] Backout by reverting latest PR; keep local mode as default provider/auth disabled.
+
+## Done When
+- [ ] Deployed service requires sign‑in and allow‑listed email.
+- [ ] All persistent files live in GCS in cloud mode; local mode unchanged.
+- [ ] `/jobs/sync-rss` runs via Cloud Scheduler; logs show processed counts.
+- [ ] `.env.example` and docs updated; zero secrets committed.

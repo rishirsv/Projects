@@ -50,12 +50,30 @@ function resolveTranscriptPath(filename) {
   return resolvedPath;
 }
 
+function extractVideoIdFromFilename(filename) {
+  const summaryMatch = filename.match(/-summary-([A-Za-z0-9_-]+?)(?:-[0-9T:-]+)?\.md$/i);
+  if (summaryMatch?.[1]) {
+    return summaryMatch[1];
+  }
+
+  if (filename.includes('__')) {
+    return filename.split('__')[0];
+  }
+
+  const legacyMatch = filename.match(/^([A-Za-z0-9_-]+)/);
+  return legacyMatch?.[1] ?? '';
+}
+
 function findSummaryFiles(videoId) {
+  const targetId = videoId.trim();
   const allFiles = fs.readdirSync(summariesDir);
   return allFiles
     .filter(file => file.endsWith('.md'))
     .filter(file => file.includes('-summary-'))
-    .filter(file => file.startsWith(`${videoId}__`) || file.startsWith(`${videoId}-`));
+    .filter(file => {
+      const extracted = extractVideoIdFromFilename(file);
+      return extracted === targetId || file.startsWith(`${targetId}__`) || file.startsWith(`${targetId}-`);
+    });
 }
 
 function getLatestSummaryFile(videoId) {
@@ -83,11 +101,13 @@ function extractMetadataValue(section, label) {
 
 function fallbackTitleFromFilename(filename) {
   const base = filename.split('-summary-')[0];
-  const [, rawTitle] = base.split('__');
-  if (!rawTitle) {
+  if (!base) {
     return '';
   }
-  return rawTitle.replace(/[-_]+/g, ' ').trim();
+
+  const [, rawTitle] = base.split('__');
+  const source = rawTitle ?? base;
+  return source.replace(/[-_]+/g, ' ').trim();
 }
 
 function parseSummaryFileContent(fileContent, filename, videoId) {
@@ -1103,12 +1123,17 @@ app.post('/api/save-summary', (req, res) => {
   }
 
   try {
-    const timestamp = new Date().toISOString().replace(/[:.]/g, '-').slice(0, 19);
-    const sanitizedTitle = title ? sanitizeTitle(title) : null;
     const creator = typeof author === 'string' ? author.trim() : '';
-    const baseFilename = sanitizedTitle ? `${videoId}__${sanitizedTitle}` : videoId;
+    const timestamp = new Date().toISOString().replace(/[:.]/g, '-').slice(0, 19);
+    const sanitizedTitle = sanitizeTitle(title || `video-${videoId}`) || `video-${videoId}`;
+    const sanitizedAuthor = creator ? sanitizeTitle(creator) : '';
+    const filenameTokens = [sanitizedTitle];
+    if (sanitizedAuthor) {
+      filenameTokens.push(sanitizedAuthor);
+    }
+    filenameTokens.push('summary', videoId, timestamp);
 
-    const filename = `${baseFilename}-summary-${timestamp}.md`;
+    const filename = `${filenameTokens.join('-')}.md`;
     const filePath = path.join(summariesDir, filename);
     
     // Create summary content with metadata
@@ -1170,10 +1195,9 @@ app.get('/api/summaries', (req, res) => {
         const filePath = path.join(summariesDir, file);
         const stats = fs.statSync(filePath);
         const [prefix] = file.split('-summary-');
-        const [videoIdPart, titlePart] = prefix.split('__');
-        const videoId = videoIdPart || 'unknown';
+        const videoId = extractVideoIdFromFilename(file) || 'unknown';
         let author = null;
-        let derivedTitle = titlePart ? titlePart.trim() : null;
+        let derivedTitle = prefix ? prefix.replace(/__/, ' ').replace(/[-_]+/g, ' ').trim() : null;
 
         try {
           const fileContent = fs.readFileSync(filePath, 'utf8');
@@ -1222,7 +1246,10 @@ app.get('/api/summary-file/:videoId', (req, res) => {
     const summaryFile = files
       .filter(file => file.endsWith('.md'))
       .filter(file => file.includes('-summary-'))
-      .filter(file => file.startsWith(`${videoId}__`) || file.startsWith(`${videoId}-`))
+      .filter(file => {
+        const extracted = extractVideoIdFromFilename(file);
+        return extracted === videoId || file.startsWith(`${videoId}__`) || file.startsWith(`${videoId}-`);
+      })
       .sort()
       .pop(); // Get the most recent
     

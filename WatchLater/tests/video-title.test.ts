@@ -10,10 +10,9 @@ describe('Video Title Processing', () => {
     
     // When implemented, should check:
     // 1. Extract video title from YouTube API
-    // 2. Prefix filenames with the videoId for lookup stability
-    // 3. Transcript file: `${videoId}__${title}-transcript-${timestamp}.txt`
-    // 4. Summary file: `${videoId}__${title}-summary-${timestamp}.md`
-    // 5. Both files should share the same `${videoId}__${title}` base
+    // 2. Transcript file: `${videoId}__${title}-transcript-${timestamp}.txt`
+    // 3. Summary file: `${title}-${author?}-summary-${videoId}.md`
+    // 4. Both files remain traceable via the embedded videoId
   });
   
   it('should generate matching transcript and summary filenames', () => {
@@ -23,15 +22,10 @@ describe('Video Title Processing', () => {
     const expectedBase = `${videoId}__${videoTitle}`;
     
     const transcriptName = generateTranscriptFilename(videoId, videoTitle, timestamp);
-    const summaryName = generateSummaryFilename(videoId, videoTitle, timestamp);
-    
+    const summaryName = generateSummaryFilename(videoId, videoTitle, timestamp, 'Creator Name');
+
     expect(transcriptName).toBe(`${expectedBase}-transcript-${timestamp}.txt`);
-    expect(summaryName).toBe(`${expectedBase}-summary-${timestamp}.md`);
-    
-    const transcriptBase = transcriptName.replace(`-transcript-${timestamp}.txt`, '');
-    const summaryBase = summaryName.replace(`-summary-${timestamp}.md`, '');
-    
-    expect(transcriptBase).toBe(summaryBase);
+    expect(summaryName).toBe(`Test Video Title-Creator Name-summary-${videoId}-${timestamp}.md`);
   });
 
   it('converts smart punctuation and diacritics to ASCII-safe filename components', () => {
@@ -42,8 +36,8 @@ describe('Video Title Processing', () => {
     const sanitized = sanitizeTitle(videoTitle);
     expect(sanitized).toBe("Branson's Private Island - Sao Tome reveal");
 
-    const summaryName = generateSummaryFilename(videoId, videoTitle, timestamp);
-    expect(summaryName).toBe("abcd1234xyz__Branson's Private Island - Sao Tome reveal-summary-2025-07-22T01-51-19.md");
+    const summaryName = generateSummaryFilename(videoId, videoTitle, timestamp, 'Creator');
+    expect(summaryName).toBe("Branson's Private Island - Sao Tome reveal-Creator-summary-abcd1234xyz-2025-07-22T01-51-19.md");
   });
 
   it('maps mixed smart quotes and dashes consistently for transcripts and summaries', () => {
@@ -55,7 +49,7 @@ describe('Video Title Processing', () => {
     const summaryName = generateSummaryFilename(videoId, title, timestamp);
 
     expect(transcriptName).toBe("efgh5678ijk__-Inside- the World - Beyonce's Renaissance Tour-transcript-2025-08-01T10-15-30.txt");
-    expect(summaryName).toBe("efgh5678ijk__-Inside- the World - Beyonce's Renaissance Tour-summary-2025-08-01T10-15-30.md");
+    expect(summaryName).toBe("-Inside- the World - Beyonce's Renaissance Tour-summary-efgh5678ijk-2025-08-01T10-15-30.md");
   });
 });
 

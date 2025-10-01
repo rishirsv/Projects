@@ -10,6 +10,8 @@ type ProgressPipelineProps = {
 
 export const ProgressPipeline: FC<ProgressPipelineProps> = ({ stages, currentStage, status }) => {
   const isProcessing = status === 'processing';
+  const highestStageId = stages.reduce((max, stage) => Math.max(max, stage.id), 0);
+  const effectiveStage = status === 'complete' ? highestStageId + 1 : currentStage;
 
   return (
     <section className="progress-card">
@@ -22,19 +24,20 @@ export const ProgressPipeline: FC<ProgressPipelineProps> = ({ stages, currentSta
       </div>
       <div className="progress-grid">
         {stages.map((stage) => {
-          const stepClass =
-            currentStage === stage.id
-              ? 'progress-step active'
-              : currentStage > stage.id
-                ? 'progress-step complete'
-                : 'progress-step';
+          const isStageActive = isProcessing && effectiveStage === stage.id;
+          const isStageComplete = effectiveStage > stage.id;
+          const stepClass = isStageActive
+            ? 'progress-step active'
+            : isStageComplete
+              ? 'progress-step complete'
+              : 'progress-step';
 
           return (
             <div key={stage.id} className={stepClass}>
               <div>
-                {currentStage > stage.id ? (
+                {isStageComplete ? (
                   <CheckCircle size={18} color="#46e0b1" />
-                ) : currentStage === stage.id ? (
+                ) : isStageActive ? (
                   <Loader2 className="spin" size={18} color="#46e0b1" />
                 ) : (
                   <Circle size={18} color="#524a6f" />

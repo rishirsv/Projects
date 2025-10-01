@@ -6,6 +6,7 @@ export type SummaryData = {
   transcript: string;
   savedFile: string;
   modelId: string;
+  modelLabel?: string;
   keyTakeaways: string[];
   tags: string[];
 };

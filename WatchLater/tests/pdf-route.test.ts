@@ -41,7 +41,8 @@ class MockResponse
 
 describe('GET /api/summary/:videoId/pdf', () => {
   const videoId = 'testvideo123';
-  const summaryFilename = `${videoId}__Sample-Video-summary-2024-01-01T00-00-00.md`;
+  const timestamp = '2024-01-01T00-00-00';
+  const summaryFilename = `Sample-Video-summary-${videoId}-${timestamp}.md`;
   const summaryPath = path.join(summariesDir, summaryFilename);
 
   beforeAll(async () => {

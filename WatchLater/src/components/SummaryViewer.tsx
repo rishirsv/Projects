@@ -20,37 +20,49 @@ const SummaryViewerComponent = ({
     return null;
   }
 
+  const friendlyModelLabel = summary.modelLabel ?? summary.modelId;
+  const showModel = Boolean(summary.modelId);
+
   return (
     <>
-      <div className="summary-meta">
-        <span>Video ID · {summary.videoId}</span>
-        <span>Saved file · {summary.savedFile}</span>
-        {summary.modelId && <span>Model · {summary.modelId}</span>}
-      </div>
-
-      {pdfState.state !== 'idle' && (
-        <div className={`summary-feedback ${pdfState.state}`}>
-          {pdfState.state === 'loading' ? 'Preparing PDF…' : pdfState.message}
-        </div>
-      )}
-
-      {summary.keyTakeaways.length > 0 && (
-        <div className="key-takeaways">
-          <h3>Key takeaways</h3>
-          <ul>
-            {summary.keyTakeaways.map((takeaway, idx) => (
-              <li key={idx}>{takeaway}</li>
-            ))}
-          </ul>
-        </div>
-      )}
-
       <div className="summary-markdown">
         <article className="summary-article">
           <header className="summary-article__header">
             <h1 className="summary-article__title">{summary.title}</h1>
-            {summary.author && <p className="summary-article__creator">by {summary.author}</p>}
+            <div className="summary-article__meta">
+              {summary.author && (
+                <span className="summary-meta__item" data-meta="creator">
+                  Creator · {summary.author}
+                </span>
+              )}
+              {showModel && (
+                <span className="summary-meta__item" data-meta="model" title={summary.modelId}>
+                  Model · {friendlyModelLabel}
+                </span>
+              )}
+              <span className="summary-meta__item" data-meta="video">
+                Video ID · {summary.videoId}
+              </span>
+            </div>
           </header>
+
+          {pdfState.state !== 'idle' && (
+            <div className={`summary-feedback ${pdfState.state}`}>
+              {pdfState.state === 'loading' ? 'Preparing PDF…' : pdfState.message}
+            </div>
+          )}
+
+          {summary.keyTakeaways.length > 0 && (
+            <div className="key-takeaways">
+              <h3>Key takeaways</h3>
+              <ul>
+                {summary.keyTakeaways.map((takeaway, idx) => (
+                  <li key={idx}>{takeaway}</li>
+                ))}
+              </ul>
+            </div>
+          )}
+
           <ReactMarkdown>{summary.content}</ReactMarkdown>
         </article>
       </div>

@@ -41,3 +41,44 @@ Users currently edit prompt text manually to adjust summary tone or depth, which
 ## Open Questions
 - Should the UI surface a short description explaining each mode to aid first-time users?
 - Do we need analytics to understand which combinations are most popular before adding more options?
+
+# Tasks
+
+## Pre‑flight
+- [ ] Create feature branch `feat/length-style-dials` and run `npm ci && npm run lint && npm test -- --runInBand && npm run build`.
+
+## Phase A — Templates (Source of Truth)
+- [ ] Add six templates at `prompts/templates/summary-{short|medium|long}-{bullets|narrative}.md`.
+- [ ] Keep templates markdown‑only; no front‑matter; use placeholders described in PRD if needed later.
+
+## Phase B — Server Prompt Endpoint
+- [ ] Extend `GET /api/prompt` to validate `length` and `style` query params.
+- [ ] Load template by key with an in‑memory `Map` cache; return default on missing.
+- [ ] Log cache hits/misses and file load errors with clear messages; never crash.
+
+## Phase C — Client Settings & Fetcher
+- [ ] Add minimal `SummaryPrefs` store (length/style) coexisting with model selector.
+- [ ] Update `src/api.ts/fetchPromptTemplate` to include `?length=..&style=..` and fall back on error.
+- [ ] Debounce re‑fetches when toggling quickly; one fetch per distinct combination.
+
+## Phase D — UI Controls
+- [ ] Create segmented controls UI with accessible labels; place near URL field.
+- [ ] Persist choices to `localStorage` and rehydrate on load.
+
+## Phase E — Pipeline & Metadata
+- [ ] Ensure the selected combination is used for both single run and regenerate flows.
+- [ ] Add optional header lines in saved summary: `**Length:**`, `**Style:**` for traceability.
+
+## Tests & Validation
+- [ ] Unit: endpoint param validation, cache behavior, default fallback path.
+- [ ] Integration: end‑to‑end verifying prompt contents change with dial combination.
+- [ ] Manual QA: rapid toggling doesn’t spam the server; UX stays responsive.
+
+## Rollout & Backout
+- [ ] Single PR acceptable if change set is small and isolated; otherwise split server/client.
+- [ ] Backout by reverting client control PR; server keeps compatibility with default prompt route.
+
+## Done When
+- [ ] Six templates exist and are delivered by the server based on dials.
+- [ ] Client uses the chosen combination across runs; metadata records it.
+- [ ] Default behavior remains unchanged when dials are untouched.

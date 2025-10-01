@@ -1,6 +1,5 @@
 import type { FC } from 'react';
 import { ChevronRight, Copy, Download, FileText, Loader2, RefreshCw } from 'lucide-react';
-import ModelSelector from './ModelSelector';
 import type { PdfExportState, SummaryData } from '../types/summary';
 
 type SummaryActionsProps = {
@@ -39,11 +38,6 @@ export const SummaryActions: FC<SummaryActionsProps> = ({
         <button className="action-icon-button" onClick={onCopy} title="Copy to clipboard">
           <Copy size={18} />
         </button>
-      </>
-    )}
-    <ModelSelector />
-    {summary && (
-      <>
         <button className="action-icon-button" onClick={onRegenerate} title="Regenerate summary">
           <RefreshCw size={18} />
         </button>

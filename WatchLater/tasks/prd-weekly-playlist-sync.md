@@ -44,3 +44,39 @@ Manually copying weekly YouTube links is repetitive. This feature introduces a m
 ## Open Questions
 - Should we allow backfilling older weeks on first run, or limit to the latest week to stay lightweight?
 - Do we need a UI surface to kick off the sync manually, or is a CLI/HTTP endpoint sufficient for now?
+
+# Tasks
+
+## Pre‑flight
+- [ ] Create feature branch `feat/playlist-weekly-sync` and run `npm ci && npm run lint && npm test -- --runInBand && npm run build`.
+
+## Phase A — Minimal Job + Endpoint
+- [ ] Implement `server/jobs/playlist-sync.js` consuming one `PLAYLIST_RSS_URL` from env.
+- [ ] Add `GET /jobs/sync-rss` route (shared name with batch PRD) that calls the job and returns a concise JSON report.
+- [ ] Use a local state file `exports/lastSync.json` storing last publish timestamp and counts.
+
+## Phase B — Diff & Process
+- [ ] Fetch feed (timeout/retry) and parse into items; sort by published date.
+- [ ] Filter items with `publishedAt > lastSync` and cap by `MAX_ITEMS` env.
+- [ ] For each new `videoId`, call existing pipeline: transcript → summary → save.
+
+## Phase C — Digest (Local Only)
+- [ ] Build a single markdown digest `exports/digests/YYYY-WW.md` listing processed videos with links and first paragraph.
+- [ ] Skip email; leave hook to the richer batch RSS PRD if needed later.
+
+## Phase D — Safety & Logging
+- [ ] Add an optional `X-Cron-Token` check to endpoint; log `{ runId, discovered, processed, skipped, failed }`.
+
+## Tests & Validation
+- [ ] Unit: diff logic with edge dates; idempotency across runs.
+- [ ] Integration: end‑to‑end with fixture feed; verify only new items processed.
+- [ ] Manual QA: rerun with no new items → no changes; digest generated once per week.
+
+## Rollout & Backout
+- [ ] Single PR acceptable; scope is small.
+- [ ] Backout by removing the endpoint; job code isolated under `server/jobs/`.
+
+## Done When
+- [ ] Manual run processes new items and writes a digest.
+- [ ] Subsequent runs without new items are no‑ops.
+- [ ] No UI regressions; core summarization remains unaffected.

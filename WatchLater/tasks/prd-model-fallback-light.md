@@ -40,3 +40,57 @@ Occasional model outages or quota limits cause summaries to fail. This feature a
 ## Open Questions
 - Which models should ship with fallback mappings by default (e.g., Gemini Flash → OpenRouter fast tier)?
 - Do we need telemetry to monitor fallback usage trends before expanding support?
+
+# Tasks
+
+## Pre‑flight
+- [ ] Create feature branch `feat/model-fallback` and run `npm ci && npm run lint && npm test -- --runInBand && npm run build`.
+
+## Phase A — Config & Registry
+- [ ] Extend `src/config/model-registry.ts` option shape to allow optional `fallbackModelId` and `allowFallback` from env (e.g., `VITE_MODEL_OPTIONS` entry `id|Label|fallback=<id>` and/or separate map `VITE_MODEL_FALLBACKS`).
+- [ ] Parse and expose a lookup `{ [primaryId]: fallbackId }` and a boolean `fallbackEnabled`.
+- [ ] Add warnings if a configured fallback is not present in options.
+
+## Phase B — Retryable Error Taxonomy
+- [ ] Introduce `src/lib/retryable-errors.ts` enumerating retryable patterns (timeouts, 429, 5xx, ECONN, AbortError).
+- [ ] In `src/api.ts/generateSummary()`, classify failures via helper; preserve original error.
+
+## Phase C — Fallback Attempt (Client‑side)
+- [ ] Update `generateSummary(transcript, modelId, config)` to:
+  - [ ] Attempt primary model once.
+  - [ ] If retryable and a valid fallback exists, attempt fallback once with the same prompt.
+  - [ ] Return `{ summary, modelId: finalModel }` and annotate metadata in save step.
+- [ ] Ensure Gemini/OpenRouter paths both propagate structured errors without masking non‑retryables (auth, content policy).
+
+## Phase D — Persist Metadata
+- [ ] Extend `saveSummaryToServer` call in `src/api.ts` to include `modelId` (existing) plus optional `usedFallback` and `fallbackModelId`.
+- [ ] Update `server.js /api/save-summary` to embed header lines when provided:
+  - [ ] `**Used Fallback:** Yes`
+  - [ ] `**Fallback Model:** <id>`
+- [ ] Update `/api/summary-file/:videoId` to parse and return these fields (optional).
+- [ ] Update `/api/summaries` listing to include model if available (already supported) — no change required beyond parsing.
+
+## Phase E — UI Surface
+- [ ] In `src/components/SummaryViewer.tsx`, render a subtle badge when `usedFallback` is true, showing resolved label of `fallbackModelId`.
+- [ ] Optionally add a tooltip to the model meta pill indicating the fallback scenario.
+
+## Phase F — Tests
+- [ ] Unit: `model-registry` parses fallback map; warns on missing IDs.
+- [ ] Unit: `retryable-errors` classifies representative failure shapes.
+- [ ] Integration: simulate primary failure → fallback success; assert saved metadata and UI badge.
+- [ ] Integration: both fail → combined error bubbles to user; no duplicate saves.
+
+## Validation
+- [ ] Manual: toggle fallbacks via env; verify single retry behavior; ensure no infinite loops.
+- [ ] Lint/tests/build pass.
+
+## Rollout & Backout
+- [ ] PR 1: `feat(models): fallback parsing + taxonomy`.
+- [ ] PR 2: `feat(models): client fallback attempt + metadata`.
+- [ ] PR 3: `feat(ui): fallback badge + tests`.
+- [ ] Backout by reverting PR 2 (disables fallback) while keeping registry warnings harmless.
+
+## Done When
+- [ ] A retryable primary failure triggers exactly one fallback attempt.
+- [ ] Saved summaries record whether fallback was used and which model produced the result.
+- [ ] UI indicates fallback unobtrusively; no change to happy path UX.

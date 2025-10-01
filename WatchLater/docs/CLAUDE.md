@@ -34,7 +34,7 @@ This is a **YouTube transcript summarizer** with a hybrid client-server architec
 1. **URL Input** → Extract video ID → Backend transcript fetch (Supadata API)
 2. **Transcript Storage** → Save to `exports/transcripts/{videoId}-transcript-{timestamp}.txt`
 3. **AI Processing** → Load prompt from `prompts/Youtube transcripts.md` → Active model (Gemini via client SDK, OpenRouter via backend proxy)
-4. **Summary Storage** → Save to `exports/summaries/{videoId}-summary-{timestamp}.md`
+4. **Summary Storage** → Save to `exports/summaries/{sanitizedTitle}-{sanitizedAuthor?}-summary-{videoId}-{timestamp}.md`
 
 ### Critical Components
 
@@ -105,7 +105,7 @@ Common test URLs in codebase:
 
 ### File Naming Convention
 - **Transcripts**: `{videoId}-transcript-{timestamp}.txt`
-- **Summaries**: `{videoId}-summary-{timestamp}.md`
+- **Summaries**: `{sanitizedTitle}-{sanitizedAuthor?}-summary-{videoId}-{timestamp}.md`
 - **Timestamps**: ISO format with colons/periods replaced by hyphens
 
 ### Model Selection
