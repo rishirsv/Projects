@@ -92,7 +92,7 @@ describe('model-aware API surfaces', () => {
 
     await generateSummary('Sample transcript', '');
 
-    expect(mockGetGenerativeModel).toHaveBeenLastCalledWith({ model: 'gemini-2.5-flash' });
+    expect(mockGetGenerativeModel).toHaveBeenLastCalledWith({ model: 'gemini-2.5-pro' });
   });
 
   it('requests OpenRouter backend when model id uses openrouter prefix', async () => {
@@ -103,7 +103,7 @@ describe('model-aware API surfaces', () => {
 
     globalThis.fetch = mockFetch;
 
-    const result = await generateSummary('Sample transcript', 'openrouter/google/gpt-4o-mini');
+    const result = await generateSummary('Sample transcript', 'openrouter/openai/gpt-4o-mini');
 
     expect(result).toBe('OpenRouter summary');
     expect(mockFetch).toHaveBeenNthCalledWith(
@@ -113,5 +113,57 @@ describe('model-aware API surfaces', () => {
         method: 'POST'
       })
     );
+  });
+
+  const geminiModels = ['gemini-2.5-pro', 'gemini-2.5-flash', 'gemini-1.5-pro'] as const;
+
+  it.each(geminiModels)('routes %s through the Gemini client', async (modelId) => {
+    const mockFetch: FetchMock = jest
+      .fn()
+      .mockResolvedValue(createMockResponse({ prompt: 'Prompt: ' }));
+
+    globalThis.fetch = mockFetch;
+
+    const result = await generateSummary('Sample transcript', modelId);
+
+    expect(mockGoogleGenerativeAI).toHaveBeenCalledWith('demo-key');
+    expect(mockGetGenerativeModel).toHaveBeenCalledWith({ model: modelId });
+    expect(result).toBe('Mock summary text');
+  });
+
+  const openRouterModels = [
+    'openrouter/anthropic/claude-3.5-sonnet',
+    'openrouter/anthropic/claude-3.5-haiku',
+    'openrouter/openai/gpt-4o',
+    'openrouter/openai/gpt-4o-mini',
+    'openrouter/x-ai/grok-4',
+    'openrouter/meta-llama/llama-3.1-405b-instruct',
+    'openrouter/mistralai/mistral-large-latest',
+  ] as const;
+
+  it.each(openRouterModels)('routes %s through the OpenRouter proxy', async (modelId) => {
+    const mockFetch: FetchMock = jest
+      .fn()
+      .mockResolvedValueOnce(createMockResponse({ prompt: 'Prompt: ' }))
+      .mockResolvedValueOnce(createMockResponse({ summary: `${modelId} summary` }));
+
+    globalThis.fetch = mockFetch;
+
+    const result = await generateSummary('Sample transcript', modelId);
+
+    expect(mockFetch).toHaveBeenNthCalledWith(
+      2,
+      'http://localhost:3001/api/openrouter/generate',
+      expect.objectContaining({
+        method: 'POST'
+      })
+    );
+
+    const [, requestInit] = mockFetch.mock.calls[1];
+    expect(requestInit).toBeDefined();
+    const body = JSON.parse((requestInit as RequestInit).body as string);
+    expect(body.modelId).toBe(modelId);
+
+    expect(result).toBe(`${modelId} summary`);
   });
 });

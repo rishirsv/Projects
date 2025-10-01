@@ -63,8 +63,8 @@ Create `.env` file with:
 ```
 # Client-side (browser)
 VITE_GEMINI_API_KEY=your_gemini_api_key
-VITE_MODEL_OPTIONS=gemini-2.5-flash|Gemini 2.5 Flash,openrouter/openai/gpt-4o-mini|GPT-4o Mini (OpenRouter)
-VITE_MODEL_DEFAULT=openrouter/openai/gpt-4o-mini
+VITE_MODEL_OPTIONS=gemini-2.5-pro|Gemini 2.5 Pro,gemini-2.5-flash|Gemini 2.5 Flash,gemini-1.5-pro|Gemini 1.5 Pro,openrouter/anthropic/claude-3.5-sonnet|Claude 3.5 Sonnet (OpenRouter),openrouter/anthropic/claude-3.5-haiku|Claude 3.5 Haiku (OpenRouter),openrouter/openai/gpt-4o|GPT-4o (OpenRouter),openrouter/openai/gpt-4o-mini|GPT-4o Mini (OpenRouter),openrouter/x-ai/grok-4|Grok 4 (OpenRouter),openrouter/meta-llama/llama-3.1-405b-instruct|Llama 3.1 405B (OpenRouter),openrouter/mistralai/mistral-large-latest|Mistral Large (OpenRouter)
+VITE_MODEL_DEFAULT=gemini-2.5-pro
 
 # Server-side
 SUPADATA_API_KEY=your_supadata_api_key

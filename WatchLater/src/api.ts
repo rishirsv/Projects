@@ -313,7 +313,7 @@ export async function fetchTranscript(videoId: string, config: RequestConfig = {
   }
 }
 
-const DEFAULT_GEMINI_MODEL = 'gemini-2.5-flash';
+const DEFAULT_GEMINI_MODEL = 'gemini-2.5-pro';
 
 /**
  * Generate summary using the selected model/provider.

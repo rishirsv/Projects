@@ -32,7 +32,7 @@ function parseOption(entry: string): ModelOption | null {
 
 const FALLBACK_OPTIONS: ModelOption[] = [
   { id: 'openrouter/openai/gpt-4o-mini', label: 'GPT-4o Mini (OpenRouter)' },
-  { id: 'gemini-2.5-flash', label: 'Gemini 2.5 Flash' }
+  { id: 'gemini-2.5-pro', label: 'Gemini 2.5 Pro' }
 ];
 
 const FALLBACK_DEFAULT_ID = FALLBACK_OPTIONS[0]?.id ?? '';
